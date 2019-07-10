@@ -3,6 +3,7 @@ package com.ucx.training.shop.controller;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.service.CostumerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,5 +37,11 @@ public class CostumerController {
     @DeleteMapping("{id}")
     public void remove(@PathVariable Integer id){
         costumerService.remove(id);
+    }
+
+    @GetMapping("/paged")
+    public List<Costumer> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
+        Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
+        return costumerPage.getContent();
     }
 }
