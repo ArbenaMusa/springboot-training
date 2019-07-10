@@ -10,17 +10,16 @@ import java.util.List;
 @RestController
 @RequestMapping("shop/invoices")
 public class InvoiceController {
-
     @Autowired
     private InvoiceService invoiceService;
 
     @PostMapping
-    public Invoice create(@RequestBody Invoice invoice) {
+    public Invoice create(@RequestBody Invoice invoice){
         return invoiceService.save(invoice);
     }
 
     @GetMapping
-    public List<Invoice> findAll() {
+    public List<Invoice> findAll(){
         return invoiceService.findAll();
     }
 
@@ -30,12 +29,12 @@ public class InvoiceController {
     }
 
     @PutMapping("{id}")
-    public Invoice update(@RequestBody Invoice invoice) {
-        return invoiceService.update(invoice);
+    public Invoice update(@RequestBody Invoice invoice, @PathVariable Integer id) {
+        return invoiceService.update(invoice, id);
     }
 
     @DeleteMapping("{id}")
-    public void remove(@PathVariable Integer id) {
+    public void remove(@PathVariable Integer id){
         invoiceService.remove(id);
     }
 }

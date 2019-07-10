@@ -8,19 +8,14 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-/**
- * Base Entity from which all other Entities inherit.
- * @param <T>
- */
 @MappedSuperclass
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class BaseModel<T> {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id //Indicates that this field is a Primary Key.
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //Id generation strategy
     private T id;
     @Enumerated(EnumType.STRING)
     private RecordStatus recordStatus = RecordStatus.ACTIVE;

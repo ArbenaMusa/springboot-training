@@ -4,5 +4,5 @@ import com.ucx.training.shop.entity.LineItem;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LineItemRepository extends BaseRepository<LineItem, Integer> {
+public interface LineItemRepository extends BaseRepository<LineItem,Integer> {
 }
