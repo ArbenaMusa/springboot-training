@@ -9,15 +9,11 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -71,6 +67,19 @@ public class BaseService<T extends BaseModel<U>,U> {
 
     }
 
+    public Page<T> findAllPaged(int pageNumber, int pageSize) {
+        return baseRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("id")));
+    }
+
+    public List<T> findAllSorted(String direction, String ... properties) {
+
+        if (!Arrays.asList("ASC", "DESC").contains(direction.toUpperCase())) {
+            throw new IllegalArgumentException("Value must be either ASC or DESC: " + direction);
+        }
+
+        return baseRepository.findAll(Sort.by(Sort.Direction.valueOf(direction), properties));
+    }
+
     private static <T> String[] getNullPropertyNames(T source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
@@ -81,10 +90,6 @@ public class BaseService<T extends BaseModel<U>,U> {
         }
         String[] result = new String[emptyNames.size()];
         return emptyNames.toArray(result);
-    }
-
-    public Page<T> findAllPaged(int pageNumber, int pageSize) {
-        return baseRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("id")));
     }
 
 }

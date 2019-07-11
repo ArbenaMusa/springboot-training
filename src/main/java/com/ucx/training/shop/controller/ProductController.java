@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("shop/products")
+@RequestMapping("/products")
 public class ProductController {
     @Autowired
     private ProductService productService;
@@ -38,5 +38,10 @@ public class ProductController {
     @DeleteMapping("{id}")
     public void remove(@PathVariable Integer id){
         productService.remove(id);
+    }
+
+    @GetMapping("/name")
+    public List<Product> findAllByName(@RequestParam String name) {
+        return productService.findAllByName(name);
     }
 }

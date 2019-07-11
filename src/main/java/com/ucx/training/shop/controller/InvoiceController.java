@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("shop/invoices")
+@RequestMapping("/invoices")
 public class InvoiceController {
     @Autowired
     private InvoiceService invoiceService;

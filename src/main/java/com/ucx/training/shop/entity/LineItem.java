@@ -1,12 +1,15 @@
 package com.ucx.training.shop.entity;
 
-import com.ucx.training.shop.type.RecordStatus;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -16,24 +19,13 @@ import java.util.List;
 @AllArgsConstructor
 public class LineItem extends BaseModel<Integer> {
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "invoice_lineitem",
-            joinColumns = @JoinColumn(name = "lineitem_id"),
-            inverseJoinColumns = @JoinColumn(name = "invoice_id"))
+    @ManyToMany(mappedBy = "lineItemList")
     private List<Invoice> invoiceList;
     @OneToOne
     @JoinColumn
     private Product product;
     private Integer quantity;
-    @CreationTimestamp
-    private LocalDateTime createDateTime;
-    @UpdateTimestamp
-    private LocalDateTime updateDateTime;
+    private BigDecimal lineItemTotal; //Product quantity * Product unitPrice
 
-    public LineItem(Integer id, RecordStatus recordStatus, List<Invoice> invoiceList, Product product, Integer quantity) {
-        super(id, recordStatus);
-        this.invoiceList = invoiceList;
-        this.product = product;
-        this.quantity = quantity;
-    }
+
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("shop/costumers")
+@RequestMapping("/costumers")
 public class CostumerController {
     @Autowired
     private CostumerService costumerService;
@@ -43,5 +43,10 @@ public class CostumerController {
     public List<Costumer> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
         Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
         return costumerPage.getContent();
+    }
+
+    @GetMapping("/sorted")
+    public List<Costumer> findAllSorted(@RequestParam(defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String ... properties) {
+        return costumerService.findAllSorted(direction, properties);
     }
 }

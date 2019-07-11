@@ -1,13 +1,12 @@
 package com.ucx.training.shop.entity;
 
-import com.ucx.training.shop.type.RecordStatus;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,15 +17,4 @@ public class Product extends BaseModel<Integer> {
     private String name;
     private BigDecimal unitPrice;
     private Boolean inStock;
-    @CreationTimestamp
-    private LocalDateTime createDateTime;
-    @UpdateTimestamp
-    private LocalDateTime updateDateTime;
-
-    public Product(Integer id, RecordStatus recordStatus, String name, BigDecimal unitPrice, Boolean inStock) {
-        super(id, recordStatus);
-        this.name = name;
-        this.unitPrice = unitPrice;
-        this.inStock = inStock;
-    }
 }

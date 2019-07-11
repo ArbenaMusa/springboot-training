@@ -1,16 +1,12 @@
 package com.ucx.training.shop.entity;
 
-import com.ucx.training.shop.type.RecordStatus;
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,23 +15,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Invoice extends BaseModel<Integer> {
+
     private Integer invoiceNumber;
-    @OneToOne
+    @OneToOne(optional = false)
     @JoinColumn
     private Costumer costumer;
 
-    @ManyToMany(mappedBy = "invoiceList")
-    private List<LineItem> list;
+    @OneToMany
+    @JoinTable(name = "invoice_lineitem",
+            joinColumns = @JoinColumn(name = "lineitem_id"),
+            inverseJoinColumns = @JoinColumn(name = "invoice_id"))
+    private List<LineItem> lineItemList;
     private BigDecimal total;
-    @CreationTimestamp
-    private LocalDateTime createDateTime;
-    @UpdateTimestamp
-    private LocalDateTime updateDateTime;
 
-    public Invoice(Integer id, RecordStatus recordStatus, Integer invoiceNumber, Costumer costumer, List<LineItem> list) {
-        super(id, recordStatus);
-        this.invoiceNumber = invoiceNumber;
-        this.costumer = costumer;
-        this.list = list;
-    }
 }
