@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class BaseModel<T> {
+public abstract class BaseEntity<T> {
     @Id //Indicates that this field is a Primary Key.
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Id generation strategy
     private T id;

@@ -12,6 +12,6 @@ import javax.persistence.Entity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Costumer extends BaseModel<Integer> {
+public class Costumer extends BaseEntity<Integer> {
     private String name;
 }

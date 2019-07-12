@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -14,17 +15,15 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Invoice extends BaseModel<Integer> {
+public class Invoice extends BaseEntity<Integer> {
 
     private Integer invoiceNumber;
-    @OneToOne(optional = false)
-    @JoinColumn
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "costumer_id")
     private Costumer costumer;
 
-    @OneToMany
-    @JoinTable(name = "invoice_lineitem",
-            joinColumns = @JoinColumn(name = "lineitem_id"),
-            inverseJoinColumns = @JoinColumn(name = "invoice_id"))
+    @OneToMany(mappedBy = "invoice", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Size(min = 1, message = "You must have at least 1 line item")
     private List<LineItem> lineItemList;
     private BigDecimal total;
 

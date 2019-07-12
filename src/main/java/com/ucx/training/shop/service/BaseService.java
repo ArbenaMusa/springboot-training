@@ -1,6 +1,6 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.entity.BaseModel;
+import com.ucx.training.shop.entity.BaseEntity;
 import com.ucx.training.shop.repository.BaseRepository;
 import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.beans.BeanUtils;
@@ -17,7 +17,7 @@ import java.util.*;
 
 @Service
 @Transactional
-public class BaseService<T extends BaseModel<U>,U> {
+public class BaseService<T extends BaseEntity<U>,U> {
     @Autowired
     private BaseRepository<T,U> baseRepository;
 
