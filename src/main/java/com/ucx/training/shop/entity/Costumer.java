@@ -18,7 +18,7 @@ public class Costumer extends BaseEntity<Integer> {
     private String name;
 
 
-@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,mappedBy="costumer")
 @Size(min = 1, message = "You must have at least 1 address")
     private List<Address> addresses;
 }
