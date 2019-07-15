@@ -49,7 +49,7 @@ public class PurchaseService {
             newInvoiceId = invoiceId;
         }
 
-        return invoiceId;
+        return newInvoiceId;
     }
 
     public Invoice buy(Integer costumerId, Integer invoiceId) {
