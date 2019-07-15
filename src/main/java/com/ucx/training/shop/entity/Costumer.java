@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.Null;
 
 @Entity
 @Getter
@@ -14,4 +15,8 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 public class Costumer extends BaseEntity<Integer> {
     private String name;
+    private String email;
+    private String phoneNumber1;
+    @Null
+    private String phoneNumber2;
 }
