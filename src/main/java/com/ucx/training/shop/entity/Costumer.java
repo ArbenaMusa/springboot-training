@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -14,4 +16,7 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 public class Costumer extends BaseEntity<Integer> {
     private String name;
+@ManyToOne
+@JoinColumn(name="address_id")
+private Address address;
 }

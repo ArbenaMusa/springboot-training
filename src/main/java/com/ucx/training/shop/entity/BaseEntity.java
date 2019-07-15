@@ -25,4 +25,8 @@ public abstract class BaseEntity<T> {
     private LocalDateTime createDateTime;
     @UpdateTimestamp
     private LocalDateTime updateDateTime;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
 }
