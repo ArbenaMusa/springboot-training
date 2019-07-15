@@ -16,6 +16,8 @@ public class ProductService extends BaseService<Product,Integer> {
     @Autowired
     private ProductRepository productRepository;
 
+
+
     public List<Product> findAllByName(String name) {
         if (name == null) {
             throw new IllegalArgumentException("Invalid argument: " + name);

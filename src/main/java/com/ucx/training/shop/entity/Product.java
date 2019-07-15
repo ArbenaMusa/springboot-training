@@ -16,5 +16,5 @@ import java.math.BigDecimal;
 public class Product extends BaseEntity<Integer> {
     private String name;
     private BigDecimal unitPrice;
-    private Boolean inStock;
+    private Integer inStock;
 }
