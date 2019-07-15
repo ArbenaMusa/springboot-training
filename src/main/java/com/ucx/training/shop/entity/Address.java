@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @Entity
 @AllArgsConstructor
@@ -15,9 +15,13 @@ import javax.persistence.Entity;
 @Setter
 public class Address extends BaseEntity<Integer> {
 
-    String street;
-    Integer zipCode;
-    String city;
-    String country;
+    private String street;
+    private Integer zipCode;
+    private String city;
+    private String country;
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name="costumer_id")
+    private Costumer costumer;
 
 }

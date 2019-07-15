@@ -26,7 +26,7 @@ public abstract class BaseEntity<T> {
     @UpdateTimestamp
     private LocalDateTime updateDateTime;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length=1000)
     private String description;
 
 }
