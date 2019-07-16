@@ -1,5 +1,7 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.dto.LineItemDTO;
+import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.entity.Product;
@@ -8,17 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Transactional
-public class LineItemService extends BaseService<LineItem,Integer> {
+public class LineItemService extends BaseService<LineItem, Integer> {
 
     @Autowired
     private LineItemRepository lineItemRepository;
 
     public LineItem create(Product product, Integer quantity, Invoice invoice) {
-        if(product == null){
+        if (product == null) {
             throw new IllegalArgumentException("Cannot create LineItem, Product is missing");
         }
         if (quantity == null || quantity <= 0) {
@@ -54,4 +57,30 @@ public class LineItemService extends BaseService<LineItem,Integer> {
 
         return lineItemRepository.findAllByProductAndQuantity(product, quantity);
     }
+
+
+    public List<LineItemDTO> findAllByInvoiceId(Integer invoiceId) {
+        if (invoiceId == null) {
+            throw new IllegalArgumentException("Invoice ID cannot be null .-");
+        }
+
+        List<LineItemDTO> lineItemDTOList = new ArrayList<>();
+        lineItemRepository.findAllByInvoiceId(invoiceId)
+                .stream()
+                .forEach((e) -> {
+                    ProductDTO product=new ProductDTO();
+                    product.setFileName(e.getProduct().getFileUpload().getFileName());
+                    product.setName(e.getProduct().getName());
+                    product.setUnitPrice(e.getProduct().getUnitPrice());
+
+                    LineItemDTO lineItemDTO=new LineItemDTO();
+                    lineItemDTO.setLineItemTotal(e.getLineItemTotal());
+                    lineItemDTO.setProduct(product);
+                    lineItemDTO.setQuantity(e.getQuantity());
+
+lineItemDTOList.add(lineItemDTO);
+                });
+        return lineItemDTOList;
+    }
+
 }
