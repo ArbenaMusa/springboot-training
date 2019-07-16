@@ -2,8 +2,11 @@ package com.ucx.training.shop.service;
 
 
 import com.ucx.training.shop.entity.FileUpload;
+import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.repository.FileUploadRepository;
+import com.ucx.training.shop.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,38 +19,51 @@ import java.nio.file.Paths;
 @Service
 public class FileUploadService extends BaseService<FileUpload, Integer>{
 
-    private String upload_Dir = "/Users/Andi/IdeaProjects/springboot-training/src/main/resources/uploaded-files/";
-
-    @Autowired
+    @Value("${file.upload}")
+    private String uploadDirName;
     private FileUploadRepository fileRepository;
+    private ProductService productService;
 
-
-    private String getFileExtension(String fileName){
-        int index = fileName.lastIndexOf(".");
-        if(index < 0){
-            return null;
-        }
-        return fileName.substring(index+1);
+    public FileUploadService(FileUploadRepository fileRepository, ProductService productService) {
+        this.fileRepository = fileRepository;
+        this.productService = productService;
     }
 
     public FileUpload uploadFile(MultipartFile file) throws IOException {
         if (file == null) {
             throw new IllegalArgumentException("File cannot be null");
         }
+        String directoryPathAsString = System.getProperty("user.dir") + uploadDirName;
+        Path directoryPath = Paths.get(directoryPathAsString);
+        if (!Files.exists(directoryPath)){
+            Files.createDirectory(directoryPath);
+        }
+        String filePathAsString = directoryPathAsString + file.getOriginalFilename();
+        Path filePath = Paths.get(filePathAsString);
+        if (Files.exists(filePath)){
+            throw new RuntimeException("File already exists!");
+        }
+
         byte [] bytes = file.getBytes();
-        String fileName = file.getOriginalFilename();
-        Path path = Paths.get(upload_Dir + fileName);
-        Files.write(path,bytes);
+        Files.write(filePath, bytes);
 
-        String extension = getFileExtension(fileName);
-
-
-        return new FileUpload(upload_Dir,fileName,extension);
-
+        return FileUpload.builder()
+                .fileName(file.getOriginalFilename())
+                .filePath(filePathAsString)
+                .fileExtension(FileUploadUtil.getFileExtension(file.getOriginalFilename()))
+                .build();
     }
 
-    public FileUpload save(FileUpload uploadedFile){
-        return save(uploadedFile);
+    public FileUpload save(FileUpload uploadedFile, Integer productId){
+        if (productId == null) {
+            throw new IllegalArgumentException("Product id must exist");
+        }
+        Product product = productService.findById(productId);
+        if (product == null) {
+            throw new RuntimeException("Product could not be found" + productId);
+        }
+        uploadedFile.setProduct(product);
+        return super.save(uploadedFile);
     }
 
 

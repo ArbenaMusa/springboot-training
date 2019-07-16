@@ -3,14 +3,17 @@ package com.ucx.training.shop.controller;
 import com.ucx.training.shop.entity.FileUpload;
 import com.ucx.training.shop.service.FileUploadService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 
 @RestController
-@RequestMapping("/upload")
+@RequestMapping("upload")
 @Log4j2
 public class FileUploadController {
 
@@ -21,14 +24,16 @@ public class FileUploadController {
     }
 
     @PostMapping
-    @ResponseBody
-    public void uploadFile(@RequestParam("files") MultipartFile file) {
+    public FileUpload uploadFile(@RequestParam("files") MultipartFile file, @RequestParam("productId") Integer productId) {
+        FileUpload uploadedFile = null;
         try {
-            FileUpload uploadedFile = fileUploadService.uploadFile(file);
-            fileUploadService.save(uploadedFile);
+            uploadedFile = fileUploadService.uploadFile(file);
+            fileUploadService.save(uploadedFile, productId);
         } catch (IOException ex) {
             log.info(ex.getMessage());
         }
+        if (uploadedFile == null) throw new RuntimeException("File upload failed");
+        return uploadedFile;
     }
 }
 
