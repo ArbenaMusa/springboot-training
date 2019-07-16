@@ -80,8 +80,8 @@ public class PurchaseService {
             throw new RuntimeException("LineItem does not exist");
         }
         foundLineItem.setRecordStatus(RecordStatus.INACTIVE);
-        foundLineItem.setInvoice(null);
-        lineItemService.update(foundLineItem, lineItemId);
+        //foundLineItem.setInvoice(null);
+        //lineItemService.update(foundLineItem, lineItemId);
         return foundLineItem;
     }
 
@@ -95,7 +95,7 @@ public class PurchaseService {
             });
         }
         foundInvoice.setRecordStatus(RecordStatus.INACTIVE);
-        foundInvoice.setCostumer(null);
+        //foundInvoice.setCostumer(null);
         //update(foundInvoice, invoiceId);
         return foundInvoice;
     }

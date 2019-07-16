@@ -4,7 +4,6 @@ import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.repository.InvoiceRepository;
-import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

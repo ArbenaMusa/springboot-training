@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Log4j2
 @RestController
-@RequestMapping("purchase")
+@RequestMapping("purchases")
 public class PurchaseController {
 
     private PurchaseService purchaseService;
@@ -23,7 +23,7 @@ public class PurchaseController {
         this.purchaseService = purchaseService;
     }
 
-    @PostMapping("addtocart")
+    @PostMapping("lineitems")
     public Map<String, Integer> addToCart(@RequestBody CartDTO cartDTO) {
         Map<String, Integer> resultMap = new HashMap<>();
         try {
@@ -50,7 +50,7 @@ public class PurchaseController {
         return invoiceDTO;
     }
 
-    @PutMapping("{id}")
+    @DeleteMapping("lineitems/{id}")
     public LineItem cancelLineItem(@PathVariable Integer id) {
         LineItem lineItem = null;
         try {
@@ -61,7 +61,7 @@ public class PurchaseController {
         return lineItem;
     }
 
-    @PutMapping("/cancel/{id}")
+    @DeleteMapping("{id}")
     public Invoice cancelPurchase(@PathVariable Integer id) {
         Invoice invoice = null;
         try {
