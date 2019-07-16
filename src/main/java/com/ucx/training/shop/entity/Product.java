@@ -18,6 +18,6 @@ public class Product extends BaseEntity<Integer> {
     private String name;
     private BigDecimal unitPrice;
     private Integer inStock;
-    @OneToOne
+    @OneToOne(mappedBy = "product")
     private FileUpload fileUpload;
 }
