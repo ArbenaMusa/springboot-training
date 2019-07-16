@@ -1,5 +1,6 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
@@ -28,12 +29,12 @@ public class PurchaseService {
         this.costumerService = costumerService;
     }
 
-    public Integer addToCart(Integer productId, Integer quantity, Integer invoiceId) {
+    public Integer addToCart(Integer productId, Integer quantity, Integer invoiceId) throws NotFoundException{
         Integer newInvoiceId;
         Product foundProduct = productService.findById(productId);
-        if (foundProduct == null) throw new RuntimeException("Product could not be found!");
+        if (foundProduct == null) throw new NotFoundException("Product could not be found!");
         if (quantity == null) throw new IllegalArgumentException("No quantity provided");
-        if (foundProduct.getInStock() < quantity) throw new RuntimeException("Out of stock!");
+        if(foundProduct.getInStock() < quantity) throw new NotFoundException("Out of stock!");
 
         if (invoiceId == null) {
             Invoice invoice = new Invoice();
@@ -50,11 +51,11 @@ public class PurchaseService {
         return newInvoiceId;
     }
 
-    public Invoice buy(Integer costumerId, Integer invoiceId) {
+    public Invoice buy(Integer costumerId, Integer invoiceId) throws NotFoundException{
         Invoice foundInvoice = invoiceService.findById(invoiceId);
-        if (foundInvoice == null) throw new RuntimeException("No such Invoice found" + invoiceId);
+        if (foundInvoice == null) throw new NotFoundException("No such Invoice found" + invoiceId);
         Costumer foundCostumer = costumerService.findById(costumerId);
-        if (foundCostumer == null) throw new RuntimeException("No such Costumer found" + costumerId);
+        if (foundCostumer == null) throw new NotFoundException("No such Costumer found" + costumerId);
         List<LineItem> lineItemList = lineItemService.findAllByInvoice(foundInvoice);
         Invoice generatedInvoice = invoiceService.update(lineItemList, foundCostumer, foundInvoice);
         Invoice printedInvoice = invoiceService.print(generatedInvoice.getId());

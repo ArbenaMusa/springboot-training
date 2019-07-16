@@ -9,15 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@RestController("/files")
+@RestController("files")
 public class FileStorageController {
-
-    @Autowired
-    private FileStorageService storageService;
-
-    @PostMapping
-    public void uploadFile(@RequestParam MultipartFile file) throws IOException {
-        storageService.uploadFile(file);
-    }
 
 }

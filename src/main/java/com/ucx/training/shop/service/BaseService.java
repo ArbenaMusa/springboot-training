@@ -1,5 +1,6 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.entity.BaseEntity;
 import com.ucx.training.shop.repository.BaseRepository;
 import com.ucx.training.shop.type.RecordStatus;
@@ -32,26 +33,26 @@ public class BaseService<T extends BaseEntity<U>,U> {
         return baseRepository.findAll();
     }
 
-    public T update(T t, U u) {
+    public T update(T t, U u) throws NotFoundException{
         if (t == null) {
             throw new IllegalArgumentException(String.format("One of the arguments is invalid: %s", t));
         }
         T foundT = findById(u);
         if (foundT == null) {
-            throw new RuntimeException("Entity not found");
+            throw new NotFoundException("Entity not found");
         }
 
         BeanUtils.copyProperties(t,foundT,getNullPropertyNames(t));
         return foundT;
     }
 
-    public void remove(U u) {
+    public void remove(U u) throws NotFoundException{
         if (u == null) {
             throw new IllegalArgumentException("Invalid argument" + u);
         }
         T t = findById(u);
         if (t == null) {
-            throw new RuntimeException("Entity not found" + t);
+            throw new NotFoundException("Entity not found" + t);
         }
 
         t.setRecordStatus(RecordStatus.INACTIVE);

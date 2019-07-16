@@ -9,44 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/costumers")
-public class CostumerController {
-    @Autowired
-    private CostumerService costumerService;
+@RequestMapping("costumers")
+public class CostumerController extends BaseController<Costumer, Integer> {
 
-    @PostMapping
-    public Costumer create(@RequestBody Costumer costumer){
-        return costumerService.save(costumer);
-    }
-
-    @GetMapping
-    public List<Costumer> findAll(){
-        return costumerService.findAll();
-    }
-
-    @GetMapping("{id}")
-    public Costumer findById(@PathVariable Integer id) {
-        return costumerService.findById(id);
-    }
-
-    @PutMapping("{id}")
-    public Costumer update(@RequestBody Costumer costumer, @PathVariable Integer id){
-        return costumerService.update(costumer, id);
-    }
-
-    @DeleteMapping("{id}")
-    public void remove(@PathVariable Integer id){
-        costumerService.remove(id);
-    }
-
-    @GetMapping("/paged")
-    public List<Costumer> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
-        Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
-        return costumerPage.getContent();
-    }
-
-    @GetMapping("/sorted")
-    public List<Costumer> findAllSorted(@RequestParam(defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String ... properties) {
-        return costumerService.findAllSorted(direction, properties);
-    }
 }
