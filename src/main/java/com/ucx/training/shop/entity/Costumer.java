@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Getter
@@ -14,4 +16,9 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 public class Costumer extends BaseEntity<Integer> {
     private String name;
+
+
+@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL,mappedBy="costumer")
+@Size(min = 1, message = "You must have at least 1 address")
+    private List<Address> addresses;
 }
