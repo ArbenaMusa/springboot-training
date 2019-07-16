@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 
 
 @Service
-public class FileUploadService {
+public class FileUploadService extends BaseService<FileUpload, Integer>{
 
     private String upload_Dir = "/Users/Andi/IdeaProjects/springboot-training/src/main/resources/uploaded-files/";
 
@@ -46,8 +46,8 @@ public class FileUploadService {
 
     }
 
-    public void save(FileUpload uploadedFile){
-        fileRepository.save(uploadedFile);
+    public FileUpload save(FileUpload uploadedFile){
+        return save(uploadedFile);
     }
 
 

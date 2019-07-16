@@ -13,10 +13,10 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class FileUpload {
+public class FileUpload extends BaseEntity<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Integer id;
+    private Integer id;
 
     private String filePath;
     private String fileName;
