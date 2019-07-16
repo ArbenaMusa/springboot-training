@@ -15,9 +15,7 @@ public class FileUpload extends BaseEntity<Integer> {
     private String filePath;
     private String fileName;
     private String fileExtension;
-
     @OneToOne
-    @JoinColumn(name = "product_id")
     private Product product;
 
     @Builder

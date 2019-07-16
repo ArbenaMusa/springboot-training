@@ -27,6 +27,5 @@ public class Costumer extends BaseEntity<Integer> {
 
     private String email;
     private String phoneNumber1;
-    @Null
     private String phoneNumber2;
 }
