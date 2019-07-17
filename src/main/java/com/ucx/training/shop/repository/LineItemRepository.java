@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.entity.Product;
+import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +15,6 @@ public interface LineItemRepository extends BaseRepository<LineItem,Integer> {
     List<LineItem> findAllByProduct(Product product);
     List<LineItem> findAllByProductAndQuantity(Product product, Integer quantity);
     List<LineItem> findAllByInvoice(Invoice invoice);
-
-
-    List<LineItem> findAllByInvoiceId(Integer invoiceId);
+    List<LineItem> findAllByInvoiceIdAndRecordStatus(Integer invoiceId, RecordStatus recordStatus);
 
 }

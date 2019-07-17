@@ -6,6 +6,7 @@ import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.repository.LineItemRepository;
+import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +66,7 @@ public class LineItemService extends BaseService<LineItem, Integer> {
         }
 
         List<LineItemDTO> lineItemDTOList = new ArrayList<>();
-        lineItemRepository.findAllByInvoiceId(invoiceId)
+        lineItemRepository.findAllByInvoiceIdAndRecordStatus(invoiceId, RecordStatus.ACTIVE)
                 .stream()
                 .forEach((e) -> {
                     ProductDTO product=new ProductDTO();
