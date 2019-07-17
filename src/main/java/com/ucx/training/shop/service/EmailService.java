@@ -2,14 +2,15 @@ package com.ucx.training.shop.service;
 
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.entity.Invoice;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
 
+@Service
 public class EmailService{
 
     JavaMailSender javaMailSender;
