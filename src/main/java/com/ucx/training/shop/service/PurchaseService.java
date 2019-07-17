@@ -21,12 +21,14 @@ public class PurchaseService {
     private InvoiceService invoiceService;
     private ProductService productService;
     private CostumerService costumerService;
+    private EmailService emailService;
 
-    public PurchaseService(LineItemService lineItemService, InvoiceService invoiceService, ProductService productService, CostumerService costumerService) {
+    public PurchaseService(LineItemService lineItemService, InvoiceService invoiceService, ProductService productService, CostumerService costumerService, EmailService emailService) {
         this.lineItemService = lineItemService;
         this.invoiceService = invoiceService;
         this.productService = productService;
         this.costumerService = costumerService;
+        this.emailService = emailService;
     }
 
     public Integer addToCart(Integer productId, Integer quantity, Integer invoiceId) throws NotFoundException {
@@ -68,6 +70,12 @@ public class PurchaseService {
         Invoice generatedInvoice = invoiceService.update(lineItemList, foundCostumer, foundInvoice);
         Invoice printedInvoice = invoiceService.print(generatedInvoice.getId());
         reduceStock(lineItemList);
+
+        try {
+            emailService.sendMail(foundCostumer, generatedInvoice);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
         return printedInvoice;
     }
 
@@ -79,7 +87,7 @@ public class PurchaseService {
         });
     }
 
-    public LineItem cancelLineItem(Integer lineItemId) throws NotFoundException{
+    public LineItem cancelLineItem(Integer lineItemId) throws NotFoundException {
         if (lineItemId == null) {
             throw new IllegalArgumentException("Invalid argument");
         }
@@ -91,7 +99,7 @@ public class PurchaseService {
         return foundLineItem;
     }
 
-    public Invoice cancelPurchase(Integer invoiceId) throws NotFoundException{
+    public Invoice cancelPurchase(Integer invoiceId) throws NotFoundException {
         if (invoiceId == null) throw new IllegalArgumentException("Invalid argument" + invoiceId);
         Invoice foundInvoice = invoiceService.findById(invoiceId);
         if (foundInvoice == null) throw new NotFoundException("Invoice does not exist" + invoiceId);
