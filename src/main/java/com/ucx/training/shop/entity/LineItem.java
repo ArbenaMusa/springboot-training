@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//@Where(clause = "recordStatus='INACTIVE'")
 public class LineItem extends BaseEntity<Integer> {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,5 +29,8 @@ public class LineItem extends BaseEntity<Integer> {
     private Integer quantity;
     private BigDecimal lineItemTotal; //Product quantity * Product unitPrice
 
-
+    @Override
+    public String toString() {
+        return String.format("%d, %s, %s, %d", getId(), getRecordStatus(), getProduct(), getQuantity());
+    }
 }

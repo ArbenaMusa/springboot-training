@@ -4,6 +4,7 @@ import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.repository.LineItemRepository;
+import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,13 @@ public class LineItemService extends BaseService<LineItem,Integer> {
         }
 
         return lineItemRepository.findAllByProduct(product);
+    }
+
+    public List<LineItem> findAllByInvoiceAndRecordStatusActive(Invoice invoice) {
+        if (invoice == null) {
+            throw new IllegalArgumentException("ERROR KACOLE");
+        }
+        return lineItemRepository.findAllByInvoiceAndRecordStatus(invoice, RecordStatus.ACTIVE);
     }
 
     public List<LineItem> findAllByProductAndQuantity(Product product, Integer quantity) {

@@ -2,9 +2,12 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.CartDTO;
 import com.ucx.training.shop.dto.InvoiceDTO;
+import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.dto.PurchaseDTO;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
+import com.ucx.training.shop.exception.NotFoundException;
+import com.ucx.training.shop.service.LineItemService;
 import com.ucx.training.shop.service.PurchaseService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +21,11 @@ import java.util.Map;
 public class PurchaseController {
 
     private PurchaseService purchaseService;
+    private LineItemService lineItemService;
 
-    public PurchaseController(PurchaseService purchaseService) {
+    public PurchaseController(PurchaseService purchaseService, LineItemService lineItemService) {
         this.purchaseService = purchaseService;
+        this.lineItemService = lineItemService;
     }
 
     @PostMapping("lineitems")
@@ -72,4 +77,12 @@ public class PurchaseController {
 
         return invoice;
     }
+
+    @PatchMapping("lineitems/quantity/{lineItemId}")
+    public LineItemDTO changeQuantity(@RequestBody LineItem lineItem, @PathVariable Integer lineItemId) throws NotFoundException {
+        LineItem updatedLineItem = purchaseService.changeQuantity(lineItemId);
+        lineItemService.update(updatedLineItem, lineItemId);
+        return new LineItemDTO(updatedLineItem.getProduct().getName(), updatedLineItem.getQuantity(), updatedLineItem.getInvoice().getId());
+    }
+
 }
