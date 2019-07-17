@@ -1,12 +1,11 @@
 package com.ucx.training.shop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ucx.training.shop.dto.ProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -15,7 +14,6 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@Where(clause = "recordStatus='INACTIVE'")
 public class LineItem extends BaseEntity<Integer> {
 
     @ManyToOne(fetch = FetchType.LAZY)

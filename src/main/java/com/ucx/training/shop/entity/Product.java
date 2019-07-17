@@ -21,6 +21,6 @@ public class Product extends BaseEntity<Integer> {
     private Integer inStock;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @OneToOne
+    @OneToOne(mappedBy = "product")
     private FileUpload fileUpload;
 }
