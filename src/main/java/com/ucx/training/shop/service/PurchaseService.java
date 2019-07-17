@@ -73,7 +73,7 @@ public class PurchaseService {
         reduceStock(lineItemList);
 
         try {
-            emailService.sendMail(foundCostumer, printedInvoice);
+            emailService.sendMail(foundCostumer, generatedInvoice);
         }
         catch (Exception e)
         {
