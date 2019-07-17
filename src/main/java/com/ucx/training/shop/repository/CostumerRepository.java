@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface CostumerRepository extends BaseRepository<Costumer,Integer> {
     List<Costumer> findAllByName(String name);
+
 }

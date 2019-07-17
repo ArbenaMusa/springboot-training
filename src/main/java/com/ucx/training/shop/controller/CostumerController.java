@@ -1,12 +1,16 @@
 package com.ucx.training.shop.controller;
 
+import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
+import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.exception.NotFoundException;
+import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CostumerService;
 import com.ucx.training.shop.util.CustomerUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -64,5 +68,18 @@ public class CostumerController {
         List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
         return customerDTOList;
     }
+
+    @PatchMapping("/addresses/{addressId}")
+    public AddressDTO updateAddress(@RequestBody Address address,@PathVariable("addressId") Integer addressId) throws ResponseException{
+        try {
+           return costumerService.updateAddress(address, addressId);
+        }catch (NotFoundException nfe){
+            throw new ResponseException("The address you're trying to update does not exist!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+
+
 
 }
