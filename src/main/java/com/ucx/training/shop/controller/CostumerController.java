@@ -1,6 +1,8 @@
 package com.ucx.training.shop.controller;
 
+import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
+import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
@@ -66,5 +68,15 @@ public class CostumerController {
         List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
         return customerDTOList;
     }
+
+    @PatchMapping("/addresses/{addressId}")
+    public AddressDTO updateAddress(@RequestBody Address address, @PathVariable("addressId") Integer addressId) throws ResponseException {
+        try {
+            return costumerService.updateAddress(address, addressId);
+        } catch (NotFoundException nfe) {
+            throw new ResponseException("The address you're trying to update does not exist!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 }
