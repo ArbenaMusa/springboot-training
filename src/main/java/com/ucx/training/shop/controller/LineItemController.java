@@ -22,18 +22,17 @@ public class LineItemController extends BaseController<LineItem, Integer> {
         this.lineItemService = lineItemService;
     }
 
-    LineItemUtil lineItemUtil = new LineItemUtil();
 
     @PostMapping("/lineitems")
     public LineItemDTO create1(@RequestBody LineItem lineItem) {
-        LineItemDTO lineItemDTO = lineItemUtil.getLineItem(lineItem, lineItem.getProduct());
+        LineItemDTO lineItemDTO = LineItemUtil.getLineItem(lineItem, lineItem.getProduct());
         return lineItemDTO;
     }
 
     @GetMapping("/all{id}")
     public List<LineItemDTO> findAllSorted1(@RequestParam(required = false, defaultValue = "ASC") String direction, @PathVariable Integer id, @RequestParam(defaultValue = "id") String... properties) {
         List<LineItem> lineItems = lineItemService.findAllSorted(direction, properties);
-        List<LineItemDTO> lineItemDTOList = lineItemUtil.getLineItems(lineItems);
+        List<LineItemDTO> lineItemDTOList = LineItemUtil.getLineItems(lineItems);
         return lineItemDTOList;
     }
 
@@ -41,7 +40,7 @@ public class LineItemController extends BaseController<LineItem, Integer> {
     public List<LineItemDTO> findAllPaged1(@RequestParam int pageNumber, @RequestParam int pageSize) {
         Page<LineItem> lineItemPage = lineItemService.findAllPaged(pageNumber, pageSize);
         List<LineItem> lineItem = lineItemPage.getContent();
-        List<LineItemDTO> lineItemDTOList = lineItemUtil.getLineItems(lineItem);
+        List<LineItemDTO> lineItemDTOList = LineItemUtil.getLineItems(lineItem);
         return lineItemDTOList;
     }
 

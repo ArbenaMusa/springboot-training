@@ -12,7 +12,7 @@ public class ProductUtil {
 
     }
 
-    public List<ProductDTO> getProducts(List<Product> productList) {
+    public static List<ProductDTO> getProducts(List<Product> productList) {
         ProductDTO productDTO = new ProductDTO();
         List<ProductDTO> productDTOList = new ArrayList<>();
 
@@ -28,7 +28,7 @@ public class ProductUtil {
     }
 
 
-    public ProductDTO getProduct(Product product) {
+    public static ProductDTO getProduct(Product product) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setName(product.getName());
         productDTO.setUnitPrice(product.getUnitPrice());

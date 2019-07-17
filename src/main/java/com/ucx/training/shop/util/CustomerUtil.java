@@ -13,7 +13,7 @@ public class CustomerUtil {
 
     }
 
-    public CustomerDTO getCustomer(Costumer costumer) {
+    public static CustomerDTO getCustomer(Costumer costumer) {
         CustomerDTO customerDTO = new CustomerDTO();
         AddressDTO addressDTO = new AddressDTO();
         List<Address> addressList = costumer.getAddresses();
@@ -35,7 +35,7 @@ public class CustomerUtil {
         return customerDTO;
     }
 
-    public List<CustomerDTO> getCustomers(List<Costumer> costumerList) {
+    public static List<CustomerDTO> getCustomers(List<Costumer> costumerList) {
         List<CustomerDTO> customerDTOList = new ArrayList<>();
         List<AddressDTO> addressDTOList = new ArrayList<>();
         costumerList.forEach(e -> {

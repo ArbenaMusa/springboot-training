@@ -28,7 +28,6 @@ public class ProductController extends BaseController<Product, Integer> {
         this.productService = productService;
     }
 
-    ProductUtil productUtil = new ProductUtil();
 
     @GetMapping("image/{fileName}")
     public ResponseEntity<InputStreamResource> getImage(@PathVariable String fileName) throws IOException {
@@ -42,7 +41,7 @@ public class ProductController extends BaseController<Product, Integer> {
     @GetMapping("/all")
     public List<ProductDTO> findAllSorted1(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) {
         List<Product> products = productService.findAllSorted(direction, properties);
-        List<ProductDTO> productDTOList = productUtil.getProducts(products);
+        List<ProductDTO> productDTOList = ProductUtil.getProducts(products);
         return productDTOList;
     }
 
@@ -50,14 +49,14 @@ public class ProductController extends BaseController<Product, Integer> {
     public List<ProductDTO> findAllPaged1(@RequestParam int pageNumber, @RequestParam int pageSize) {
         Page<Product> productPage = productService.findAllPaged(pageNumber, pageSize);
         List<Product> products = productPage.getContent();
-        List<ProductDTO> productDTOList = productUtil.getProducts(products);
+        List<ProductDTO> productDTOList = ProductUtil.getProducts(products);
         return productDTOList;
     }
 
     @GetMapping("product/{id}")
     public ProductDTO findByID(@PathVariable Integer id) {
         Product product = productService.findById(id);
-        return productUtil.getProduct(product);
+        return ProductUtil.getProduct(product);
     }
 
 

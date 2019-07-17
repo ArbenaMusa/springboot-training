@@ -14,7 +14,7 @@ public class LineItemUtil {
 
     }
 
-    public LineItemDTO getLineItem(LineItem lineItem, Product product) {
+    public static LineItemDTO getLineItem(LineItem lineItem, Product product) {
         LineItemDTO lineItemDTO = new LineItemDTO();
         ProductDTO productDTO = new ProductDTO();
         productDTO.setFilePath(product.getFileUpload().getFilePath());
@@ -28,7 +28,7 @@ public class LineItemUtil {
         return lineItemDTO;
     }
 
-    public List<LineItemDTO> getLineItems(List<LineItem> lineItemList) {
+    public static List<LineItemDTO> getLineItems(List<LineItem> lineItemList) {
         LineItemDTO lineItemDTO = new LineItemDTO();
         List<LineItemDTO> lineItemDTOList = new ArrayList<>();
         lineItemList.forEach(e -> {

@@ -26,12 +26,11 @@ public class CostumerController extends BaseController<Costumer, Integer> {
         this.costumerService = costumerService;
     }
 
-    CustomerUtil customerUtil = new CustomerUtil();
 
     @PostMapping("customer")
     public CustomerDTO create1(@RequestBody Costumer costumer) {
         Costumer customer = costumerService.save(costumer);
-        return customerUtil.getCustomer(customer);
+        return CustomerUtil.getCustomer(customer);
     }
 
     @PutMapping("customer/{id}")
@@ -39,7 +38,7 @@ public class CostumerController extends BaseController<Costumer, Integer> {
         CustomerDTO customerDTO = null;
         try {
             Costumer updatedCustomer = costumerService.update(costumer, id);
-            customerDTO = customerUtil.getCustomer(updatedCustomer);
+            customerDTO = CustomerUtil.getCustomer(updatedCustomer);
         } catch (NotFoundException e) {
             log.info(e.getMessage());
         }
@@ -58,7 +57,7 @@ public class CostumerController extends BaseController<Costumer, Integer> {
     @GetMapping("customers")
     public List<CustomerDTO> findAllSorted1(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) {
         List<Costumer> costumers = costumerService.findAllSorted(direction, properties);
-        List<CustomerDTO> customerDTOList = customerUtil.getCustomers(costumers);
+        List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
         return customerDTOList;
     }
 
@@ -66,7 +65,7 @@ public class CostumerController extends BaseController<Costumer, Integer> {
     public List<CustomerDTO> findAllPaged1(@RequestParam int pageNumber, @RequestParam int pageSize) {
         Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
         List<Costumer> costumers = costumerPage.getContent();
-        List<CustomerDTO> customerDTOList = customerUtil.getCustomers(costumers);
+        List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
         return customerDTOList;
     }
 
