@@ -40,8 +40,7 @@ public class CustomerUtil {
         List<AddressDTO> addressDTOList = new ArrayList<>();
         costumerList.forEach(e -> {
             CustomerDTO customerDTO = new CustomerDTO();
-            List<Address> addresses = new ArrayList<>();
-            addresses = e.getAddresses();
+            List<Address> addresses = e.getAddresses();
             addresses.forEach(f -> {
                 AddressDTO addressDTO = new AddressDTO();
                 addressDTO.setCountry(f.getCountry());

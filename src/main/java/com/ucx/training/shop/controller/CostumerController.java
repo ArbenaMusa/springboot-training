@@ -18,7 +18,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("costumers")
-public class CostumerController extends BaseController<Costumer, Integer> {
+public class CostumerController {
 
     private CostumerService costumerService;
 
@@ -28,13 +28,13 @@ public class CostumerController extends BaseController<Costumer, Integer> {
 
 
     @PostMapping("customer")
-    public CustomerDTO create1(@RequestBody Costumer costumer) {
+    public CustomerDTO create(@RequestBody Costumer costumer) {
         Costumer customer = costumerService.save(costumer);
         return CustomerUtil.getCustomer(customer);
     }
 
     @PutMapping("customer/{id}")
-    public CustomerDTO update1(@RequestBody Costumer costumer, @PathVariable Integer id) {
+    public CustomerDTO update(@RequestBody Costumer costumer, @PathVariable Integer id) {
         CustomerDTO customerDTO = null;
         try {
             Costumer updatedCustomer = costumerService.update(costumer, id);
@@ -46,7 +46,7 @@ public class CostumerController extends BaseController<Costumer, Integer> {
     }
 
     @DeleteMapping("customer/{id}")
-    public void remove1(@PathVariable Integer id) {
+    public void remove(@PathVariable Integer id) {
         try {
             costumerService.remove(id);
         } catch (NotFoundException e) {
@@ -55,14 +55,14 @@ public class CostumerController extends BaseController<Costumer, Integer> {
     }
 
     @GetMapping("customers")
-    public List<CustomerDTO> findAllSorted1(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) {
+    public List<CustomerDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) {
         List<Costumer> costumers = costumerService.findAllSorted(direction, properties);
         List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
         return customerDTOList;
     }
 
     @GetMapping("/pages")
-    public List<CustomerDTO> findAllPaged1(@RequestParam int pageNumber, @RequestParam int pageSize) {
+    public List<CustomerDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
         Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
         List<Costumer> costumers = costumerPage.getContent();
         List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);

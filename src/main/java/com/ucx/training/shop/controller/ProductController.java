@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("products")
-public class ProductController extends BaseController<Product, Integer> {
+public class ProductController {
 
     @Value("${file.upload}")
     private String uploadDirectoryName;
@@ -28,6 +28,11 @@ public class ProductController extends BaseController<Product, Integer> {
         this.productService = productService;
     }
 
+    @PostMapping
+    public ProductDTO create(@RequestBody Product product){
+        Product createdProduct = productService.save(product);
+        return ProductUtil.getProduct(createdProduct);
+    }
 
     @GetMapping("image/{fileName}")
     public ResponseEntity<InputStreamResource> getImage(@PathVariable String fileName) throws IOException {
@@ -39,14 +44,14 @@ public class ProductController extends BaseController<Product, Integer> {
     }
 
     @GetMapping("/all")
-    public List<ProductDTO> findAllSorted1(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) {
+    public List<ProductDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) {
         List<Product> products = productService.findAllSorted(direction, properties);
         List<ProductDTO> productDTOList = ProductUtil.getProducts(products);
         return productDTOList;
     }
 
     @GetMapping("/pages")
-    public List<ProductDTO> findAllPaged1(@RequestParam int pageNumber, @RequestParam int pageSize) {
+    public List<ProductDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
         Page<Product> productPage = productService.findAllPaged(pageNumber, pageSize);
         List<Product> products = productPage.getContent();
         List<ProductDTO> productDTOList = ProductUtil.getProducts(products);

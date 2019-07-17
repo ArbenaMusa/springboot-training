@@ -17,13 +17,11 @@ public class LineItemUtil {
     public static LineItemDTO getLineItem(LineItem lineItem, Product product) {
         LineItemDTO lineItemDTO = new LineItemDTO();
         ProductDTO productDTO = new ProductDTO();
-        productDTO.setFilePath(product.getFileUpload().getFilePath());
+        productDTO.setFileName(product.getFileUpload().getFilePath());
         productDTO.setUnitPrice(product.getUnitPrice());
         productDTO.setName(product.getName());
-
-        lineItemDTO.setTotal(lineItem.getLineItemTotal());
         lineItemDTO.setQuantity(lineItem.getQuantity());
-        lineItemDTO.setProductDTO(productDTO);
+        lineItemDTO.setProduct(product.getName());
 
         return lineItemDTO;
     }
@@ -35,10 +33,9 @@ public class LineItemUtil {
             Product product = e.getProduct();
             ProductDTO productDTO = new ProductDTO();
             productDTO.setName(product.getName());
-            productDTO.setFilePath(product.getFileUpload().getFilePath());
+            productDTO.setFileName(product.getFileUpload().getFilePath());
             productDTO.setUnitPrice(product.getUnitPrice());
-            lineItemDTO.setProductDTO(productDTO);
-            lineItemDTO.setTotal(e.getLineItemTotal());
+            lineItemDTO.setProduct(product.getName());
             lineItemDTO.setQuantity(e.getQuantity());
             lineItemDTOList.add(lineItemDTO);
         });
