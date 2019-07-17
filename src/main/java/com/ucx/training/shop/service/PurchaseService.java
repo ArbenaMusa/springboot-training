@@ -62,7 +62,6 @@ public class PurchaseService {
         if (foundCostumer == null) throw new NotFoundException("No such Costumer found" + costumerId);
         if (foundCostumer.getRecordStatus() == RecordStatus.INACTIVE) throw new IllegalArgumentException("Costumer is deleted: " + foundCostumer);
         List<LineItem> lineItemList = lineItemService.findAllByInvoiceAndRecordStatusActive(foundInvoice);
-        //lineItemService.findAllByInvoice(foundInvoice).stream().filter(lineItem -> lineItem.getRecordStatus() == RecordStatus.ACTIVE).collect(Collectors.toList());
         Invoice generatedInvoice = invoiceService.update(lineItemList, foundCostumer, foundInvoice);
         Invoice printedInvoice = invoiceService.print(generatedInvoice.getId());
         reduceStock(lineItemList);
@@ -86,8 +85,6 @@ public class PurchaseService {
             throw new RuntimeException("LineItem does not exist");
         }
         foundLineItem.setRecordStatus(RecordStatus.INACTIVE);
-        //foundLineItem.setInvoice(null);
-        //lineItemService.update(foundLineItem, lineItemId);
         return foundLineItem;
     }
 
@@ -101,12 +98,10 @@ public class PurchaseService {
             });
         }
         foundInvoice.setRecordStatus(RecordStatus.INACTIVE);
-        //foundInvoice.setCostumer(null);
-        //update(foundInvoice, invoiceId);
         return foundInvoice;
     }
 
-    public LineItem changeQuantity(Integer lineItemId) throws NotFoundException{
+    public LineItem changeQuantity(LineItem lineItem, Integer lineItemId) throws NotFoundException{
         if (lineItemId == null) {
             throw new IllegalArgumentException("Invalid argument: " + lineItemId);
         }
@@ -114,19 +109,10 @@ public class PurchaseService {
         if (foundLineItem == null) {
             throw new RuntimeException("Line item does not exist");
         }
-        Integer quantity = foundLineItem.getQuantity();
-        if (quantity.equals(Integer.valueOf(0))){
+        if (lineItem.getQuantity().equals(0)){
             return cancelLineItem(lineItemId);
         }
-//        if (quantity.compareTo(lineItem.getProduct().getInStock()) < 0) {
-//            throw new RuntimeException("Out of stock!");
-//        }
-        //Product foundProduct = productService.findById(productId);
-        /*if (foundLineItem == null) {
-            throw new NotFoundException("Product does not exist: " + foundLineItem);
-        }*/
-        //foundLineItem.setQuantity(foundLineItem.getQuantity() - quantityDifference);
-        //return lineItemService.update(foundLineItem, lineItemId);
+        foundLineItem.setQuantity(lineItem.getQuantity());
         return foundLineItem;
     }
 }
