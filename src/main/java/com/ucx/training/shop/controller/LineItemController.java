@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("lineitems")
-public class LineItemController extends BaseController<LineItem, Integer> {
+public class LineItemController {
 
     private LineItemService lineItemService;
 
@@ -20,31 +20,25 @@ public class LineItemController extends BaseController<LineItem, Integer> {
     }
 
 
-    @PostMapping("/lineitems")
-    public LineItemDTO create1(@RequestBody LineItem lineItem) {
+    @PostMapping
+    public LineItemDTO create(@RequestBody LineItem lineItem) {
         LineItemDTO lineItemDTO = LineItemUtil.getLineItem(lineItem, lineItem.getProduct());
         return lineItemDTO;
     }
 
-    @GetMapping("/all{id}")
-    public List<LineItemDTO> findAllSorted1(@RequestParam(required = false, defaultValue = "ASC") String direction, @PathVariable Integer id, @RequestParam(defaultValue = "id") String... properties) {
+    @GetMapping
+    public List<LineItemDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @PathVariable Integer id, @RequestParam(defaultValue = "id") String... properties) {
         List<LineItem> lineItems = lineItemService.findAllSorted(direction, properties);
         List<LineItemDTO> lineItemDTOList = LineItemUtil.getLineItems(lineItems);
         return lineItemDTOList;
     }
 
-    @GetMapping("/pages")
-    public List<LineItemDTO> findAllPaged1(@RequestParam int pageNumber, @RequestParam int pageSize) {
+    @GetMapping("/paged")
+    public List<LineItemDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
         Page<LineItem> lineItemPage = lineItemService.findAllPaged(pageNumber, pageSize);
         List<LineItem> lineItem = lineItemPage.getContent();
         List<LineItemDTO> lineItemDTOList = LineItemUtil.getLineItems(lineItem);
         return lineItemDTOList;
-    }
-
-
-    @GetMapping("invoice/{invoiceId}")
-    public List<LineItemDTO> getLineItemsByInvoiceId(@PathVariable Integer invoiceId) {
-        return lineItemService.findAllByInvoiceId(invoiceId);
     }
 
 }

@@ -51,14 +51,14 @@ public class ProductController {
                 .body(new InputStreamResource(new FileInputStream(filePathAsString)));
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public List<ProductDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) {
         List<Product> products = productService.findAllSorted(direction, properties);
         List<ProductDTO> productDTOList = ProductUtil.getProducts(products);
         return productDTOList;
     }
 
-    @GetMapping("/pages")
+    @GetMapping("/paged")
     public List<ProductDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
         Page<Product> productPage = productService.findAllPaged(pageNumber, pageSize);
         List<Product> products = productPage.getContent();
@@ -66,7 +66,7 @@ public class ProductController {
         return productDTOList;
     }
 
-    @GetMapping("product/{id}")
+    @GetMapping("{id}")
     public ProductDTO findByID(@PathVariable Integer id) {
         Product product = productService.findById(id);
         return ProductUtil.getProduct(product);

@@ -23,13 +23,13 @@ public class CostumerController {
     }
 
 
-    @PostMapping("customer")
+    @PostMapping
     public CustomerDTO create(@RequestBody Costumer costumer) {
         Costumer customer = costumerService.save(costumer);
         return CustomerUtil.getCustomer(customer);
     }
 
-    @PutMapping("customer/{id}")
+    @PutMapping("{id}")
     public CustomerDTO update(@RequestBody Costumer costumer, @PathVariable Integer id) {
         CustomerDTO customerDTO = null;
         try {
@@ -41,7 +41,7 @@ public class CostumerController {
         return customerDTO;
     }
 
-    @DeleteMapping("customer/{id}")
+    @DeleteMapping("{id}")
     public void remove(@PathVariable Integer id) {
         try {
             costumerService.remove(id);
@@ -50,14 +50,14 @@ public class CostumerController {
         }
     }
 
-    @GetMapping("customers")
+    @GetMapping
     public List<CustomerDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) {
         List<Costumer> costumers = costumerService.findAllSorted(direction, properties);
         List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
         return customerDTOList;
     }
 
-    @GetMapping("/pages")
+    @GetMapping("/paged")
     public List<CustomerDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
         Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
         List<Costumer> costumers = costumerPage.getContent();

@@ -78,11 +78,9 @@ public class PurchaseController {
         return invoice;
     }
 
-    @PatchMapping("lineitems/quantity/{lineItemId}")
+    @PatchMapping("lineitems/{lineItemId}")
     public LineItemDTO changeQuantity(@RequestBody LineItem lineItem, @PathVariable Integer lineItemId) throws NotFoundException {
         LineItem updatedLineItem = purchaseService.changeQuantity(lineItem, lineItemId);
-//        lineItemService.update(updatedLineItem, lineItemId);
         return new LineItemDTO(updatedLineItem.getProduct().getName(), updatedLineItem.getQuantity(), updatedLineItem.getInvoice().getId());
     }
-
 }
