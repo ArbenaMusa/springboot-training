@@ -37,6 +37,9 @@ public class InvoiceService extends BaseService<Invoice, Integer> {
     }
 
     public Invoice print(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Invalid argument: " + id);
+        }
         return findById(id);
     }
 

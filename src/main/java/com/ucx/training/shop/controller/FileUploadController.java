@@ -1,6 +1,7 @@
 package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.entity.FileUpload;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.service.FileUploadService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,11 @@ public class FileUploadController {
             uploadedFile = fileUploadService.uploadFile(file);
             fileUploadService.save(uploadedFile, productId);
         } catch (IOException ex) {
-            log.info(ex.getMessage());
+            log.error(ex.getMessage());
+        } catch(NotFoundException nfe){
+                log.error(nfe.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
         if (uploadedFile == null) throw new RuntimeException("File upload failed");
         return uploadedFile;

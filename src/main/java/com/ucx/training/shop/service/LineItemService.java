@@ -40,12 +40,15 @@ public class LineItemService extends BaseService<LineItem, Integer> {
     }
 
     public List<LineItem> findAllByInvoice(Invoice invoice) {
+        if (invoice == null) {
+            throw new IllegalArgumentException("Null argument provided!");
+        }
         return lineItemRepository.findAllByInvoice(invoice);
     }
 
     public List<LineItem> findAllByProduct(Product product) {
         if (product == null) {
-            throw new IllegalArgumentException("Invalid argument: " + product);
+            throw new IllegalArgumentException("Null argument provided!");
         }
 
         return lineItemRepository.findAllByProduct(product);
@@ -53,7 +56,7 @@ public class LineItemService extends BaseService<LineItem, Integer> {
 
     public List<LineItem> findAllByInvoiceAndRecordStatusActive(Invoice invoice) {
         if (invoice == null) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("Null argument provided!");
         }
         return lineItemRepository.findAllByInvoiceAndRecordStatus(invoice, RecordStatus.ACTIVE);
     }
@@ -65,7 +68,6 @@ public class LineItemService extends BaseService<LineItem, Integer> {
 
         return lineItemRepository.findAllByProductAndQuantity(product, quantity);
     }
-
 
     public List<LineItemDTO> findAllByInvoiceId(Integer invoiceId) {
         if (invoiceId == null) {

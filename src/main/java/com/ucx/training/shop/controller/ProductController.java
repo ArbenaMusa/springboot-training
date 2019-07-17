@@ -3,12 +3,14 @@ package com.ucx.training.shop.controller;
 import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.entity.Product;
+import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.ProductUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +31,14 @@ public class ProductController {
     }
 
     @PostMapping
-    public ProductDTO create(@RequestBody Product product){
-        Product createdProduct = productService.save(product);
+    public ProductDTO create(@RequestBody Product product) throws ResponseException{
+        Product createdProduct = null;
+        try{
+            createdProduct = productService.save(product);
+        } catch (Exception e){
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
         return ProductUtil.getProduct(createdProduct);
     }
 
@@ -63,6 +71,5 @@ public class ProductController {
         Product product = productService.findById(id);
         return ProductUtil.getProduct(product);
     }
-
 
 }

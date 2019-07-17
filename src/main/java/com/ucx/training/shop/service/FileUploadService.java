@@ -3,6 +3,7 @@ package com.ucx.training.shop.service;
 
 import com.ucx.training.shop.entity.FileUpload;
 import com.ucx.training.shop.entity.Product;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.FileUploadRepository;
 import com.ucx.training.shop.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,13 +55,13 @@ public class FileUploadService extends BaseService<FileUpload, Integer>{
                 .build();
     }
 
-    public FileUpload save(FileUpload uploadedFile, Integer productId){
+    public FileUpload save(FileUpload uploadedFile, Integer productId) throws NotFoundException{
         if (productId == null) {
             throw new IllegalArgumentException("Product id must exist");
         }
         Product product = productService.findById(productId);
         if (product == null) {
-            throw new RuntimeException("Product could not be found" + productId);
+            throw new NotFoundException("Product could not be found" + productId);
         }
         uploadedFile.setProduct(product);
         return super.save(uploadedFile);

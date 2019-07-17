@@ -16,27 +16,17 @@ public class ProductService extends BaseService<Product,Integer> {
     @Autowired
     private ProductRepository productRepository;
 
-
-
     public List<Product> findAllByName(String name) {
         if (name == null) {
-            throw new IllegalArgumentException("Invalid argument: " + name);
+            throw new IllegalArgumentException("Null argument provided!");
         }
 
         return productRepository.findAllByName(name);
     }
 
-    public List<Product> findAllByInStock(Boolean inStock) {
-        if (inStock == null) {
-            throw new IllegalArgumentException("Invalid argument: " + inStock);
-        }
-
-        return productRepository.findAllByInStock(inStock);
-    }
-
     public List<Product> findAllByUnitPrice(BigDecimal unitPrice) {
         if (unitPrice == null) {
-            throw new IllegalArgumentException("Invalid argument: " + unitPrice);
+            throw new IllegalArgumentException("Null argument provided!");
         }
 
         return productRepository.findAllByUnitPrice(unitPrice);
