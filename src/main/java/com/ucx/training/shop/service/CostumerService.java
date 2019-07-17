@@ -4,6 +4,7 @@ import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.exception.NotFoundException;
+import com.ucx.training.shop.repository.AddressRepository;
 import com.ucx.training.shop.repository.CostumerRepository;
 import com.ucx.training.shop.util.AddressUtil;
 import org.springframework.beans.factory.annotation.Autowired;
