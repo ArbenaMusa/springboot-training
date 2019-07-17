@@ -21,6 +21,7 @@ public class PurchaseService {
     private InvoiceService invoiceService;
     private ProductService productService;
     private CostumerService costumerService;
+    private EmailService emailService;
 
     public PurchaseService(LineItemService lineItemService, InvoiceService invoiceService, ProductService productService, CostumerService costumerService) {
         this.lineItemService = lineItemService;
