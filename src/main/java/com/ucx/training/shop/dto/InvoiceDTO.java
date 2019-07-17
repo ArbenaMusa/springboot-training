@@ -12,5 +12,5 @@ public class InvoiceDTO {
     private Integer invoiceNumber;
     private BigDecimal total;
     private String costumerName;
-    private List<LineItemDTO> lineItemDTOS;
+    private List<LineItemDTO> lineItemList;
 }

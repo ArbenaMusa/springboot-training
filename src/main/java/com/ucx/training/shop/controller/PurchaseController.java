@@ -15,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
@@ -51,10 +53,27 @@ public class PurchaseController {
             invoiceDTO.setCostumerName(invoice.getCostumer().getName());
             invoiceDTO.setInvoiceNumber(invoice.getInvoiceNumber());
             invoiceDTO.setTotal(invoice.getTotal());
+            invoiceDTO.setLineItemList(converToDTOList(invoice.getLineItemList()));
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return invoiceDTO;
+    }
+
+    private LineItemDTO convertToDTO(LineItem lineItemList) {
+        LineItemDTO lineItemDTO = LineItemDTO.builder()
+                .product(lineItemList.getProduct().getName())
+                .invoiceId(lineItemList.getInvoice().getId())
+                .quantity(lineItemList.getQuantity())
+                .build();
+        return lineItemDTO;
+    }
+
+    private List<LineItemDTO> converToDTOList(List<LineItem> lineItemList) {
+        List<LineItemDTO> lineItemDTOS = lineItemList.stream()
+                .map(lineItem -> convertToDTO(lineItem))
+                .collect(Collectors.toList());
+        return lineItemDTOS;
     }
 
     @DeleteMapping("lineitems/{id}")
