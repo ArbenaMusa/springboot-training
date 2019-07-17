@@ -15,7 +15,7 @@ public class FileUpload extends BaseEntity<Integer> {
     private String filePath;
     private String fileName;
     private String fileExtension;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Product product;
 
     @Builder

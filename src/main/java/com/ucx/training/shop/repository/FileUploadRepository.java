@@ -5,7 +5,7 @@ import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FileUploadRepository extends JpaRepository<FileUpload, Integer> {
+public interface FileUploadRepository extends BaseRepository<FileUpload, Integer> {
     FileUpload findByProductAndRecordStatus(Product product, RecordStatus recordStatus);
     FileUpload findByProduct(Product product);
 }

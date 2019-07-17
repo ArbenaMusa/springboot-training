@@ -2,10 +2,8 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.entity.FileUpload;
 import com.ucx.training.shop.exception.NotFoundException;
-import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.FileUploadService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,8 +29,8 @@ public class FileUploadController {
             fileUploadService.save(uploadedFile, productId);
         } catch (IOException ex) {
             log.error(ex.getMessage());
-        } catch(NotFoundException nfe){
-                log.error(nfe.getMessage());
+        } catch (NotFoundException nfe) {
+            log.error(nfe.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -40,20 +38,18 @@ public class FileUploadController {
         return uploadedFile;
     }
 
-    @PostMapping("{productId}")
-    public void updatePicture(@RequestParam("files") MultipartFile file, @PathVariable Integer productId) throws ResponseException {
-        FileUpload updatedFileUpload = null;
+    @PutMapping
+    public FileUpload updatePicture(@RequestParam("files") MultipartFile file, @RequestParam("productId") Integer productId) {
+        FileUpload fileUpload = null;
         try {
-            fileUploadService.updatePicture(file, productId);
-        } catch (Exception e){
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+            fileUploadService.removeFileUploadWithGivenProduct(productId);
+            fileUpload = this.uploadFile(file, productId);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
         }
+        return fileUpload;
     }
 
-    @PutMapping("{productId}")
-    public FileUpload cancelFile(@PathVariable Integer productId) throws NotFoundException {
-        return fileUploadService.removeFileUpload(productId);
-    }
 }
 
 

@@ -24,15 +24,17 @@ public class ProductUtil {
         });
 
         return productDTOList;
-
     }
 
 
     public static ProductDTO getProduct(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("Product must not be null");
+        }
         ProductDTO productDTO = new ProductDTO();
         productDTO.setName(product.getName());
         productDTO.setUnitPrice(product.getUnitPrice());
-        productDTO.setFileName(product.getFileUpload().getFilePath());
+        //productDTO.setFileName(product.getFileUpload().getFilePath());
         return productDTO;
     }
 }
