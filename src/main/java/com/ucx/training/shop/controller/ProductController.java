@@ -1,7 +1,6 @@
 package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.ProductDTO;
-import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.ProductService;
@@ -31,11 +30,11 @@ public class ProductController {
     }
 
     @PostMapping
-    public ProductDTO create(@RequestBody Product product) throws ResponseException{
+    public ProductDTO create(@RequestBody Product product) throws ResponseException {
         Product createdProduct = null;
-        try{
+        try {
             createdProduct = productService.save(product);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 

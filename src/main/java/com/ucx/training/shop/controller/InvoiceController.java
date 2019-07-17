@@ -1,7 +1,6 @@
 package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.LineItemDTO;
-import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.service.InvoiceService;
 import com.ucx.training.shop.service.LineItemService;
 import org.springframework.web.bind.annotation.GetMapping;

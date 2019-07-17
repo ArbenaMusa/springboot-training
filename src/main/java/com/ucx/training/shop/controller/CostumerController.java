@@ -3,10 +3,12 @@ package com.ucx.training.shop.controller;
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.exception.NotFoundException;
+import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CostumerService;
 import com.ucx.training.shop.util.CustomerUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,23 +32,23 @@ public class CostumerController {
     }
 
     @PutMapping("{id}")
-    public CustomerDTO update(@RequestBody Costumer costumer, @PathVariable Integer id) {
+    public CustomerDTO update(@RequestBody Costumer costumer, @PathVariable Integer id) throws ResponseException {
         CustomerDTO customerDTO = null;
         try {
             Costumer updatedCustomer = costumerService.update(costumer, id);
             customerDTO = CustomerUtil.getCustomer(updatedCustomer);
         } catch (NotFoundException e) {
-            log.info(e.getMessage());
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return customerDTO;
     }
 
     @DeleteMapping("{id}")
-    public void remove(@PathVariable Integer id) {
+    public void remove(@PathVariable Integer id) throws ResponseException {
         try {
             costumerService.remove(id);
         } catch (NotFoundException e) {
-            log.info(e.getMessage());
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
