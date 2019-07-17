@@ -26,9 +26,7 @@ public class ProductController {
     @Value("${file.upload}")
     private String uploadDirectoryName;
     private ProductService productService;
-    private FileUploadService fileUploadService;
-    public ProductController(ProductService productService,FileUploadService fileUploadService) {
-        this.fileUploadService = fileUploadService;
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 

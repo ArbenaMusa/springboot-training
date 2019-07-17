@@ -19,7 +19,7 @@ public class ProductUtil {
         productList.forEach(e -> {
             productDTO.setName(e.getName());
             productDTO.setUnitPrice(e.getUnitPrice());
-            productDTO.setFileName(e.getFileUpload().getFilePath());
+            productDTO.setFileName(e.getFileUpload().getFileName());
             productDTOList.add(productDTO);
         });
 
@@ -27,12 +27,11 @@ public class ProductUtil {
 
     }
 
-
     public static ProductDTO getProduct(Product product) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setName(product.getName());
         productDTO.setUnitPrice(product.getUnitPrice());
-        productDTO.setFileName(product.getFileUpload().getFilePath());
+        productDTO.setFileName(product.getFileUpload().getFileName());
         return productDTO;
     }
 }

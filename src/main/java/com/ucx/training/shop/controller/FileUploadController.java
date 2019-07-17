@@ -11,9 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 
+@Log4j2
 @RestController
 @RequestMapping("upload")
-@Log4j2
 public class FileUploadController {
 
     private FileUploadService fileUploadService;
@@ -39,7 +39,7 @@ public class FileUploadController {
         return uploadedFile;
     }
 
-    @PatchMapping
+    @PutMapping
     public FileUpload updateImage(@RequestParam("file") MultipartFile file, @RequestBody Product product){
         FileUpload updatedFile = null;
         try{
