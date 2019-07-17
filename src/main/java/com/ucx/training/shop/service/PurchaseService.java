@@ -23,11 +23,12 @@ public class PurchaseService {
     private CostumerService costumerService;
     private EmailService emailService;
 
-    public PurchaseService(LineItemService lineItemService, InvoiceService invoiceService, ProductService productService, CostumerService costumerService) {
+    public PurchaseService(LineItemService lineItemService, InvoiceService invoiceService, ProductService productService, CostumerService costumerService, EmailService emailService) {
         this.lineItemService = lineItemService;
         this.invoiceService = invoiceService;
         this.productService = productService;
         this.costumerService = costumerService;
+        this.emailService = emailService;
     }
 
     public Integer addToCart(Integer productId, Integer quantity, Integer invoiceId) throws NotFoundException {
@@ -69,6 +70,14 @@ public class PurchaseService {
         Invoice generatedInvoice = invoiceService.update(lineItemList, foundCostumer, foundInvoice);
         Invoice printedInvoice = invoiceService.print(generatedInvoice.getId());
         reduceStock(lineItemList);
+
+        try {
+            emailService.sendMail(foundCostumer, printedInvoice);
+        }
+        catch (Exception e)
+        {
+
+        }
         return printedInvoice;
     }
 

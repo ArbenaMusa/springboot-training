@@ -7,7 +7,6 @@ import com.ucx.training.shop.dto.PurchaseDTO;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.exception.NotFoundException;
-import com.ucx.training.shop.service.EmailService;
 import com.ucx.training.shop.service.LineItemService;
 import com.ucx.training.shop.service.PurchaseService;
 import lombok.extern.log4j.Log4j2;
@@ -23,12 +22,10 @@ public class PurchaseController {
 
     private PurchaseService purchaseService;
     private LineItemService lineItemService;
-    private EmailService emailService;
 
-    public PurchaseController(PurchaseService purchaseService, LineItemService lineItemService, EmailService emailService) {
+    public PurchaseController(PurchaseService purchaseService, LineItemService lineItemService) {
         this.purchaseService = purchaseService;
         this.lineItemService = lineItemService;
-        this.emailService = emailService;
     }
 
     @PostMapping("lineitems")
@@ -52,8 +49,6 @@ public class PurchaseController {
             invoiceDTO.setCostumerName(invoice.getCostumer().getName());
             invoiceDTO.setInvoiceNumber(invoice.getInvoiceNumber());
             invoiceDTO.setTotal(invoice.getTotal());
-
-            emailService.sendMail(purchaseDTO.getCostumerId(),  purchaseDTO.getInvoiceId());
 
         } catch (Exception e) {
             log.error(String.format("An error occured while purchasing:%n Costumer ID: %d, Invoice ID: %d", purchaseDTO.getCostumerId(), purchaseDTO.getInvoiceId()));
