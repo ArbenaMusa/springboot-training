@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
+
 
 
 @Service
@@ -72,18 +72,29 @@ public class FileUploadService extends BaseService<FileUpload, Integer>{
         return super.save(uploadedFile);
     }
 
-    public void updateRecordStatus(Product product) throws NotFoundException{
-        FileUpload fileUpload = fileRepository.findByProduct(product);
-        fileUpload.setRecordStatus(RecordStatus.INACTIVE);
-        Integer id = fileUpload.getId();
-        super.update(fileUpload,id);
+    public FileUpload updateRecordStatus(Integer productId) throws NotFoundException{
+        Product foundProduct = productService.findById(productId);
+        if(foundProduct == null){
+            throw new NotFoundException("Product doesn't exist");
+        }
+        FileUpload foundFileUpload = fileRepository.findByProduct(foundProduct);
+        super.remove(foundFileUpload.getId());
+        return foundFileUpload;
+
+    }
+
+    public void updatePicture(MultipartFile file, Integer productId) throws NotFoundException,IOException{
+        updateRecordStatus(productId);
+        FileUpload fileUpload = uploadFile(file);
+        save(fileUpload,productId);
     }
 
     public FileUpload updateImage(MultipartFile file,Product product) throws NotFoundException,IOException{
-        updateRecordStatus(product);
+       // updateRecordStatus(product);
         FileUpload fileUpload = uploadFile(file);
         return save(fileUpload,product.getId());
     }
+
 
 
 }
