@@ -4,6 +4,7 @@ import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.ResponseException;
+import com.ucx.training.shop.service.FileUploadService;
 import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.ProductUtil;
@@ -25,8 +26,9 @@ public class ProductController {
     @Value("${file.upload}")
     private String uploadDirectoryName;
     private ProductService productService;
-
-    public ProductController(ProductService productService) {
+    private FileUploadService fileUploadService;
+    public ProductController(ProductService productService,FileUploadService fileUploadService) {
+        this.fileUploadService = fileUploadService;
         this.productService = productService;
     }
 

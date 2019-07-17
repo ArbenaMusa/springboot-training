@@ -5,19 +5,24 @@ import com.ucx.training.shop.entity.FileUpload;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.FileUploadRepository;
+import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.FileUploadUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 
 @Service
+@Transactional
+@Log4j2
 public class FileUploadService extends BaseService<FileUpload, Integer>{
 
     @Value("${file.upload}")
@@ -67,9 +72,18 @@ public class FileUploadService extends BaseService<FileUpload, Integer>{
         return super.save(uploadedFile);
     }
 
+    public void updateRecordStatus(Product product) throws NotFoundException{
+        FileUpload fileUpload = fileRepository.findByProduct(product);
+        fileUpload.setRecordStatus(RecordStatus.INACTIVE);
+        Integer id = fileUpload.getId();
+        super.update(fileUpload,id);
+    }
 
-
-
+    public FileUpload updateImage(MultipartFile file,Product product) throws NotFoundException,IOException{
+        updateRecordStatus(product);
+        FileUpload fileUpload = uploadFile(file);
+        return save(fileUpload,product.getId());
+    }
 
 
 }

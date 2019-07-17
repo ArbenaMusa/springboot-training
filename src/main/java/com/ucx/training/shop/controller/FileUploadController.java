@@ -1,13 +1,11 @@
 package com.ucx.training.shop.controller;
 
-import com.ucx.training.shop.entity.FileUpload;
+import com.ucx.training.shop.entity.FileUpload;;
+import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.service.FileUploadService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -39,6 +37,19 @@ public class FileUploadController {
         }
         if (uploadedFile == null) throw new RuntimeException("File upload failed");
         return uploadedFile;
+    }
+
+    @PatchMapping
+    public FileUpload updateImage(@RequestParam("file") MultipartFile file, @RequestBody Product product){
+        FileUpload updatedFile = null;
+        try{
+            updatedFile = fileUploadService.updateImage(file,product);
+        }catch (NotFoundException e){
+            log.error(e.getMessage());
+        }catch (IOException i){
+            log.error(i.getMessage());
+        }
+        return updatedFile;
     }
 }
 
