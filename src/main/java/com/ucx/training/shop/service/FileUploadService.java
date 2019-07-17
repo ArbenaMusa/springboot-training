@@ -5,6 +5,7 @@ import com.ucx.training.shop.entity.FileUpload;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.FileUploadRepository;
+import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,6 +66,26 @@ public class FileUploadService extends BaseService<FileUpload, Integer>{
         }
         uploadedFile.setProduct(product);
         return super.save(uploadedFile);
+    }
+
+    public void updatePicture(MultipartFile file, Integer productId) throws NotFoundException, IOException{
+        removeFileUpload(productId);
+        FileUpload fileUpload = uploadFile(file);
+        save(fileUpload, productId);
+    }
+
+    public FileUpload removeFileUpload(Integer productId) throws NotFoundException {
+        Product foundProduct = productService.findById(productId);
+        if (foundProduct == null) {
+            throw new NotFoundException("Product does not exist!");
+        }
+        FileUpload foundFileUpload = fileRepository.findByProductAndRecordStatus(foundProduct, RecordStatus.ACTIVE);
+        /*if (foundFileUpload == null) {
+        //TODO: if none are active, create new fileupload.
+        }*/
+        remove(foundFileUpload.getId());
+        //update(foundFileUpload, foundFileUpload.getId());
+        return foundFileUpload;
     }
 
 
