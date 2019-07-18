@@ -7,6 +7,7 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.AddressRepository;
 import com.ucx.training.shop.repository.CostumerRepository;
 import com.ucx.training.shop.util.AddressUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,15 +36,49 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         return costumerRepository.findAllByName(name);
     }
 
-    public AddressDTO updateAddress(Address address, Integer addressId)throws NotFoundException {
+    public AddressDTO updateAddress(Address address, Integer addressId) throws NotFoundException {
         if (address == null) {
             throw new IllegalArgumentException("Invalid address argument: " + address);
         } else if (addressId == null) {
             throw new IllegalArgumentException("Invalid addressId argument: " + addressId);
         }
 
-        return AddressUtil.getAddress(addressService.update(address,addressId));
+        return AddressUtil.getAddress(addressService.update(address, addressId));
 
     }
 
+
+    @Override
+    public Costumer update(Costumer t, Integer u) throws NotFoundException {
+        if (t == null) {
+            throw new IllegalArgumentException(String.format("One of the arguments is invalid: %s", t));
+        }
+        Costumer foundT = findById(u);
+        if (foundT == null) {
+            throw new NotFoundException("Entity not found");
+        }
+
+        List<Address> previousAddressList = foundT.getAddresses();
+        List<Address> receivedAddressList = t.getAddresses();
+        if (receivedAddressList != null) {
+            previousAddressList.stream().forEach(
+                    (e) -> {
+                        receivedAddressList.stream().forEach((i) -> {
+                            if (e.getId().equals(i.getId())) {
+                                BeanUtils.copyProperties(i, e, BaseService.<Address>getNullPropertyNames(i));
+                                receivedAddressList.remove(i);
+
+                            }
+
+                        });
+
+                    }
+            );
+
+            receivedAddressList.stream().forEach(previousAddressList::add);
+        }
+
+        BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
+        return foundT;
+    }
 }

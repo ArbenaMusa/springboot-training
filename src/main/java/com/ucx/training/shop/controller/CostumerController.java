@@ -17,7 +17,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("costumers")
-public class CostumerController extends BaseController<Costumer, Integer>{
+public class CostumerController {
 
     private CostumerService costumerService;
 
@@ -35,7 +35,7 @@ public class CostumerController extends BaseController<Costumer, Integer>{
         }
     }*/
 
-    /*@PutMapping("{id}")
+    @PutMapping("{id}")
     public CustomerDTO update(@RequestBody Costumer costumer, @PathVariable Integer id) throws ResponseException {
         CustomerDTO customerDTO = null;
         try {
@@ -45,7 +45,7 @@ public class CostumerController extends BaseController<Costumer, Integer>{
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return customerDTO;
-    }*/
+    }
 
     /*@DeleteMapping("{id}")
     public void remove(@PathVariable Integer id) throws ResponseException {
@@ -87,6 +87,8 @@ public class CostumerController extends BaseController<Costumer, Integer>{
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
 
 }

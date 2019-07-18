@@ -81,7 +81,7 @@ public class BaseService<T extends BaseEntity<U>,U> {
         return baseRepository.findAll(Sort.by(Sort.Direction.valueOf(direction), properties));
     }
 
-    private static <T> String[] getNullPropertyNames(T source) {
+    protected static <T> String[] getNullPropertyNames(T source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
         Set<String> emptyNames = new HashSet<>();
