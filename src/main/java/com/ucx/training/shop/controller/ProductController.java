@@ -2,7 +2,6 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Product;
-import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.FileUploadService;
 import com.ucx.training.shop.service.ProductService;
@@ -17,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @Log4j2
@@ -47,42 +46,60 @@ public class ProductController {
         return ProductUtil.getProduct(createdProduct);
     }
 
+
+    //TODO: Fix Exception handling
     @GetMapping("image/{fileName}")
-    public ResponseEntity<InputStreamResource> getImage(@PathVariable String fileName) throws IOException {
+    public ResponseEntity<InputStreamResource> getImage(@PathVariable String fileName) throws ResponseException {
         String filePathAsString = System.getProperty("user.dir") + uploadDirectoryName + fileName;
-        return ResponseEntity
-                .ok()
-                .contentType(FileUploadUtil.getContentType(fileName))
-                .body(new InputStreamResource(new FileInputStream(filePathAsString)));
+        try {
+            return ResponseEntity
+                    .ok()
+                    .contentType(FileUploadUtil.getContentType(fileName))
+                    .body(new InputStreamResource(new FileInputStream(filePathAsString)));
+        } catch (FileNotFoundException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping
-    public List<ProductDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) {
-        List<Product> products = productService.findAllSorted(direction, properties);
-        List<ProductDTO> productDTOList = ProductUtil.getProducts(products);
-        return productDTOList;
+    public List<ProductDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
+        try {
+            List<Product> products = productService.findAllSorted(direction, properties);
+            List<ProductDTO> productDTOList = ProductUtil.getProducts(products);
+            return productDTOList;
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/paged")
-    public List<ProductDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
-        Page<Product> productPage = productService.findAllPaged(pageNumber, pageSize);
-        List<Product> products = productPage.getContent();
-        List<ProductDTO> productDTOList = ProductUtil.getProducts(products);
-        return productDTOList;
+    public List<ProductDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
+        try {
+            Page<Product> productPage = productService.findAllPaged(pageNumber, pageSize);
+            List<Product> products = productPage.getContent();
+            List<ProductDTO> productDTOList = ProductUtil.getProducts(products);
+            return productDTOList;
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("{id}")
-    public ProductDTO findByID(@PathVariable Integer id) {
-        Product product = productService.findById(id);
-        return ProductUtil.getProduct(product);
+    public ProductDTO findByID(@PathVariable Integer id) throws ResponseException {
+        try {
+            Product product = productService.findById(id);
+            return ProductUtil.getProduct(product);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("{id}")
-    public void remove(@PathVariable Integer id){
-        try{
+    public void remove(@PathVariable Integer id) throws ResponseException {
+        try {
             productService.remove(id);
-        }catch (NotFoundException e){
-            log.error(e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

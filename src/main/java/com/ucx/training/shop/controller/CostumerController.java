@@ -4,7 +4,6 @@ import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
-import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CostumerService;
 import com.ucx.training.shop.util.CustomerUtil;
@@ -27,9 +26,13 @@ public class CostumerController {
     }
 
     @PostMapping
-    public CustomerDTO create(@RequestBody Costumer costumer) {
-        Costumer customer = costumerService.save(costumer);
-        return CustomerUtil.getCustomer(customer);
+    public CustomerDTO create(@RequestBody Costumer costumer) throws ResponseException {
+        try {
+            Costumer customer = costumerService.save(costumer);
+            return CustomerUtil.getCustomer(customer);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("{id}")
@@ -38,7 +41,7 @@ public class CostumerController {
         try {
             Costumer updatedCustomer = costumerService.update(costumer, id);
             customerDTO = CustomerUtil.getCustomer(updatedCustomer);
-        } catch (NotFoundException e) {
+        } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return customerDTO;
@@ -48,32 +51,40 @@ public class CostumerController {
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
             costumerService.remove(id);
-        } catch (NotFoundException e) {
+        } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping
-    public List<CustomerDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) {
-        List<Costumer> costumers = costumerService.findAllSorted(direction, properties);
-        List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
-        return customerDTOList;
+    public List<CustomerDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
+        try {
+            List<Costumer> costumers = costumerService.findAllSorted(direction, properties);
+            List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
+            return customerDTOList;
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/paged")
-    public List<CustomerDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
-        Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
-        List<Costumer> costumers = costumerPage.getContent();
-        List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
-        return customerDTOList;
+    public List<CustomerDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
+        try {
+            Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
+            List<Costumer> costumers = costumerPage.getContent();
+            List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
+            return customerDTOList;
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PatchMapping("/addresses/{addressId}")
     public AddressDTO updateAddress(@RequestBody Address address, @PathVariable("addressId") Integer addressId) throws ResponseException {
         try {
             return costumerService.updateAddress(address, addressId);
-        } catch (NotFoundException nfe) {
-            throw new ResponseException("The address you're trying to update does not exist!", HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
