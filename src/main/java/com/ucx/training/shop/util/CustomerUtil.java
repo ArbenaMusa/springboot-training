@@ -30,6 +30,7 @@ public class CustomerUtil {
             addressDTOList.add(addressDTO);
         });
 
+        customerDTO.setId(costumer.getId());
         customerDTO.setName(costumer.getName());
         customerDTO.setEmail(costumer.getEmail());
         customerDTO.setPhoneNumber1(costumer.getPhoneNumber1());

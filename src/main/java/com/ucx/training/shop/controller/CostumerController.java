@@ -11,7 +11,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Log4j2
@@ -77,11 +76,6 @@ public class CostumerController{
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @GetMapping
-    public List<Costumer> getAllCostumers() {
-        return costumerService.findAll();
     }
 
     @PutMapping("/addresses/{addressId}")

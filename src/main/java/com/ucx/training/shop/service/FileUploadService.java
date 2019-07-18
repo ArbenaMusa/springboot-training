@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 
 @Service
@@ -45,12 +46,9 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
         }
         String filePathAsString = directoryPathAsString + file.getOriginalFilename();
         Path filePath = Paths.get(filePathAsString);
-        if (Files.exists(filePath)) {
-            throw new RuntimeException("File already exists!");
-        }
 
         byte[] bytes = file.getBytes();
-        Files.write(filePath, bytes);
+        Files.write(filePath, bytes, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
 
         return FileUpload.builder()
                 .fileName(file.getOriginalFilename())
@@ -59,7 +57,6 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
                 .build();
     }
 
-    //TODO: Fix implementation to update as well.
     public FileUpload save(FileUpload uploadedFile, Integer productId) throws NotFoundException {
         if (uploadedFile == null || productId == null) {
             throw new IllegalArgumentException("Product id must exist");
@@ -74,20 +71,5 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
             return super.save(uploadedFile);
         }
         return super.update(uploadedFile, foundFileUpload.getId());
-    }
-
-    public FileUpload removeFileUploadWithGivenProduct(Integer productId) throws NotFoundException {
-        Product foundProduct = productService.findById(productId);
-        if (foundProduct == null) {
-            throw new NotFoundException("Product does not exist!");
-        }
-        FileUpload foundFileUpload = fileRepository.findByProductAndRecordStatus(foundProduct, RecordStatus.ACTIVE);
-        /*if (foundFileUpload == null) {
-        //TODO: if none are active, create new fileupload.
-           Develop this logic on other method and let this method return null
-        }*/
-        super.remove(foundFileUpload.getId());
-        //update(foundFileUpload, foundFileUpload.getId());
-        return foundFileUpload;
     }
 }
