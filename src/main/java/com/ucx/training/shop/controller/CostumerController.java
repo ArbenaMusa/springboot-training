@@ -79,14 +79,14 @@ public class CostumerController {
         }
     }
 
-    @PatchMapping("/addresses/{addressId}")
-    public AddressDTO updateAddress(@RequestBody Address address, @PathVariable("addressId") Integer addressId) throws ResponseException {
-        try {
-            return costumerService.updateAddress(address, addressId);
-        } catch (Exception e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @PatchMapping("/addresses/{addressId}")
+//    public AddressDTO updateAddress(@RequestBody Address address, @PathVariable("addressId") Integer addressId) throws ResponseException {
+//        try {
+//            return costumerService.updateAddress(address, addressId);
+//        } catch (Exception e) {
+//            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
 
 }

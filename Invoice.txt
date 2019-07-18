@@ -1,15 +1,9 @@
 Customer name: Durim
 ------------------------------------------------
-Product name: iPhone 7
-Product price: 1000.00 €  x3
-Price: 3000 €
-Product name: iPhone 7
-Product price: 1000.00 €  x3
-Price: 3000 €
-Product name: iPad
-Product price: 1000.00 €  x3
-Price: 3000 €
+Product name: Pixel 3
+Product price: 1000.00 €  x2
+Price: 2000 €
 ------------------------------------------------
-Purchase date: 2019-07-18T13:36:50.645774
+Purchase date: 2019-07-17T14:51:32.041311
 ------------------------------------------------
-Total: 9000.00 €
+Total: 2000.00 €
