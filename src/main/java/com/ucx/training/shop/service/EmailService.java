@@ -3,59 +3,62 @@ package com.ucx.training.shop.service;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
-import com.ucx.training.shop.entity.Product;
-import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
-@Log4j2
 @Service
+@Async
 public class EmailService {
 
     private JavaMailSender javaMailSender;
-    private CostumerService costumerService;
-    private InvoiceService invoiceService;
 
-    EmailService(CostumerService costumerService, InvoiceService invoiceService, JavaMailSender javaMailSender) {
-        this.costumerService = costumerService;
-        this.invoiceService = invoiceService;
+    public EmailService(JavaMailSender javaMailSender){
         this.javaMailSender = javaMailSender;
     }
 
     public void sendMail(Costumer costumer, Invoice invoice) throws MessagingException, IOException {
-
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         helper.setTo(costumer.getEmail());
         helper.setSubject("Invoice for your purchase!");
-        helper.setText("<h>Here is your invoice....!</h1>", true);
+        helper.setText("Here is your invoice....!");
+        helper.addAttachment("Invoice.txt",createFile(costumer, invoice));
+        send(msg);
+    }
 
+    public File createFile(Costumer costumer, Invoice invoice) throws IOException {
+        List<LineItem> list = invoice.getLineItemList();
         File file = new File("Invoice.txt");
-
-        try (Writer writer = new BufferedWriter(new FileWriter(file))) {
-            List<LineItem> list = invoice.getLineItemList();
-            Product product = list.get(0).getProduct();
-
-            //TODO: LOOP
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
             writer.write("Customer name: " + costumer.getName() +
-                    "\nCustomer email: " + costumer.getEmail() +
-                    "\nProduct name: " + product.getName() +
-                    "\nQuantity: " + list.get(0).getQuantity() +
+                    "\n------------------------------------------------");
+            list.forEach(e ->
+                    writer.write("\nProduct name: " + e.getProduct().getName() +
+                            "\nProduct price: " + e.getProduct().getUnitPrice() + " €" +
+                            "  x" + e.getQuantity().toString() +
+                            "\nPrice: " + (e.getQuantity().intValue()* e.getProduct().getUnitPrice().intValue()) + " €" ));
+            writer.write("\n------------------------------------------------" +
                     "\nPurchase date: " + invoice.getCreateDateTime() +
-                    "\n-------------------------------" +
-                    "\nTotal: " + invoice.getTotal());
+                    "\n------------------------------------------------" +
+                    "\nTotal: " + invoice.getTotal() + " €");
         } catch (IOException e) {
             throw e;
         }
+        return file;
+    }
 
-        helper.addAttachment("Invoice.txt", file);
-
+    public void send(MimeMessage msg){
         javaMailSender.send(msg);
     }
 }

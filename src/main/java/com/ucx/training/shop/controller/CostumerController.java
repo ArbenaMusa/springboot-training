@@ -18,7 +18,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("costumers")
-public class CostumerController {
+public class CostumerController{
 
     private CostumerService costumerService;
 
