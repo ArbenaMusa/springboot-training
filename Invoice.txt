@@ -1,12 +1,15 @@
 Customer name: Durim
 ------------------------------------------------
 Product name: iPhone 7
-Quantity: 3
+Product price: 1000.00 €  x3
+Price: 3000 €
 Product name: iPhone 7
-Quantity: 3
+Product price: 1000.00 €  x3
+Price: 3000 €
 Product name: iPad
-Quantity: 3
+Product price: 1000.00 €  x3
+Price: 3000 €
 ------------------------------------------------
 Purchase date: 2019-07-18T13:36:50.645774
 ------------------------------------------------
-Total: 9000.00
+Total: 9000.00 €

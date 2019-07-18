@@ -30,25 +30,27 @@ public class EmailService {
 
     public void sendMail(Costumer costumer, Invoice invoice) throws MessagingException, IOException {
 
+        List<LineItem> list = invoice.getLineItemList();
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         helper.setTo(costumer.getEmail());
         helper.setSubject("Invoice for your purchase!");
-        helper.setText("<h>Here is your invoice....!</h1>", true);
+        helper.setText("Here is your invoice....!");
 
         File file = new File("Invoice.txt");
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-            List<LineItem> list = invoice.getLineItemList();
+
             writer.write("Customer name: " + costumer.getName() +
                             "\n------------------------------------------------");
-            list.forEach(e -> {
+            list.forEach(e ->
                 writer.write("\nProduct name: " + e.getProduct().getName() +
-                                "\nQuantity: " + e.getQuantity().toString());
-            });
+                                "\nProduct price: " + e.getProduct().getUnitPrice() + " €" +
+                                "  x" + e.getQuantity().toString() +
+                                "\nPrice: " + (e.getQuantity().intValue()* e.getProduct().getUnitPrice().intValue()) + " €" ));
             writer.write("\n------------------------------------------------" +
                             "\nPurchase date: " + invoice.getCreateDateTime() +
                             "\n------------------------------------------------" +
-                            "\nTotal: " + invoice.getTotal());
+                            "\nTotal: " + invoice.getTotal() + " €");
         } catch (IOException e) {
             throw e;
         }
