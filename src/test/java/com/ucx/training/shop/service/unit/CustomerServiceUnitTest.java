@@ -1,12 +1,14 @@
-package com.ucx.training.shop;
+package com.ucx.training.shop.service.unit;
 
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
+import com.ucx.training.shop.service.BaseService;
 import com.ucx.training.shop.service.CostumerService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,10 +21,10 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CustomerServiceUnitTestSuite {
+public class CustomerServiceUnitTest {
 
-    @InjectMocks
-    private CostumerService costumerService;
+    @Mock
+    private BaseService baseService;
 
     @Before
     public void setup() {
@@ -37,10 +39,10 @@ public class CustomerServiceUnitTestSuite {
 
         Costumer createdCostumer = new Costumer();
         createdCostumer.setId(1);
-        costumer.setName("TestFilani");
-        costumer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
+        createdCostumer.setName("TestFilani");
+        createdCostumer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
 
-        when(costumerService.save(costumer)).thenReturn(createdCostumer);
-        assertEquals(Long.valueOf(1), createdCostumer.getId());
+        when(baseService.save(costumer)).thenReturn(createdCostumer);
+        assertEquals(Integer.valueOf(1), createdCostumer.getId());
     }
 }

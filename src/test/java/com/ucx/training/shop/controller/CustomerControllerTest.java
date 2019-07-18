@@ -1,4 +1,4 @@
-package com.ucx.training.shop;
+package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.controller.CostumerController;
 import org.junit.Before;
@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CustomerControllerTestSuite {
+public class CustomerControllerTest {
 
     private MockMvc mockMvc;
 
@@ -31,7 +31,6 @@ public class CustomerControllerTestSuite {
     @Test
     public void testFind() throws Exception {
         mockMvc.perform(get("/costumers"))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
     }
 }

@@ -1,4 +1,4 @@
-package com.ucx.training.shop;
+package com.ucx.training.shop.service.integ;
 
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CustomerServiceTestSuite {
+public class CustomerServiceTest {
 
     @Autowired
     private CostumerService costumerService;

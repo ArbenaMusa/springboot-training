@@ -79,6 +79,11 @@ public class CostumerController{
         }
     }
 
+    @GetMapping
+    public List<Costumer> getAllCostumers() {
+        return costumerService.findAll();
+    }
+
     @PutMapping("/addresses/{addressId}")
     public AddressDTO updateAddress(@RequestBody Address address, @PathVariable("addressId") Integer addressId) throws ResponseException {
         try {
@@ -87,6 +92,4 @@ public class CostumerController{
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
-
 }
