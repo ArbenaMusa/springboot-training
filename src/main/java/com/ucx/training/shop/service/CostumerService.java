@@ -64,7 +64,7 @@ public class CostumerService extends BaseService<Costumer, Integer> {
 
         if (receivedAddressList != null) {
             previousAddressList.stream().forEach((e) -> {
-                Iterator<Address> iterator = previousAddressList.iterator();
+                Iterator<Address> iterator = receivedAddressList.iterator();
                 while (iterator.hasNext()) {
                     Address i = iterator.next();
                     try {
@@ -88,6 +88,6 @@ public class CostumerService extends BaseService<Costumer, Integer> {
 
         t.setAddresses(null);
         BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
-        return foundT;
+        return findById(u);
     }
 }
