@@ -42,7 +42,6 @@ public class CostumerController {
             Costumer updatedCustomer = costumerService.update(costumer, id);
             customerDTO = CustomerUtil.getCustomer(updatedCustomer);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return customerDTO;

@@ -58,10 +58,8 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         if (foundT == null) {
             throw new NotFoundException("Entity not found");
         }
-
         List<Address> previousAddressList = foundT.getAddresses();
         List<Address> receivedAddressList = t.getAddresses();
-
         if (receivedAddressList != null) {
             previousAddressList.stream().forEach((e) -> {
                 Iterator<Address> iterator = receivedAddressList.iterator();
@@ -72,20 +70,16 @@ public class CostumerService extends BaseService<Costumer, Integer> {
                             BeanUtils.copyProperties(i, e, BaseService.<Address>getNullPropertyNames(i));
                             iterator.remove();
                         }
-
                     } catch (Exception m) {
-
+                        //exception presumably nullPointerException was suppressed
                     }
                 }
             });
-
         }
         receivedAddressList.forEach((e) -> {
             e.setCostumer(foundT);
             addressService.save(e);
         });
-
-
         t.setAddresses(null);
         BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
         return findById(u);
