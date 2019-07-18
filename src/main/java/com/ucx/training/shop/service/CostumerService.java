@@ -4,10 +4,8 @@ import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.exception.NotFoundException;
-import com.ucx.training.shop.repository.AddressRepository;
 import com.ucx.training.shop.repository.CostumerRepository;
 import com.ucx.training.shop.util.AddressUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,10 +15,13 @@ import java.util.List;
 @Transactional
 public class CostumerService extends BaseService<Costumer, Integer> {
 
-    @Autowired
     private CostumerRepository costumerRepository;
-    @Autowired
-    AddressService addressService;
+    private AddressService addressService;
+
+    public CostumerService(CostumerRepository costumerRepository, AddressService addressService) {
+        this.costumerRepository = costumerRepository;
+        this.addressService = addressService;
+    }
 
     @Override
     public Costumer save(Costumer costumer) {
@@ -31,7 +32,7 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         return super.save(costumer);
     }
 
-    List<Costumer> findAllByName(String name) {
+    public List<Costumer> findAllByName(String name) {
         if (name == null) {
             throw new IllegalArgumentException("Name must not be null!");
         }
@@ -39,14 +40,10 @@ public class CostumerService extends BaseService<Costumer, Integer> {
     }
 
     public AddressDTO updateAddress(Address address, Integer addressId) throws NotFoundException {
-        if (address == null) {
-            throw new IllegalArgumentException("Invalid address argument: " + address);
-        } else if (addressId == null) {
-            throw new IllegalArgumentException("Invalid addressId argument: " + addressId);
+        if (address == null || addressId == null) {
+            throw new IllegalArgumentException("Either address or addressId is null!");
         }
-
-        return AddressUtil.getAddress(addressService.update(address,addressId));
-
+        return AddressUtil.getAddress(addressService.update(address, addressId));
     }
 
 }

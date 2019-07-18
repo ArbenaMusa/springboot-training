@@ -25,6 +25,9 @@ public class InvoiceService extends BaseService<Invoice, Integer> {
         if (costumer == null) {
             throw new IllegalArgumentException("Cannot print Invoice, Costumer is missing");
         }
+        if (invoice == null) {
+            throw new IllegalArgumentException("Invoice must not be null");
+        }
         BigDecimal total = lineItemList
                 .stream()
                 .map(e -> e.getProduct().getUnitPrice().multiply(BigDecimal.valueOf(e.getQuantity())))

@@ -5,6 +5,7 @@ import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.entity.Product;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.LineItemRepository;
 import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,7 @@ public class LineItemService extends BaseService<LineItem, Integer> {
         return lineItemRepository.findAllByProductAndQuantity(product, quantity);
     }
 
-    public List<LineItemDTO> findAllByInvoiceId(Integer invoiceId) {
+    public List<LineItemDTO> findAllByInvoiceId(Integer invoiceId) throws NotFoundException {
         if (invoiceId == null) {
             throw new IllegalArgumentException("Invoice ID cannot be null .-");
         }
@@ -87,6 +88,9 @@ public class LineItemService extends BaseService<LineItem, Integer> {
                     lineItemDTO.setQuantity(e.getQuantity());
                     lineItemDTOList.add(lineItemDTO);
                 });
+        if (lineItemDTOList == null) {
+            throw new NotFoundException("There are no lineitems with the given invoice id!" + invoiceId);
+        }
         return lineItemDTOList;
     }
 

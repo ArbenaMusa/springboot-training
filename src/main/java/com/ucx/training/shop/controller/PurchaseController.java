@@ -38,6 +38,8 @@ public class PurchaseController {
         try {
             Integer invoiceId = purchaseService.addToCart(cartDTO.getProductId(), cartDTO.getQuantity(), cartDTO.getInvoiceId());
             resultMap.put("invoiceId", invoiceId);
+        } catch (IllegalArgumentException | NotFoundException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -54,6 +56,8 @@ public class PurchaseController {
             invoiceDTO.setInvoiceNumber(invoice.getInvoiceNumber());
             invoiceDTO.setTotal(invoice.getTotal());
             invoiceDTO.setLineItemList(converToDTOList(invoice.getLineItemList()));
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -81,6 +85,8 @@ public class PurchaseController {
         LineItem lineItem = null;
         try {
             lineItem = purchaseService.cancelLineItem(id);
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -92,6 +98,8 @@ public class PurchaseController {
         Invoice invoice = null;
         try {
             invoice = purchaseService.cancelPurchase(id);
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -100,8 +108,14 @@ public class PurchaseController {
     }
 
     @PatchMapping("lineitems/{lineItemId}")
-    public LineItemDTO changeQuantity(@RequestBody LineItem lineItem, @PathVariable Integer lineItemId) throws NotFoundException {
-        LineItem updatedLineItem = purchaseService.changeQuantity(lineItem, lineItemId);
-        return new LineItemDTO(updatedLineItem.getProduct().getName(), updatedLineItem.getQuantity(), updatedLineItem.getInvoice().getId());
+    public LineItemDTO changeQuantity(@RequestBody LineItem lineItem, @PathVariable Integer lineItemId) throws NotFoundException, ResponseException {
+        try {
+            LineItem updatedLineItem = purchaseService.changeQuantity(lineItem, lineItemId);
+            return new LineItemDTO(updatedLineItem.getProduct().getName(), updatedLineItem.getQuantity(), updatedLineItem.getInvoice().getId());
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

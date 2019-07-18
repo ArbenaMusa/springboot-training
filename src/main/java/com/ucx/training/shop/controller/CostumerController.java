@@ -4,6 +4,7 @@ import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CostumerService;
 import com.ucx.training.shop.util.CustomerUtil;
@@ -11,12 +12,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @Log4j2
 @RestController
 @RequestMapping("costumers")
-public class CostumerController{
+public class CostumerController {
 
     private CostumerService costumerService;
 
@@ -29,6 +31,8 @@ public class CostumerController{
         try {
             Costumer customer = costumerService.save(costumer);
             return CustomerUtil.getCustomer(customer);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -40,6 +44,8 @@ public class CostumerController{
         try {
             Costumer updatedCustomer = costumerService.update(costumer, id);
             customerDTO = CustomerUtil.getCustomer(updatedCustomer);
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -50,6 +56,8 @@ public class CostumerController{
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
             costumerService.remove(id);
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

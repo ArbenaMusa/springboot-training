@@ -15,6 +15,9 @@ public class LineItemUtil {
 
     //TODO: Handle exceptions here
     public static LineItemDTO getLineItem(LineItem lineItem, Product product) {
+        if (lineItem == null || product == null) {
+            throw new IllegalArgumentException("Either the LineItem or the Product is null!");
+        }
         LineItemDTO lineItemDTO = new LineItemDTO();
         ProductDTO productDTO = new ProductDTO();
         productDTO.setFileName(product.getFileUpload().getFilePath());

@@ -49,7 +49,7 @@ public class PurchaseService {
             newInvoiceId = createdInvoice.getId();
         } else {
             Invoice foundInvoice = invoiceService.findById(invoiceId);
-            if (foundInvoice == null) throw new RuntimeException("No such Invoice found");
+            if (foundInvoice == null) throw new NotFoundException("No such Invoice found");
             if (foundInvoice.getRecordStatus() == RecordStatus.INACTIVE)
                 throw new IllegalArgumentException("Invoice is deleted! " + foundInvoice);
             lineItemService.create(foundProduct, quantity, foundInvoice);

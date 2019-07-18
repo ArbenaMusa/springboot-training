@@ -26,8 +26,11 @@ public class LineItemController {
     @PostMapping
     public LineItemDTO create(@RequestBody LineItem lineItem) throws ResponseException {
         try {
-            LineItemDTO lineItemDTO = LineItemUtil.getLineItem(lineItem, lineItem.getProduct());
+            LineItem createdLineItem = lineItemService.save(lineItem);
+            LineItemDTO lineItemDTO = LineItemUtil.getLineItem(createdLineItem, lineItem.getProduct());
             return lineItemDTO;
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -60,7 +63,9 @@ public class LineItemController {
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
             lineItemService.remove(id);
-        }catch (Exception e){
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
