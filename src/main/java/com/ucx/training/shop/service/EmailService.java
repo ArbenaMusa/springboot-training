@@ -37,19 +37,18 @@ public class EmailService {
         helper.setText("<h>Here is your invoice....!</h1>", true);
 
         File file = new File("Invoice.txt");
-
-        try (Writer writer = new BufferedWriter(new FileWriter(file))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
             List<LineItem> list = invoice.getLineItemList();
-            Product product = list.get(0).getProduct();
-
-            //TODO: LOOP
             writer.write("Customer name: " + costumer.getName() +
-                    "\nCustomer email: " + costumer.getEmail() +
-                    "\nProduct name: " + product.getName() +
-                    "\nQuantity: " + list.get(0).getQuantity() +
-                    "\nPurchase date: " + invoice.getCreateDateTime() +
-                    "\n-------------------------------" +
-                    "\nTotal: " + invoice.getTotal());
+                            "\n------------------------------------------------");
+            list.forEach(e -> {
+                writer.write("\nProduct name: " + e.getProduct().getName() +
+                                "\nQuantity: " + e.getQuantity().toString());
+            });
+            writer.write("\n------------------------------------------------" +
+                            "\nPurchase date: " + invoice.getCreateDateTime() +
+                            "\n------------------------------------------------" +
+                            "\nTotal: " + invoice.getTotal());
         } catch (IOException e) {
             throw e;
         }
