@@ -25,7 +25,7 @@ public class CostumerController {
         this.costumerService = costumerService;
     }
 
-    /*@PostMapping
+    @PostMapping
     public CustomerDTO create(@RequestBody Costumer costumer) throws ResponseException {
         try {
             Costumer customer = costumerService.save(costumer);
@@ -33,7 +33,7 @@ public class CostumerController {
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }*/
+    }
 
     @PutMapping("{id}")
     public CustomerDTO update(@RequestBody Costumer costumer, @PathVariable Integer id) throws ResponseException {
@@ -42,21 +42,22 @@ public class CostumerController {
             Costumer updatedCustomer = costumerService.update(costumer, id);
             customerDTO = CustomerUtil.getCustomer(updatedCustomer);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return customerDTO;
     }
 
-    /*@DeleteMapping("{id}")
+    @DeleteMapping("{id}")
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
             costumerService.remove(id);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }*/
+    }
 
-    /*@GetMapping
+    @GetMapping
     public List<CustomerDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<Costumer> costumers = costumerService.findAllSorted(direction, properties);
@@ -65,9 +66,9 @@ public class CostumerController {
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }*/
+    }
 
-    /*@GetMapping("/paged")
+    @GetMapping("/paged")
     public List<CustomerDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
         try {
             Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
@@ -77,7 +78,7 @@ public class CostumerController {
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }*/
+    }
 
     @PutMapping("/addresses/{addressId}")
     public AddressDTO updateAddress(@RequestBody Address address, @PathVariable("addressId") Integer addressId) throws ResponseException {

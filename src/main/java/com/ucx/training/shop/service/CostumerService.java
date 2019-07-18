@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -60,24 +61,32 @@ public class CostumerService extends BaseService<Costumer, Integer> {
 
         List<Address> previousAddressList = foundT.getAddresses();
         List<Address> receivedAddressList = t.getAddresses();
+
         if (receivedAddressList != null) {
-            previousAddressList.stream().forEach(
-                    (e) -> {
-                        receivedAddressList.stream().forEach((i) -> {
-                            if (e.getId().equals(i.getId())) {
-                                BeanUtils.copyProperties(i, e, BaseService.<Address>getNullPropertyNames(i));
-                                receivedAddressList.remove(i);
+            previousAddressList.stream().forEach((e) -> {
+                Iterator<Address> iterator = previousAddressList.iterator();
+                while (iterator.hasNext()) {
+                    Address i = iterator.next();
+                    try {
+                        if (e.getId().equals(i.getId())) {
+                            BeanUtils.copyProperties(i, e, BaseService.<Address>getNullPropertyNames(i));
+                            iterator.remove();
+                        }
 
-                            }
-
-                        });
+                    } catch (Exception m) {
 
                     }
-            );
+                }
+            });
 
-            receivedAddressList.stream().forEach(previousAddressList::add);
         }
+        receivedAddressList.forEach((e) -> {
+            e.setCostumer(foundT);
+            addressService.save(e);
+        });
 
+
+        t.setAddresses(null);
         BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
         return foundT;
     }
