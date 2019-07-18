@@ -28,22 +28,11 @@ public class FileUploadController {
             uploadedFile = fileUploadService.uploadFile(file);
             fileUploadService.save(uploadedFile, productId);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         if (uploadedFile == null) throw new RuntimeException("File upload failed");
         return uploadedFile;
-    }
-
-    @PutMapping
-    public FileUpload updatePicture(@RequestParam("files") MultipartFile file, @RequestParam("productId") Integer productId) throws ResponseException {
-        FileUpload fileUpload = null;
-        try {
-            fileUploadService.removeFileUploadWithGivenProduct(productId);
-            fileUpload = this.uploadFile(file, productId);
-        } catch (Exception e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        return fileUpload;
     }
 
 }

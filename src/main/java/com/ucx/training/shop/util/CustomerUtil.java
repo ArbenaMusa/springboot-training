@@ -14,6 +14,9 @@ public class CustomerUtil {
     }
 
     public static CustomerDTO getCustomer(Costumer costumer) {
+        if (costumer == null) {
+            throw new IllegalArgumentException("Costumer must not be null!");
+        }
         CustomerDTO customerDTO = new CustomerDTO();
         AddressDTO addressDTO = new AddressDTO();
         List<Address> addressList = costumer.getAddresses();

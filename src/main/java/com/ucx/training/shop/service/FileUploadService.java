@@ -61,38 +61,20 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
 
     //TODO: Fix implementation to update as well.
     public FileUpload save(FileUpload uploadedFile, Integer productId) throws NotFoundException {
-        if (productId == null) {
+        if (uploadedFile == null || productId == null) {
             throw new IllegalArgumentException("Product id must exist");
         }
-        Product product = productService.findById(productId);
-        if (product == null) {
+        Product foundProduct = productService.findById(productId);
+        if (foundProduct == null) {
             throw new NotFoundException("Product could not be found" + productId);
         }
-        uploadedFile.setProduct(product);
-        return super.save(uploadedFile);
+        FileUpload foundFileUpload = fileRepository.findByProductAndRecordStatus(foundProduct, RecordStatus.ACTIVE);
+        if (foundFileUpload == null) {
+            uploadedFile.setProduct(foundProduct);
+            return super.save(uploadedFile);
+        }
+        return super.update(uploadedFile, foundFileUpload.getId());
     }
-
-    /* FIXME:
-        public void updateRecordStatus(Product product) throws NotFoundException {
-        FileUpload fileUpload = fileRepository.findByProduct(product);
-        fileUpload.setRecordStatus(RecordStatus.INACTIVE);
-        Integer id = fileUpload.getId();
-        super.update(fileUpload, id);
-    }
-    */
-
-
-    /*TODO:
-     *  1. Remove (make inactive) FileUpload with a given Product and its RecordStatus = ACTIVE
-     *  2. Set FileUpload reference in Product to null
-     *  3. Add new FileUpload referencing to the same product who's picture is changed
-     *   (Don't allow if there is a ACTIVE file upload with the given product)*/
-    public void updatePicture(MultipartFile file, Integer productId) throws NotFoundException, IOException {
-        removeFileUploadWithGivenProduct(productId);
-        FileUpload fileUpload = uploadFile(file);
-        save(fileUpload, productId);
-    }
-
 
     public FileUpload removeFileUploadWithGivenProduct(Integer productId) throws NotFoundException {
         Product foundProduct = productService.findById(productId);
@@ -108,13 +90,4 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
         //update(foundFileUpload, foundFileUpload.getId());
         return foundFileUpload;
     }
-
-
-    public FileUpload updateImage(MultipartFile file, Product product) throws NotFoundException, IOException {
-        //updateRecordStatus(product);
-        FileUpload fileUpload = uploadFile(file);
-        return save(fileUpload, product.getId());
-    }
-
-
 }

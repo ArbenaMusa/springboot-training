@@ -87,7 +87,7 @@ public class PurchaseService {
 
     public LineItem cancelLineItem(Integer lineItemId) throws NotFoundException {
         if (lineItemId == null) {
-            throw new IllegalArgumentException("Invalid argument");
+            throw new IllegalArgumentException("LineItem ID cannot be null!");
         }
         LineItem foundLineItem = lineItemService.findById(lineItemId);
         if (foundLineItem == null) {
@@ -98,7 +98,7 @@ public class PurchaseService {
     }
 
     public Invoice cancelPurchase(Integer invoiceId) throws NotFoundException {
-        if (invoiceId == null) throw new IllegalArgumentException("Invalid argument" + invoiceId);
+        if (invoiceId == null) throw new IllegalArgumentException("Invoice ID cannot be null!");
         Invoice foundInvoice = invoiceService.findById(invoiceId);
         if (foundInvoice == null) throw new NotFoundException("Invoice does not exist" + invoiceId);
         if (!foundInvoice.getLineItemList().isEmpty()) {
@@ -116,7 +116,7 @@ public class PurchaseService {
 
     public LineItem changeQuantity(LineItem lineItem, Integer lineItemId) throws NotFoundException {
         if (lineItemId == null) {
-            throw new IllegalArgumentException("Invalid argument: " + lineItemId);
+            throw new IllegalArgumentException("LineItem cannot be null!");
         }
         LineItem foundLineItem = lineItemService.findById(lineItemId);
         if (foundLineItem == null) {

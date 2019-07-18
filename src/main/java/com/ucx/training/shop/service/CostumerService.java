@@ -24,18 +24,21 @@ public class CostumerService extends BaseService<Costumer, Integer> {
 
     @Override
     public Costumer save(Costumer costumer) {
+        if (costumer.getAddresses() == null) {
+            throw new IllegalArgumentException("You must have at least 1 address");
+        }
         costumer.getAddresses().forEach(e -> e.setCostumer(costumer));
         return super.save(costumer);
     }
 
     List<Costumer> findAllByName(String name) {
         if (name == null) {
-            throw new IllegalArgumentException("Invalid argument: " + name);
+            throw new IllegalArgumentException("Name must not be null!");
         }
         return costumerRepository.findAllByName(name);
     }
 
-    public AddressDTO updateAddress(Address address, Integer addressId)throws NotFoundException {
+    public AddressDTO updateAddress(Address address, Integer addressId) throws NotFoundException {
         if (address == null) {
             throw new IllegalArgumentException("Invalid address argument: " + address);
         } else if (addressId == null) {
