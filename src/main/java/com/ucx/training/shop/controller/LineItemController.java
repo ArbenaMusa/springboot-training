@@ -19,7 +19,6 @@ public class LineItemController {
         this.lineItemService = lineItemService;
     }
 
-
     @PostMapping
     public LineItemDTO create(@RequestBody LineItem lineItem) {
         LineItemDTO lineItemDTO = LineItemUtil.getLineItem(lineItem, lineItem.getProduct());

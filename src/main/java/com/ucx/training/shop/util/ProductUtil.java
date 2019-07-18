@@ -8,10 +8,9 @@ import java.util.List;
 
 public class ProductUtil {
 
-    public ProductUtil() {
+    private ProductUtil() {}
 
-    }
-
+    //TODO: Handle exceptions here
     public static List<ProductDTO> getProducts(List<Product> productList) {
         ProductDTO productDTO = new ProductDTO();
         List<ProductDTO> productDTOList = new ArrayList<>();
@@ -26,7 +25,7 @@ public class ProductUtil {
         return productDTOList;
     }
 
-
+    //TODO: Throw exceptions here
     public static ProductDTO getProduct(Product product) {
         if (product == null) {
             throw new IllegalArgumentException("Product must not be null");

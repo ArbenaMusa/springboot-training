@@ -4,16 +4,16 @@ import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.entity.Product;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LineItemUtil {
 
-    public LineItemUtil() {
+    private LineItemUtil(){}
 
-    }
-
+    //TODO: Handle exceptions here
     public static LineItemDTO getLineItem(LineItem lineItem, Product product) {
         LineItemDTO lineItemDTO = new LineItemDTO();
         ProductDTO productDTO = new ProductDTO();
@@ -26,6 +26,7 @@ public class LineItemUtil {
         return lineItemDTO;
     }
 
+    //TODO: Handle exceptions here
     public static List<LineItemDTO> getLineItems(List<LineItem> lineItemList) {
         LineItemDTO lineItemDTO = new LineItemDTO();
         List<LineItemDTO> lineItemDTOList = new ArrayList<>();

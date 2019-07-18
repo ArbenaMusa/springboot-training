@@ -2,8 +2,10 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.entity.FileUpload;
 import com.ucx.training.shop.exception.NotFoundException;
+import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.FileUploadService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,30 +24,26 @@ public class FileUploadController {
     }
 
     @PostMapping
-    public FileUpload uploadFile(@RequestParam("files") MultipartFile file, @RequestParam("productId") Integer productId) {
+    public FileUpload uploadFile(@RequestParam("files") MultipartFile file, @RequestParam("productId") Integer productId) throws ResponseException {
         FileUpload uploadedFile = null;
         try {
             uploadedFile = fileUploadService.uploadFile(file);
             fileUploadService.save(uploadedFile, productId);
-        } catch (IOException ex) {
-            log.error(ex.getMessage());
-        } catch (NotFoundException nfe) {
-            log.error(nfe.getMessage());
         } catch (Exception e) {
-            log.error(e.getMessage());
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         if (uploadedFile == null) throw new RuntimeException("File upload failed");
         return uploadedFile;
     }
 
     @PutMapping
-    public FileUpload updatePicture(@RequestParam("files") MultipartFile file, @RequestParam("productId") Integer productId) {
+    public FileUpload updatePicture(@RequestParam("files") MultipartFile file, @RequestParam("productId") Integer productId) throws ResponseException {
         FileUpload fileUpload = null;
         try {
             fileUploadService.removeFileUploadWithGivenProduct(productId);
             fileUpload = this.uploadFile(file, productId);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return fileUpload;
     }
