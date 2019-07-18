@@ -5,6 +5,7 @@ import java.util.List;
 
 @Data
 public class CustomerDTO {
+    private Integer id;
     private String name;
     private String email;
     private String phoneNumber1;
