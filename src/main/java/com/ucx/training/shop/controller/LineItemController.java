@@ -2,13 +2,15 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.entity.LineItem;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.service.LineItemService;
 import com.ucx.training.shop.util.LineItemUtil;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Log4j2
 @RestController
 @RequestMapping("lineitems")
 public class LineItemController {
@@ -39,5 +41,15 @@ public class LineItemController {
         List<LineItemDTO> lineItemDTOList = LineItemUtil.getLineItems(lineItem);
         return lineItemDTOList;
     }
+
+    @DeleteMapping("{id}")
+    public void remove(@PathVariable Integer id){
+        try {
+            lineItemService.remove(id);
+        }catch (NotFoundException e){
+            log.error(e.getMessage());
+        }
+    }
+
 
 }

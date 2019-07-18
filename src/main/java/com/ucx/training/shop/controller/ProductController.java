@@ -2,11 +2,13 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Product;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.FileUploadService;
 import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.ProductUtil;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
+@Log4j2
 @RestController
 @RequestMapping("products")
 public class ProductController {
@@ -72,6 +75,15 @@ public class ProductController {
     public ProductDTO findByID(@PathVariable Integer id) {
         Product product = productService.findById(id);
         return ProductUtil.getProduct(product);
+    }
+
+    @DeleteMapping("{id}")
+    public void remove(@PathVariable Integer id){
+        try{
+            productService.remove(id);
+        }catch (NotFoundException e){
+            log.error(e.getMessage());
+        }
     }
 
 }
