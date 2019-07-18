@@ -9,7 +9,9 @@ import com.ucx.training.shop.type.RecordStatus;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 
 @Log4j2
@@ -57,7 +59,7 @@ public class PurchaseService {
         return newInvoiceId;
     }
 
-    public Invoice buy(Integer costumerId, Integer invoiceId) throws NotFoundException {
+    public Invoice buy(Integer costumerId, Integer invoiceId) throws NotFoundException, MessagingException, IOException {
         Invoice foundInvoice = invoiceService.findById(invoiceId);
         if (foundInvoice == null) throw new NotFoundException("No such Invoice found" + invoiceId);
         if (foundInvoice.getRecordStatus() == RecordStatus.INACTIVE)
@@ -71,11 +73,7 @@ public class PurchaseService {
         Invoice printedInvoice = invoiceService.print(generatedInvoice.getId());
         reduceStock(lineItemList);
 
-        try {
-            emailService.sendMail(foundCostumer, generatedInvoice);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+        emailService.sendMail(foundCostumer, generatedInvoice);
         return printedInvoice;
     }
 

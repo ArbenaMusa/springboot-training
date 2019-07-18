@@ -1,0 +1,7 @@
+Customer name: Jehona
+Customer email: fati.marmullaku@gmail.com
+Product name: Samsung S8
+Quantity: 2
+Purchase date: 2019-07-18T09:59:17.688493
+-------------------------------
+Total: 826.00

@@ -28,7 +28,7 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendMail(Costumer costumer, Invoice invoice) throws MessagingException {
+    public void sendMail(Costumer costumer, Invoice invoice) throws MessagingException, IOException {
 
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
@@ -39,15 +39,10 @@ public class EmailService {
         File file = new File("Invoice.txt");
 
         try (Writer writer = new BufferedWriter(new FileWriter(file))) {
-            //String[] contents = {invoice.getDescription(), invoice.getInvoiceNumber().toString(),
-            //        invoice.getLineItemList().toString(), invoice.getCostumer().toString()};
-            String contents = invoice.toString();
-            //for (int i = 0;i<contents.length;i++){
-            //writer.write(contents[i]);
-            //}
             List<LineItem> list = invoice.getLineItemList();
             Product product = list.get(0).getProduct();
 
+            //TODO: LOOP
             writer.write("Customer name: " + costumer.getName() +
                     "\nCustomer email: " + costumer.getEmail() +
                     "\nProduct name: " + product.getName() +
@@ -56,7 +51,7 @@ public class EmailService {
                     "\n-------------------------------" +
                     "\nTotal: " + invoice.getTotal());
         } catch (IOException e) {
-            log.error(e.getMessage());
+            throw e;
         }
 
         helper.addAttachment("Invoice.txt", file);
