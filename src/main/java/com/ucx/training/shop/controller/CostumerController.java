@@ -79,7 +79,7 @@ public class CostumerController {
         }
     }
 
-    @PatchMapping("/addresses/{addressId}")
+    @PutMapping("/addresses/{addressId}")
     public AddressDTO updateAddress(@RequestBody Address address, @PathVariable("addressId") Integer addressId) throws ResponseException {
         try {
             return costumerService.updateAddress(address, addressId);

@@ -59,6 +59,7 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
                 .build();
     }
 
+    //TODO: Fix implementation to update as well.
     public FileUpload save(FileUpload uploadedFile, Integer productId) throws NotFoundException {
         if (productId == null) {
             throw new IllegalArgumentException("Product id must exist");

@@ -20,6 +20,7 @@ public class FileUploadController {
         this.fileUploadService = fileUploadService;
     }
 
+    //TODO: Implement upload logic here
     @PostMapping
     public FileUpload uploadFile(@RequestParam("files") MultipartFile file, @RequestParam("productId") Integer productId) throws ResponseException {
         FileUpload uploadedFile = null;
