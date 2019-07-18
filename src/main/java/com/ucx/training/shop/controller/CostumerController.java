@@ -11,7 +11,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Log4j2
@@ -25,7 +24,7 @@ public class CostumerController{
         this.costumerService = costumerService;
     }
 
-    /*@PostMapping
+    @PostMapping
     public CustomerDTO create(@RequestBody Costumer costumer) throws ResponseException {
         try {
             Costumer customer = costumerService.save(costumer);
@@ -33,9 +32,9 @@ public class CostumerController{
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }*/
+    }
 
-    /*@PutMapping("{id}")
+    @PutMapping("{id}")
     public CustomerDTO update(@RequestBody Costumer costumer, @PathVariable Integer id) throws ResponseException {
         CustomerDTO customerDTO = null;
         try {
@@ -45,18 +44,18 @@ public class CostumerController{
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return customerDTO;
-    }*/
+    }
 
-    /*@DeleteMapping("{id}")
+    @DeleteMapping("{id}")
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
             costumerService.remove(id);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }*/
+    }
 
-    /*@GetMapping
+    @GetMapping
     public List<CustomerDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<Costumer> costumers = costumerService.findAllSorted(direction, properties);
@@ -65,9 +64,9 @@ public class CostumerController{
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }*/
+    }
 
-    /*@GetMapping("/paged")
+    @GetMapping("/paged")
     public List<CustomerDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
         try {
             Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
@@ -77,11 +76,6 @@ public class CostumerController{
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }*/
-
-    @GetMapping
-    public List<Costumer> getAllCostumers() {
-        return costumerService.findAll();
     }
 
     @PutMapping("/addresses/{addressId}")
