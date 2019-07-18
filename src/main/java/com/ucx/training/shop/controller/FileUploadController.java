@@ -46,13 +46,13 @@ public class FileUploadController {
         FileUpload fileUpload = null;
         FileUpload files = null;
         try {
-           fileUploadService.updateRecordStatus(productId);
+            fileUploadService.updateRecordStatus(productId);
             fileUpload = this.uploadFile(file, productId);
             files = fileUploadService.update(fileUpload,productId);
         } catch (NotFoundException e) {
             e.printStackTrace();
         }
-        return files;
+        return fileUpload;
     }
 }
 
