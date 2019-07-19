@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CustomerServiceUnitTest {
+public class CustomerServiceUnitTests {
 
     @Mock
     private BaseService baseService;

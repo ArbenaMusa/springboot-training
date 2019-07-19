@@ -28,7 +28,7 @@ import static org.junit.Assert.assertNotNull;
 @Log4j2
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CustomerControllerTest {
+public class CustomerControllerTests {
 
     private List<Integer> customerList;
 
@@ -65,7 +65,6 @@ public class CustomerControllerTest {
         Costumer customer = new Costumer();
         customer.setName("testName");
         customer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
-
 
         HttpEntity<Costumer> entity = new HttpEntity<>(customer, headers);
 

@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CustomerServiceTest {
+public class CustomerServiceTests {
 
     @Autowired
     private CostumerService costumerService;
