@@ -20,7 +20,7 @@ import java.util.List;
 public class Costumer extends BaseEntity<Integer> {
     private String name;
 
-    @OneToMany(mappedBy = "costumer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "costumer", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @Size(min = 1, message = "You must have at least 1 address")
     private List<Address> addresses;
 

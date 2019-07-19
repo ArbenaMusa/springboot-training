@@ -82,4 +82,27 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         t.setAddresses(null);
         BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
     }
+
+    public Costumer updateCostumerWithAddress(Costumer updatedCostumer, Integer costumerId) throws NotFoundException {
+        if (updatedCostumer == null) throw new IllegalArgumentException(String.format("One of the arguments is invalid: %s", updatedCostumer));
+        Costumer foundCostumer = findById(costumerId);
+        if (foundCostumer == null) throw new NotFoundException("Entity not found");
+
+        List<Address> addresses = updatedCostumer.getAddresses();
+        for (Address address : addresses) {
+            if (address.getId() == null) {
+                addressService.save(address);
+            }
+
+            if (address.getId() != null) {
+                Address foundAddress = addressService.findById(address.getId());
+                if (foundAddress == null) {
+                    throw new NotFoundException("Address with the given id does not exist!");
+                }
+                addressService.update(address, foundAddress.getId());
+            }
+        }
+        foundCostumer.setAddresses(addresses);
+        return super.update(updatedCostumer, costumerId);
+    }
 }
