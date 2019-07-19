@@ -54,7 +54,4 @@ public class InvoiceService extends BaseService<Invoice, Integer> {
         return invoiceRepository.findAllByCostumer(costumer);
     }
 
-
-
-
 }
