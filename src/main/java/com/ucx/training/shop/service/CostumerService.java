@@ -49,9 +49,7 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         return AddressUtil.getAddress(addressService.update(address, addressId));
     }
 
-
-    @Override
-    public Costumer update(Costumer t, Integer u) throws NotFoundException {
+    public void updateWithAddresses(Costumer t, Integer u) throws NotFoundException {
         if (t == null) {
             throw new IllegalArgumentException(String.format("One of the arguments is invalid: %s", t));
         }
@@ -83,6 +81,5 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         });
         t.setAddresses(null);
         BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
-        return findById(u);
     }
 }

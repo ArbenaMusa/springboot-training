@@ -13,7 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RestController
@@ -39,17 +41,23 @@ public class CostumerController{
     }
 
     @PutMapping("{id}")
-    public CustomerDTO update(@RequestBody Costumer costumer, @PathVariable Integer id) throws ResponseException {
-        CustomerDTO customerDTO = null;
+    public Map<String, Integer> update(@RequestBody Costumer costumer, @PathVariable Integer id) throws ResponseException {
+        Map<String, Integer> responseMap = new HashMap<>();
         try {
-            Costumer updatedCustomer = costumerService.update(costumer, id);
-            customerDTO = CustomerUtil.getCustomer(updatedCustomer);
+            costumerService.updateWithAddresses(costumer, id);
+            responseMap.put("id", id);
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return customerDTO;
+        return responseMap;
+    }
+
+    @GetMapping("{costumerId}")
+    public CustomerDTO getById(@PathVariable Integer costumerId) {
+        Costumer foundCustomer = costumerService.findById(costumerId);
+        return CustomerUtil.getCustomer(foundCustomer);
     }
 
     @DeleteMapping("{id}")
