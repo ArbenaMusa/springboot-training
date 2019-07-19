@@ -14,12 +14,14 @@ public class CustomerUtil {
     }
 
     public static CustomerDTO getCustomer(Costumer costumer) {
-        CustomerDTO customerDTO = new CustomerDTO();
-        AddressDTO addressDTO = new AddressDTO();
+        if (costumer == null) {
+            throw new IllegalArgumentException("Costumer must not be null!");
+        }
         List<Address> addressList = costumer.getAddresses();
         List<AddressDTO> addressDTOList = new ArrayList<>();
 
         addressList.forEach(e -> {
+            AddressDTO addressDTO = new AddressDTO();
             addressDTO.setStreet(e.getStreet());
             addressDTO.setCity(e.getCity());
             addressDTO.setZipCode(e.getZipCode());
@@ -27,6 +29,7 @@ public class CustomerUtil {
             addressDTOList.add(addressDTO);
         });
 
+        CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setId(costumer.getId());
         customerDTO.setName(costumer.getName());
         customerDTO.setEmail(costumer.getEmail());

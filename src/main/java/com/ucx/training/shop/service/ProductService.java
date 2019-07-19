@@ -1,8 +1,6 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.entity.FileUpload;
 import com.ucx.training.shop.entity.Product;
-import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,7 @@ import java.util.List;
 @Service
 @Transactional
 @Log4j2
-public class ProductService extends BaseService<Product,Integer> {
+public class ProductService extends BaseService<Product, Integer> {
 
     @Autowired
     private ProductRepository productRepository;

@@ -2,8 +2,8 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Product;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
-import com.ucx.training.shop.service.FileUploadService;
 import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.ProductUtil;
@@ -27,10 +27,8 @@ public class ProductController {
     @Value("${file.upload}")
     private String uploadDirectoryName;
     private ProductService productService;
-    private FileUploadService fileUploadService;
 
-    public ProductController(ProductService productService, FileUploadService fileUploadService) {
-        this.fileUploadService = fileUploadService;
+    public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
@@ -39,6 +37,8 @@ public class ProductController {
         Product createdProduct = null;
         try {
             createdProduct = productService.save(product);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -46,8 +46,6 @@ public class ProductController {
         return ProductUtil.getProduct(createdProduct);
     }
 
-
-    //TODO: Fix Exception handling
     @GetMapping("image/{fileName}")
     public ResponseEntity<InputStreamResource> getImage(@PathVariable String fileName) throws ResponseException {
         String filePathAsString = System.getProperty("user.dir") + uploadDirectoryName + fileName;
@@ -89,6 +87,8 @@ public class ProductController {
         try {
             Product product = productService.findById(id);
             return ProductUtil.getProduct(product);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -98,6 +98,8 @@ public class ProductController {
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
             productService.remove(id);
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

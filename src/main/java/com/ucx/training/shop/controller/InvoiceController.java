@@ -3,6 +3,7 @@ package com.ucx.training.shop.controller;
 import com.ucx.training.shop.dto.InvoiceDTO;
 import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.entity.Invoice;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.InvoiceService;
 import com.ucx.training.shop.service.LineItemService;
@@ -29,7 +30,10 @@ public class InvoiceController {
     @PostMapping
     public InvoiceDTO create(@RequestBody Invoice invoice) throws ResponseException {
         try {
-            return InvoiceUtil.getInvoice(invoiceService.save(invoice));
+            Invoice createdInvoice = invoiceService.save(invoice);
+            return InvoiceUtil.getInvoice(createdInvoice);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -40,6 +44,8 @@ public class InvoiceController {
         try {
             Invoice updatedInvoice = invoiceService.update(invoice.getLineItemList(), invoice.getCostumer(), invoice);
             return InvoiceUtil.getInvoice(updatedInvoice);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -49,6 +55,8 @@ public class InvoiceController {
     public InvoiceDTO findInvoiceById(@PathVariable Integer id) throws ResponseException {
         try {
             return InvoiceUtil.getInvoice(invoiceService.findById(id));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -58,6 +66,8 @@ public class InvoiceController {
     public List<LineItemDTO> getLineItemsByInvoiceId(@PathVariable Integer invoiceId) throws ResponseException {
         try {
             return lineItemService.findAllByInvoiceId(invoiceId);
+        } catch (IllegalArgumentException | NotFoundException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -67,6 +77,8 @@ public class InvoiceController {
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
             invoiceService.remove(id);
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

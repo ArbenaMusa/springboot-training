@@ -37,6 +37,9 @@ public class InvoiceUtil {
     }
 
     public static InvoiceDTO getInvoice(Invoice invoice){
+        if (invoice == null) {
+            throw new IllegalArgumentException("Invoice cannot be null!");
+        }
         InvoiceDTO invoiceDTO = new InvoiceDTO();
         LineItemDTO lineItemDTO = new LineItemDTO();
         List<LineItemDTO> lineItemDTOList = new ArrayList<>();

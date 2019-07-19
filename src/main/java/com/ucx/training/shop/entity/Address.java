@@ -19,7 +19,7 @@ public class Address extends BaseEntity<Integer> {
     private String city;
     private String country;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "costumer_id")
     private Costumer costumer;
 }

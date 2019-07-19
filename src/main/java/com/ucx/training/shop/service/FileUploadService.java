@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 
 @Service
@@ -45,12 +46,9 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
         }
         String filePathAsString = directoryPathAsString + file.getOriginalFilename();
         Path filePath = Paths.get(filePathAsString);
-        if (Files.exists(filePath)) {
-            throw new RuntimeException("File already exists!");
-        }
 
         byte[] bytes = file.getBytes();
-        Files.write(filePath, bytes);
+        Files.write(filePath, bytes, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
 
         return FileUpload.builder()
                 .fileName(file.getOriginalFilename())
@@ -59,62 +57,19 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
                 .build();
     }
 
-    //TODO: Fix implementation to update as well.
     public FileUpload save(FileUpload uploadedFile, Integer productId) throws NotFoundException {
-        if (productId == null) {
+        if (uploadedFile == null || productId == null) {
             throw new IllegalArgumentException("Product id must exist");
         }
-        Product product = productService.findById(productId);
-        if (product == null) {
-            throw new NotFoundException("Product could not be found" + productId);
-        }
-        uploadedFile.setProduct(product);
-        return super.save(uploadedFile);
-    }
-
-    /* FIXME:
-        public void updateRecordStatus(Product product) throws NotFoundException {
-        FileUpload fileUpload = fileRepository.findByProduct(product);
-        fileUpload.setRecordStatus(RecordStatus.INACTIVE);
-        Integer id = fileUpload.getId();
-        super.update(fileUpload, id);
-    }
-    */
-
-
-    /*TODO:
-     *  1. Remove (make inactive) FileUpload with a given Product and its RecordStatus = ACTIVE
-     *  2. Set FileUpload reference in Product to null
-     *  3. Add new FileUpload referencing to the same product who's picture is changed
-     *   (Don't allow if there is a ACTIVE file upload with the given product)*/
-    public void updatePicture(MultipartFile file, Integer productId) throws NotFoundException, IOException {
-        removeFileUploadWithGivenProduct(productId);
-        FileUpload fileUpload = uploadFile(file);
-        save(fileUpload, productId);
-    }
-
-
-    public FileUpload removeFileUploadWithGivenProduct(Integer productId) throws NotFoundException {
         Product foundProduct = productService.findById(productId);
         if (foundProduct == null) {
-            throw new NotFoundException("Product does not exist!");
+            throw new NotFoundException("Product could not be found" + productId);
         }
         FileUpload foundFileUpload = fileRepository.findByProductAndRecordStatus(foundProduct, RecordStatus.ACTIVE);
-        /*if (foundFileUpload == null) {
-        //TODO: if none are active, create new fileupload.
-           Develop this logic on other method and let this method return null
-        }*/
-        super.remove(foundFileUpload.getId());
-        //update(foundFileUpload, foundFileUpload.getId());
-        return foundFileUpload;
+        if (foundFileUpload == null) {
+            uploadedFile.setProduct(foundProduct);
+            return super.save(uploadedFile);
+        }
+        return super.update(uploadedFile, foundFileUpload.getId());
     }
-
-
-    public FileUpload updateImage(MultipartFile file, Product product) throws NotFoundException, IOException {
-        //updateRecordStatus(product);
-        FileUpload fileUpload = uploadFile(file);
-        return save(fileUpload, product.getId());
-    }
-
-
 }

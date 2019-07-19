@@ -4,6 +4,7 @@ import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CostumerService;
 import com.ucx.training.shop.util.CustomerUtil;
@@ -11,7 +12,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RestController
@@ -29,27 +33,39 @@ public class CostumerController{
         try {
             Costumer customer = costumerService.save(costumer);
             return CustomerUtil.getCustomer(customer);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping("{id}")
-    public CustomerDTO update(@RequestBody Costumer costumer, @PathVariable Integer id) throws ResponseException {
-        CustomerDTO customerDTO = null;
+    public Map<String, Integer> update(@RequestBody Costumer costumer, @PathVariable Integer id) throws ResponseException {
+        Map<String, Integer> responseMap = new HashMap<>();
         try {
-            Costumer updatedCustomer = costumerService.update(costumer, id);
-            customerDTO = CustomerUtil.getCustomer(updatedCustomer);
+            costumerService.updateWithAddresses(costumer, id);
+            responseMap.put("id", id);
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return customerDTO;
+        return responseMap;
+    }
+
+    @GetMapping("{costumerId}")
+    public CustomerDTO getById(@PathVariable Integer costumerId) {
+        Costumer foundCustomer = costumerService.findById(costumerId);
+        return CustomerUtil.getCustomer(foundCustomer);
     }
 
     @DeleteMapping("{id}")
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
             costumerService.remove(id);
+        } catch (NotFoundException | IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
