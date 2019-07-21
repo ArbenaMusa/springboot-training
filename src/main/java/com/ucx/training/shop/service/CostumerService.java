@@ -8,6 +8,7 @@ import com.ucx.training.shop.repository.CostumerRepository;
 import com.ucx.training.shop.util.AddressUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 import java.util.Iterator;
@@ -84,17 +85,17 @@ public class CostumerService extends BaseService<Costumer, Integer> {
     }
 
     public Costumer updateCostumerWithAddress(Costumer updatedCostumer, Integer costumerId) throws NotFoundException {
-        if (updatedCostumer == null) throw new IllegalArgumentException(String.format("One of the arguments is invalid: %s", updatedCostumer));
+        Assert.isTrue(updatedCostumer != null, "One of the arguments is invalid!");
         Costumer foundCostumer = findById(costumerId);
-        if (foundCostumer == null) throw new NotFoundException("Entity not found");
+        Assert.isTrue(foundCostumer != null, "Entity not found!");
+        //if (foundCostumer == null) throw new NotFoundException("Entity not found");
 
         List<Address> addresses = updatedCostumer.getAddresses();
         for (Address address : addresses) {
             if (address.getId() == null) {
+                address.setCostumer(foundCostumer);
                 addressService.save(address);
-            }
-
-            if (address.getId() != null) {
+            }else{
                 Address foundAddress = addressService.findById(address.getId());
                 if (foundAddress == null) {
                     throw new NotFoundException("Address with the given id does not exist!");
@@ -102,7 +103,7 @@ public class CostumerService extends BaseService<Costumer, Integer> {
                 addressService.update(address, foundAddress.getId());
             }
         }
-        foundCostumer.setAddresses(addresses);
-        return super.update(updatedCostumer, costumerId);
+        updatedCostumer.setAddresses(null);
+        return update(updatedCostumer, costumerId);
     }
 }
