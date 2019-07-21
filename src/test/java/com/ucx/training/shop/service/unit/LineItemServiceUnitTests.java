@@ -27,7 +27,7 @@ public class LineItemServiceUnitTests {
     private BaseService baseService;
 
     @Before
-    public void setup(){
+    public void setup() {
         MockitoAnnotations.initMocks(this);
     }
 
@@ -48,13 +48,19 @@ public class LineItemServiceUnitTests {
 
         //update test
         createdLineItem.setQuantity(1);
-        when(baseService.update(createdLineItem,createdLineItem.getId())).thenReturn(createdLineItem);
+        when(baseService.update(createdLineItem, createdLineItem.getId())).thenReturn(createdLineItem);
         assertEquals(Integer.valueOf(1), createdLineItem.getQuantity());
     }
 
-//    @Test
-//    public void testDelete() throws NotFoundException {
-//        doThrow(NotFoundException.class).when(baseService).remove(null);
-//        baseService.remove(13);
-//    }
+    @Test
+    public void testDelete() throws NotFoundException {
+        doThrow(IllegalArgumentException.class).when(baseService).remove(null);
+        baseService.remove(13);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void WhenRemovingEntity_GivenInvalidId_ShouldThrowNotFoundException() throws NotFoundException {
+        doThrow(NotFoundException.class).when(baseService).remove(200);
+    }
+
 }

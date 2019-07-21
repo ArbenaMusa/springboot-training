@@ -72,7 +72,8 @@ public class CustomerServiceTests {
         assertNotNull(createdCostumer.getId());
         Costumer foundCostumer = costumerService.findById(createdCostumer.getId());
         costumerService.remove(foundCostumer.getId());
-        assertEquals(RecordStatus.INACTIVE, foundCostumer.getRecordStatus());
+        Costumer refoundCostumer = costumerService.findById(createdCostumer.getId());
+        assertEquals(RecordStatus.INACTIVE, refoundCostumer.getRecordStatus());
         costumers.add(createdCostumer);
     }
 }

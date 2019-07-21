@@ -37,7 +37,7 @@ public class LineItemUtil {
             Product product = e.getProduct();
             ProductDTO productDTO = new ProductDTO();
             productDTO.setName(product.getName());
-            productDTO.setFileName(product.getFileUpload().getFilePath());
+            //productDTO.setFileName(product.getFileUpload().getFilePath());
             productDTO.setUnitPrice(product.getUnitPrice());
             lineItemDTO.setProduct(product.getName());
             lineItemDTO.setQuantity(e.getQuantity());

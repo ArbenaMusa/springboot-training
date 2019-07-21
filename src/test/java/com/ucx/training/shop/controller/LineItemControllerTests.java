@@ -97,9 +97,9 @@ public class LineItemControllerTests {
         HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
 
         ResponseEntity<String> updateResponse = restTemplate
-                .exchange("/lineitems/13", HttpMethod.PUT, entity, String.class);
+                .exchange("/lineitems/26", HttpMethod.PUT, entity, String.class);
 
-        LineItem lineItem = lineItemService.findById(13);
+        LineItem lineItem = lineItemService.findById(26);
         assertEquals(Integer.valueOf(1),lineItem.getQuantity());
     }
 

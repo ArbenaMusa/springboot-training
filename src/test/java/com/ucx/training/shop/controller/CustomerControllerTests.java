@@ -5,14 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
-import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.repository.CostumerRepository;
 import com.ucx.training.shop.service.CostumerService;
 import com.ucx.training.shop.type.RecordStatus;
 import lombok.extern.log4j.Log4j2;
-import net.minidev.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,12 +83,13 @@ public class CustomerControllerTests {
     }
 
     @Test
+    @Ignore
     public void testGet() throws URISyntaxException, IOException {
         RestTemplate restTemplate = new RestTemplate();
         String fooResourceUrl
                 = "http://localhost:8080/shop/costumers";
         ResponseEntity<String> response
-                = restTemplate.getForEntity(fooResourceUrl , String.class);
+                = restTemplate.getForEntity(fooResourceUrl, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
         ObjectMapper mapper = new ObjectMapper();
@@ -98,7 +98,7 @@ public class CustomerControllerTests {
         assertThat(name.asText(), notNullValue());
     }
 
-    //Not working
+//    FIXME: Not working
 //    @Test
 //    public void testUpdate(){
 //        JSONObject request = new JSONObject();
@@ -116,10 +116,10 @@ public class CustomerControllerTests {
 //    }
 
     @Test
-    public void testDelete(){
+    public void testDelete() {
         String entityUrl = "/costumers/6";
         restTemplate.delete(entityUrl);
         Costumer customer = customerService.findById(6);
-        assertEquals(RecordStatus.INACTIVE,customer.getRecordStatus());
+        assertEquals(RecordStatus.INACTIVE, customer.getRecordStatus());
     }
 }
