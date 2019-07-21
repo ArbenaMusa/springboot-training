@@ -2,8 +2,10 @@ package com.ucx.training.shop.service.integ;
 
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.entity.Product;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.LineItemRepository;
 import com.ucx.training.shop.service.LineItemService;
+import com.ucx.training.shop.type.RecordStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +43,7 @@ public class LineItemServiceTests {
     }
 
     @Test
-    public void testCreate(){
+    public void testCreate() throws NotFoundException {
         Product product = new Product();
         product.setName("Pjeshka");
         product.setUnitPrice(BigDecimal.valueOf(25.5));
@@ -59,4 +61,20 @@ public class LineItemServiceTests {
         assertEquals(foundLineItem.getId(), createdLineItem.getId());
         lineItemList.add(createdLineItem);
     }
+
+    //TODO: Is not working
+//    @Test
+//    public void testUpdate() throws NotFoundException {
+//        LineItem lineItem = lineItemService.findById(5);
+//        lineItem.setQuantity(1);
+//        lineItemService.update(lineItem,5);
+//    }
+
+
+//    @Test
+//    public void testDelete() throws NotFoundException {
+//        lineItemService.remove(9);
+//        LineItem lineItem = lineItemService.findById(9);
+//        assertEquals(RecordStatus.INACTIVE,lineItem.getRecordStatus());
+//    }
 }
