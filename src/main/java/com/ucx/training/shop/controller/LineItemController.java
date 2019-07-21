@@ -36,8 +36,20 @@ public class LineItemController {
         }
     }
 
+    @PutMapping("{id}")
+    public void update(@RequestBody LineItem lineItem, @PathVariable Integer id) throws ResponseException {
+        try {
+            LineItem updatedInvoice = lineItemService.update(lineItem, id);
+//            return LineItemUtil.getLineItem(updatedInvoice);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping
-    public List<LineItemDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @PathVariable Integer id, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
+    public List<LineItemDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<LineItem> lineItems = lineItemService.findAllSorted(direction, properties);
             List<LineItemDTO> lineItemDTOList = LineItemUtil.getLineItems(lineItems);
