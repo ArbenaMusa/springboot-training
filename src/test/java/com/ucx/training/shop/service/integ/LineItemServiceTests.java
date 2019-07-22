@@ -8,21 +8,19 @@ import com.ucx.training.shop.service.LineItemService;
 import com.ucx.training.shop.type.RecordStatus;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -34,20 +32,30 @@ public class LineItemServiceTests {
     private LineItemRepository lineItemRepository;
 
     private List<LineItem> lineItemList;
+    private List<Product> productList;
+    private LineItem lineItem;
 
     @Before
     public void setup(){
         lineItemList = new ArrayList<>();
-        /*Product product = new Product();
-        product.setName("Pjeshka");
-        product.setUnitPrice(BigDecimal.valueOf(25.5));
-        product.setInStock(5);
+        productList = new ArrayList<>();
+        Product product = getProduct();
+//        productList.add(product);
 
-        LineItem lineItem = new LineItem();
+        lineItem = new LineItem();
         lineItem.setProduct(product);
         lineItem.setQuantity(2);
         lineItemService.save(lineItem);
-        lineItemList.add(lineItem);*/
+        lineItemList.add(lineItem);
+    }
+
+    private Product getProduct() {
+        Product product = new Product();
+        product.setName("Pjeshka");
+        product.setUnitPrice(BigDecimal.valueOf(25.5));
+        product.setInStock(5);
+        productList.add(product);
+        return product;
     }
 
     @After
@@ -56,42 +64,45 @@ public class LineItemServiceTests {
     }
 
     @Test
-    @Transactional
     public void testCreate() throws NotFoundException {
-        Product product = new Product();
-        product.setName("Pjeshka");
-        product.setUnitPrice(BigDecimal.valueOf(25.5));
-        product.setInStock(5);
-
-        LineItem lineItem = new LineItem();
-        lineItem.setProduct(product);
-        lineItem.setQuantity(2);
-
         LineItem createdLineItem = lineItemService.save(lineItem);
         assertNotNull(createdLineItem);
         assertNotNull(createdLineItem.getId());
-
-        /*LineItem foundLineItem = lineItemService.findById(createdLineItem.getId());
-        assertEquals(foundLineItem.getId(), createdLineItem.getId());*/
+        LineItem foundLineItem = lineItemService.findById(createdLineItem.getId());
+        assertEquals(foundLineItem.getId(), createdLineItem.getId());
         lineItemList.add(createdLineItem);
     }
 
-    //TODO: Is not working
-//    @Test
-//    public void testUpdate() throws NotFoundException {
-//        LineItem lineItem = lineItemService.findById(5);
-//        lineItem.setQuantity(1);
-//        lineItemService.update(lineItem,5);
-//    }
-
+    @Test
+    public void testUpdate() throws NotFoundException {
+        LineItem createdLineItem = lineItemService.save(lineItem);
+        assertNotNull(createdLineItem);
+        assertNotNull(createdLineItem.getId());
+        LineItem foundLineItem = lineItemService.findById(createdLineItem.getId());
+        LineItem newCostumer = new LineItem();
+        newCostumer.setQuantity(2);
+        LineItem updatedLineItem = lineItemService.update(newCostumer, foundLineItem.getId());
+        assertEquals(Integer.valueOf(2), updatedLineItem.getQuantity());
+    }
 
     @Test
     @Transactional
-    @Ignore
     public void testDelete() throws NotFoundException {
-        lineItemList.forEach(e -> System.out.println(e));
-        lineItemService.remove(lineItemList.get(0).getId());
-        LineItem foundLineItem = lineItemService.findById(lineItemList.get(0).getId());
-        assertEquals(RecordStatus.INACTIVE, lineItemList.get(0).getRecordStatus());
+        LineItem createdLineItem = lineItemService.save(lineItem);
+        assertNotNull(createdLineItem);
+        assertNotNull(createdLineItem.getId());
+        LineItem foundLineItem = lineItemService.findById(createdLineItem.getId());
+        lineItemService.remove(foundLineItem.getId());
+        assertEquals(RecordStatus.INACTIVE, foundLineItem.getRecordStatus());
+        lineItemList.add(createdLineItem);
+    }
+
+    @Test
+    public void WhenFindingLineItem_GivenValidId_ShouldReturnLineItem() {
+        LineItem createdLineItem = lineItemService.save(lineItem);
+        assertNotNull(createdLineItem);
+        assertNotNull(createdLineItem.getId());
+        LineItem foundLineItem = lineItemService.findById(createdLineItem.getId());
+        assertEquals(createdLineItem.getId(), foundLineItem.getId());
     }
 }

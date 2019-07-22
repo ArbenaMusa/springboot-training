@@ -8,6 +8,7 @@ import com.ucx.training.shop.service.LineItemService;
 import com.ucx.training.shop.service.ProductService;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Ignore
 public class InvoiceServiceTests {
 
     @Autowired
@@ -78,7 +80,7 @@ public class InvoiceServiceTests {
     }
 
 
-    @Test
+//    @Test
     public void testUpdate() {
         lineItemList.add(lineItem1);
         lineItemList.add(lineItem2);

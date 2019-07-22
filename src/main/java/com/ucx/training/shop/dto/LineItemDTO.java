@@ -14,7 +14,8 @@ public class LineItemDTO {
     private Integer invoiceId;
 
     @Builder
-    public LineItemDTO(String product, Integer quantity, Integer invoiceId) {
+    public LineItemDTO(Integer id, String product, Integer quantity, Integer invoiceId) {
+        this.id=id;
         this.product = product;
         this.quantity = quantity;
         this.invoiceId = invoiceId;
