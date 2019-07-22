@@ -64,17 +64,16 @@ public class InvoiceServiceTests {
         priorInvoice = invoiceService.save(new Invoice());
 
 
-        lineItem1 = lineItemService.create(product1,8,priorInvoice);
-        lineItem2 = lineItemService.create(product2,7,priorInvoice);
+        lineItem1 = lineItemService.create(product1, 8, priorInvoice);
+        lineItem2 = lineItemService.create(product2, 7, priorInvoice);
 
     }
 
     @After
     public void cleanup() {
-       lineItemRepository.delete(lineItem1);
+        lineItemRepository.delete(lineItem1);
         lineItemRepository.delete(lineItem2);
-       invoiceRepository.delete(priorInvoice);
-
+        invoiceRepository.delete(priorInvoice);
 
     }
 
@@ -83,9 +82,6 @@ public class InvoiceServiceTests {
     public void testUpdate() {
         lineItemList.add(lineItem1);
         lineItemList.add(lineItem2);
-
-
-
         Invoice updatedInvoice = invoiceService.update(lineItemList, costumer, priorInvoice);
         Invoice testIfUpdatedInvoice = invoiceService.findById(updatedInvoice.getId());
         assertEquals(updatedInvoice.getId(), testIfUpdatedInvoice.getId());

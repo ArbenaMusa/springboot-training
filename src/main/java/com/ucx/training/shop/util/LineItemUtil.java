@@ -20,6 +20,9 @@ public class LineItemUtil {
         }
         LineItemDTO lineItemDTO = new LineItemDTO();
         ProductDTO productDTO = new ProductDTO();
+        if (lineItem.getId() != null) {
+            lineItemDTO.setId(lineItem.getId());
+        }
         productDTO.setFileName(product.getFileUpload().getFilePath());
         productDTO.setUnitPrice(product.getUnitPrice());
         productDTO.setName(product.getName());

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,6 +62,7 @@ public class CustomerServiceTests {
         costumers.add(createdCostumer);
     }
 
+    @Transactional
     @Test
     public void testDelete() throws NotFoundException {
         Costumer costumer = new Costumer();
@@ -72,8 +74,7 @@ public class CustomerServiceTests {
         assertNotNull(createdCostumer.getId());
         Costumer foundCostumer = costumerService.findById(createdCostumer.getId());
         costumerService.remove(foundCostumer.getId());
-        Costumer refoundCostumer = costumerService.findById(createdCostumer.getId());
-        assertEquals(RecordStatus.INACTIVE, refoundCostumer.getRecordStatus());
+        assertEquals(RecordStatus.INACTIVE, foundCostumer.getRecordStatus());
         costumers.add(createdCostumer);
     }
 }

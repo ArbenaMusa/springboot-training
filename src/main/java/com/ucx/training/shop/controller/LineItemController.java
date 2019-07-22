@@ -23,6 +23,7 @@ public class LineItemController {
         this.lineItemService = lineItemService;
     }
 
+    //TODO: To be reviewed.
     @PostMapping
     public LineItemDTO create(@RequestBody LineItem lineItem) throws ResponseException {
         try {
@@ -54,6 +55,16 @@ public class LineItemController {
             List<LineItem> lineItems = lineItemService.findAllSorted(direction, properties);
             List<LineItemDTO> lineItemDTOList = LineItemUtil.getLineItems(lineItems);
             return lineItemDTOList;
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("{id}")
+    public LineItem findById(@PathVariable Integer id) throws ResponseException {
+        try {
+            LineItem lineItem = lineItemService.findById(id);
+            return lineItem;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

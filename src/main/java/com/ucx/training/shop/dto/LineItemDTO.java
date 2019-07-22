@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class LineItemDTO {
+    private Integer id;
     private String product;
     private Integer quantity;
     private Integer invoiceId;
