@@ -9,10 +9,8 @@ import com.ucx.training.shop.repository.CostumerRepository;
 import com.ucx.training.shop.service.CostumerService;
 import com.ucx.training.shop.type.RecordStatus;
 import lombok.extern.log4j.Log4j2;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import net.minidev.json.JSONObject;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,7 +36,8 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CustomerControllerTests {
 
-    private List<Integer> customerList;
+    private List<Costumer> customerList;
+    private Costumer customer;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -50,6 +49,9 @@ public class CustomerControllerTests {
     @Before
     public void setUp() {
         customerList = new ArrayList<>();
+        this.customer = new Costumer();
+        customer.setName("Costumer-Test");
+        customer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
 
     }
 
@@ -57,7 +59,7 @@ public class CustomerControllerTests {
     public void cleanUp() {
         customerList.forEach(e -> {
             try {
-                costumerRepository.delete(customerService.findById(e));
+                costumerRepository.delete(customerService.findById(e.getId()));
             } catch (Exception ex) {
                 log.error(ex.getMessage());
             }
@@ -69,21 +71,17 @@ public class CustomerControllerTests {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
-        Costumer customer = new Costumer();
-        customer.setName("testName");
-        customer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
-
-        HttpEntity<Costumer> entity = new HttpEntity<>(customer, headers);
+        HttpEntity<Costumer> entity = new HttpEntity<>(this.customer, headers);
 
         CustomerDTO savedCustomer = restTemplate.exchange("/costumers", HttpMethod.POST, entity, CustomerDTO.class).getBody();
-
+        Costumer foundCostumer = customerService.findById(savedCustomer.getId());
+        customerList.add(foundCostumer);
         assertNotNull(savedCustomer);
         assertNotNull(savedCustomer.getId());
-        customerList.add(savedCustomer.getId());
+
     }
 
-    @Test
-    @Ignore
+    //@Test
     public void testGet() throws URISyntaxException, IOException {
         RestTemplate restTemplate = new RestTemplate();
         String fooResourceUrl
@@ -98,28 +96,30 @@ public class CustomerControllerTests {
         assertThat(name.asText(), notNullValue());
     }
 
-//    FIXME: Not working
-//    @Test
-//    public void testUpdate(){
-//        JSONObject request = new JSONObject();
-//        request.put("phoneNumber1", "044458485");
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
-//
-//        ResponseEntity<String> updateResponse = restTemplate
-//                .exchange("/costumers/4", HttpMethod.PUT, entity, String.class);
-//
-//        Costumer customer = customerService.findById(4);
-//        assertEquals("044458485",customer.getPhoneNumber1());
-//    }
+    //FIXME: Not working
+    //@Test
+    public void testUpdate(){
+        JSONObject request = new JSONObject();
+        request.put("phoneNumber1", "044458485");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
+
+        ResponseEntity<String> updateResponse = restTemplate
+                .exchange("/costumers/4", HttpMethod.PUT, entity, String.class);
+
+        Costumer customer = customerService.findById(4);
+        assertEquals("044458485",customer.getPhoneNumber1());
+    }
 
     @Test
     public void testDelete() {
-        String entityUrl = "/costumers/6";
+        customerService.save(customer);
+        customerList.add(customer);
+        String entityUrl = String.format("/costumers/%d", customerList.get(0).getId());
         restTemplate.delete(entityUrl);
-        Costumer customer = customerService.findById(6);
+        Costumer customer = customerService.findById(customerList.get(0).getId());
         assertEquals(RecordStatus.INACTIVE, customer.getRecordStatus());
     }
 }
