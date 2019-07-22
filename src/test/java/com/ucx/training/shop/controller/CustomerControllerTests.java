@@ -84,6 +84,7 @@ public class CustomerControllerTests {
 
     }
 
+    //TODO: run test without starting server
     //@Test
     public void testGet() throws URISyntaxException, IOException {
         RestTemplate restTemplate = new RestTemplate();
