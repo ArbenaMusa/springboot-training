@@ -103,4 +103,13 @@ public class CostumerController{
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping("costumeraddress/{costumerId}")
+    public Costumer updateCostumerAddress(@RequestBody Costumer costumer, @PathVariable Integer costumerId) throws ResponseException {
+        try {
+            return costumerService.updateCostumerWithAddress(costumer, costumerId);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

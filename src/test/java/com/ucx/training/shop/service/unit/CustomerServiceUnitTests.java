@@ -3,20 +3,17 @@ package com.ucx.training.shop.service.unit;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.service.BaseService;
-import com.ucx.training.shop.service.CostumerService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)

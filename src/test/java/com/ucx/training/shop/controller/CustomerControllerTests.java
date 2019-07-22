@@ -1,28 +1,36 @@
 package com.ucx.training.shop.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.repository.CostumerRepository;
 import com.ucx.training.shop.service.CostumerService;
+import com.ucx.training.shop.type.RecordStatus;
 import lombok.extern.log4j.Log4j2;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @Log4j2
@@ -56,7 +64,6 @@ public class CustomerControllerTests {
         });
     }
 
-
     @Test
     public void testSave() {
         HttpHeaders headers = new HttpHeaders();
@@ -73,5 +80,46 @@ public class CustomerControllerTests {
         assertNotNull(savedCustomer);
         assertNotNull(savedCustomer.getId());
         customerList.add(savedCustomer.getId());
+    }
+
+    @Test
+    @Ignore
+    public void testGet() throws URISyntaxException, IOException {
+        RestTemplate restTemplate = new RestTemplate();
+        String fooResourceUrl
+                = "http://localhost:8080/shop/costumers";
+        ResponseEntity<String> response
+                = restTemplate.getForEntity(fooResourceUrl, String.class);
+        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response.getBody());
+        JsonNode name = root.path("name");
+        assertThat(name.asText(), notNullValue());
+    }
+
+//    FIXME: Not working
+//    @Test
+//    public void testUpdate(){
+//        JSONObject request = new JSONObject();
+//        request.put("phoneNumber1", "044458485");
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
+//
+//        ResponseEntity<String> updateResponse = restTemplate
+//                .exchange("/costumers/4", HttpMethod.PUT, entity, String.class);
+//
+//        Costumer customer = customerService.findById(4);
+//        assertEquals("044458485",customer.getPhoneNumber1());
+//    }
+
+    @Test
+    public void testDelete() {
+        String entityUrl = "/costumers/6";
+        restTemplate.delete(entityUrl);
+        Costumer customer = customerService.findById(6);
+        assertEquals(RecordStatus.INACTIVE, customer.getRecordStatus());
     }
 }

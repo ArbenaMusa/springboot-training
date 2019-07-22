@@ -8,6 +8,7 @@ import com.ucx.training.shop.repository.CostumerRepository;
 import com.ucx.training.shop.util.uimapper.AddressMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 import java.util.Iterator;
@@ -81,5 +82,28 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         });
         t.setAddresses(null);
         BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
+    }
+
+    public Costumer updateCostumerWithAddress(Costumer updatedCostumer, Integer costumerId) throws NotFoundException {
+        Assert.isTrue(updatedCostumer != null, "One of the arguments is invalid!");
+        Costumer foundCostumer = findById(costumerId);
+        Assert.isTrue(foundCostumer != null, "Entity not found!");
+        //if (foundCostumer == null) throw new NotFoundException("Entity not found");
+
+        List<Address> addresses = updatedCostumer.getAddresses();
+        for (Address address : addresses) {
+            if (address.getId() == null) {
+                address.setCostumer(foundCostumer);
+                addressService.save(address);
+            }else{
+                Address foundAddress = addressService.findById(address.getId());
+                if (foundAddress == null) {
+                    throw new NotFoundException("Address with the given id does not exist!");
+                }
+                addressService.update(address, foundAddress.getId());
+            }
+        }
+        updatedCostumer.setAddresses(null);
+        return update(updatedCostumer, costumerId);
     }
 }

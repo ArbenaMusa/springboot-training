@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -21,9 +18,10 @@ public class Costumer extends BaseEntity<Integer> {
     private String name;
 
     @OneToMany(mappedBy = "costumer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Size(min = 1, message = "You must have at least 1 address")
+//    @Size(min = 1, message = "You must have at least 1 address")
     private List<Address> addresses;
 
+    @Column(unique = true)
     private String email;
     private String phoneNumber1;
     private String phoneNumber2;

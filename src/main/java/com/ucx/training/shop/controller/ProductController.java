@@ -46,6 +46,15 @@ public class ProductController {
         return ProductMapper.getProduct(createdProduct);
     }
 
+    @PutMapping("{productId}")
+    public void update(@RequestBody Product product, @PathVariable Integer productId) throws ResponseException {
+        try {
+            productService.update(product, productId);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("image/{fileName}")
     public ResponseEntity<InputStreamResource> getImage(@PathVariable String fileName) throws ResponseException {
         String filePathAsString = System.getProperty("user.dir") + uploadDirectoryName + fileName;
