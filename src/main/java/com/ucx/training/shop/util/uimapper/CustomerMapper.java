@@ -1,4 +1,4 @@
-package com.ucx.training.shop.util;
+package com.ucx.training.shop.util.uimapper;
 
 import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
@@ -7,9 +7,9 @@ import com.ucx.training.shop.entity.Costumer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerUtil {
+public class CustomerMapper {
 
-    public CustomerUtil() {
+    public CustomerMapper() {
 
     }
 

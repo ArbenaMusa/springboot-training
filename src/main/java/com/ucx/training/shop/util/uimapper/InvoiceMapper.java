@@ -1,4 +1,4 @@
-package com.ucx.training.shop.util;
+package com.ucx.training.shop.util.uimapper;
 
 
 import com.ucx.training.shop.dto.InvoiceDTO;
@@ -9,9 +9,9 @@ import com.ucx.training.shop.entity.LineItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InvoiceUtil {
+public class InvoiceMapper {
 
-    private InvoiceUtil(){}
+    private InvoiceMapper(){}
 
     public static List<InvoiceDTO> getInvoices(List<Invoice> list){
         List<LineItemDTO> lineItemDTOList = new ArrayList<>();

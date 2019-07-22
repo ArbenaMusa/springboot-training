@@ -6,7 +6,7 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.util.FileUploadUtil;
-import com.ucx.training.shop.util.ProductUtil;
+import com.ucx.training.shop.util.uimapper.ProductMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -43,7 +43,7 @@ public class ProductController {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        return ProductUtil.getProduct(createdProduct);
+        return ProductMapper.getProduct(createdProduct);
     }
 
     @GetMapping("image/{fileName}")
@@ -63,7 +63,7 @@ public class ProductController {
     public List<ProductDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<Product> products = productService.findAllSorted(direction, properties);
-            List<ProductDTO> productDTOList = ProductUtil.getProducts(products);
+            List<ProductDTO> productDTOList = ProductMapper.getProducts(products);
             return productDTOList;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -75,7 +75,7 @@ public class ProductController {
         try {
             Page<Product> productPage = productService.findAllPaged(pageNumber, pageSize);
             List<Product> products = productPage.getContent();
-            List<ProductDTO> productDTOList = ProductUtil.getProducts(products);
+            List<ProductDTO> productDTOList = ProductMapper.getProducts(products);
             return productDTOList;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -86,7 +86,7 @@ public class ProductController {
     public ProductDTO findByID(@PathVariable Integer id) throws ResponseException {
         try {
             Product product = productService.findById(id);
-            return ProductUtil.getProduct(product);
+            return ProductMapper.getProduct(product);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

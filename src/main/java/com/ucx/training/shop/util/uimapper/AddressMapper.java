@@ -1,9 +1,9 @@
-package com.ucx.training.shop.util;
+package com.ucx.training.shop.util.uimapper;
 
 import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.entity.Address;
 
-public class AddressUtil {
+public class AddressMapper {
     public static AddressDTO getAddress(Address address){
         if (address == null) {
             throw new IllegalArgumentException("Address must not be null");

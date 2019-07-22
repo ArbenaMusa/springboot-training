@@ -1,4 +1,4 @@
-package com.ucx.training.shop.util;
+package com.ucx.training.shop.util.uimapper;
 
 import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.dto.ProductDTO;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LineItemUtil {
+public class LineItemMapper {
 
-    private LineItemUtil(){}
+    private LineItemMapper(){}
 
     //TODO: Handle exceptions here
     public static LineItemDTO getLineItem(LineItem lineItem, Product product) {

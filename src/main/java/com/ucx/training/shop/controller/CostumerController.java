@@ -7,7 +7,7 @@ import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CostumerService;
-import com.ucx.training.shop.util.CustomerUtil;
+import com.ucx.training.shop.util.uimapper.CustomerMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class CostumerController{
     public CustomerDTO create(@RequestBody Costumer costumer) throws ResponseException {
         try {
             Costumer customer = costumerService.save(costumer);
-            return CustomerUtil.getCustomer(customer);
+            return CustomerMapper.getCustomer(customer);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class CostumerController{
     @GetMapping("{costumerId}")
     public CustomerDTO getById(@PathVariable Integer costumerId) {
         Costumer foundCustomer = costumerService.findById(costumerId);
-        return CustomerUtil.getCustomer(foundCustomer);
+        return CustomerMapper.getCustomer(foundCustomer);
     }
 
     @DeleteMapping("{id}")
@@ -76,7 +76,7 @@ public class CostumerController{
     public List<CustomerDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<Costumer> costumers = costumerService.findAllSorted(direction, properties);
-            List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
+            List<CustomerDTO> customerDTOList = CustomerMapper.getCustomers(costumers);
             return customerDTOList;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -88,7 +88,7 @@ public class CostumerController{
         try {
             Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
             List<Costumer> costumers = costumerPage.getContent();
-            List<CustomerDTO> customerDTOList = CustomerUtil.getCustomers(costumers);
+            List<CustomerDTO> customerDTOList = CustomerMapper.getCustomers(costumers);
             return customerDTOList;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);

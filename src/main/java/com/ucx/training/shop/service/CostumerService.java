@@ -5,7 +5,7 @@ import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.CostumerRepository;
-import com.ucx.training.shop.util.AddressUtil;
+import com.ucx.training.shop.util.uimapper.AddressMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +46,7 @@ public class CostumerService extends BaseService<Costumer, Integer> {
             throw new IllegalArgumentException("Either address or addressId is null!");
         }
 
-        return AddressUtil.getAddress(addressService.update(address, addressId));
+        return AddressMapper.getAddress(addressService.update(address, addressId));
     }
 
     public void updateWithAddresses(Costumer t, Integer u) throws NotFoundException {

@@ -5,7 +5,7 @@ import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.LineItemService;
-import com.ucx.training.shop.util.LineItemUtil;
+import com.ucx.training.shop.util.uimapper.LineItemMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -27,7 +27,7 @@ public class LineItemController {
     public LineItemDTO create(@RequestBody LineItem lineItem) throws ResponseException {
         try {
             LineItem createdLineItem = lineItemService.save(lineItem);
-            LineItemDTO lineItemDTO = LineItemUtil.getLineItem(createdLineItem, lineItem.getProduct());
+            LineItemDTO lineItemDTO = LineItemMapper.getLineItem(createdLineItem, lineItem.getProduct());
             return lineItemDTO;
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -40,7 +40,7 @@ public class LineItemController {
     public List<LineItemDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @PathVariable Integer id, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<LineItem> lineItems = lineItemService.findAllSorted(direction, properties);
-            List<LineItemDTO> lineItemDTOList = LineItemUtil.getLineItems(lineItems);
+            List<LineItemDTO> lineItemDTOList = LineItemMapper.getLineItems(lineItems);
             return lineItemDTOList;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -52,7 +52,7 @@ public class LineItemController {
         try {
             Page<LineItem> lineItemPage = lineItemService.findAllPaged(pageNumber, pageSize);
             List<LineItem> lineItem = lineItemPage.getContent();
-            List<LineItemDTO> lineItemDTOList = LineItemUtil.getLineItems(lineItem);
+            List<LineItemDTO> lineItemDTOList = LineItemMapper.getLineItems(lineItem);
             return lineItemDTOList;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);

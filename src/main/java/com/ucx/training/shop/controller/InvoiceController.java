@@ -7,7 +7,7 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.InvoiceService;
 import com.ucx.training.shop.service.LineItemService;
-import com.ucx.training.shop.util.InvoiceUtil;
+import com.ucx.training.shop.util.uimapper.InvoiceMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +31,7 @@ public class InvoiceController {
     public InvoiceDTO create(@RequestBody Invoice invoice) throws ResponseException {
         try {
             Invoice createdInvoice = invoiceService.save(invoice);
-            return InvoiceUtil.getInvoice(createdInvoice);
+            return InvoiceMapper.getInvoice(createdInvoice);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class InvoiceController {
     public InvoiceDTO update(@RequestBody Invoice invoice, @PathVariable Integer id) throws ResponseException {
         try {
             Invoice updatedInvoice = invoiceService.update(invoice.getLineItemList(), invoice.getCostumer(), invoice);
-            return InvoiceUtil.getInvoice(updatedInvoice);
+            return InvoiceMapper.getInvoice(updatedInvoice);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class InvoiceController {
     @GetMapping("{id}")
     public InvoiceDTO findInvoiceById(@PathVariable Integer id) throws ResponseException {
         try {
-            return InvoiceUtil.getInvoice(invoiceService.findById(id));
+            return InvoiceMapper.getInvoice(invoiceService.findById(id));
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
