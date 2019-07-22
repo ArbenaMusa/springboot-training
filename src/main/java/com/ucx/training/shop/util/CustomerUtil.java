@@ -43,7 +43,6 @@ public class CustomerUtil {
         List<CustomerDTO> customerDTOList = new ArrayList<>();
         List<AddressDTO> addressDTOList = new ArrayList<>();
         costumerList.forEach(e -> {
-            CustomerDTO customerDTO = new CustomerDTO();
             List<Address> addresses = e.getAddresses();
             addresses.forEach(f -> {
                 AddressDTO addressDTO = new AddressDTO();
@@ -53,6 +52,9 @@ public class CustomerUtil {
                 addressDTO.setStreet(f.getStreet());
                 addressDTOList.add(addressDTO);
             });
+
+            CustomerDTO customerDTO = new CustomerDTO();
+            customerDTO.setId(e.getId());
             customerDTO.setAddresses(addressDTOList);
             customerDTO.setName(e.getName());
             customerDTO.setPhoneNumber2(e.getPhoneNumber2());
