@@ -84,13 +84,13 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
     }
 
-    public Costumer updateCostumerWithAddress(Costumer updatedCostumer, Integer costumerId) throws NotFoundException {
-        Assert.isTrue(updatedCostumer != null, "One of the arguments is invalid!");
+    public Costumer updateCostumerWithAddress(Costumer newCostumer, Integer costumerId) throws NotFoundException {
+        Assert.isTrue(newCostumer != null, "One of the arguments is invalid!");
         Costumer foundCostumer = findById(costumerId);
         Assert.isTrue(foundCostumer != null, "Entity not found!");
         //if (foundCostumer == null) throw new NotFoundException("Entity not found");
 
-        List<Address> addresses = updatedCostumer.getAddresses();
+        List<Address> addresses = newCostumer.getAddresses();
         for (Address address : addresses) {
             if (address.getId() == null) {
                 address.setCostumer(foundCostumer);
@@ -103,7 +103,7 @@ public class CostumerService extends BaseService<Costumer, Integer> {
                 addressService.update(address, foundAddress.getId());
             }
         }
-        updatedCostumer.setAddresses(null);
-        return update(updatedCostumer, costumerId);
+        newCostumer.setAddresses(null);
+        return update(newCostumer, costumerId);
     }
 }
