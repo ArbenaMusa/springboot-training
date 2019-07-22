@@ -28,15 +28,20 @@ public class CustomerServiceTests {
 
     @Autowired
     private CostumerService costumerService;
-
     @Autowired
     private CostumerRepository costumerRepository;
 
     private List<Costumer> costumers;
+    private Costumer costumer;
 
     @Before
     public void setup() {
         costumers = new ArrayList<>();
+        this.costumer = new Costumer();
+        costumer.setName("Test-JehonAAAA");
+        costumer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
+        costumer.setRecordStatus(RecordStatus.ACTIVE);
+
     }
 
     @After
@@ -51,9 +56,6 @@ public class CustomerServiceTests {
      */
     @Test
     public void testCreate() {
-        Costumer costumer = new Costumer();
-        costumer.setName("TestFilani");
-        costumer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
         Costumer createdCostumer = costumerService.save(costumer);
         assertNotNull(createdCostumer);
         assertNotNull(createdCostumer.getId());
@@ -65,10 +67,6 @@ public class CustomerServiceTests {
     @Transactional
     @Test
     public void testDelete() throws NotFoundException {
-        Costumer costumer = new Costumer();
-        costumer.setName("TestDelete");
-        costumer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
-        costumer.setRecordStatus(RecordStatus.ACTIVE);
         Costumer createdCostumer = costumerService.save(costumer);
         assertNotNull(createdCostumer);
         assertNotNull(createdCostumer.getId());
@@ -76,5 +74,26 @@ public class CustomerServiceTests {
         costumerService.remove(foundCostumer.getId());
         assertEquals(RecordStatus.INACTIVE, foundCostumer.getRecordStatus());
         costumers.add(createdCostumer);
+    }
+
+    @Test
+    public void testUpdate() throws NotFoundException {
+        Costumer createdCostumer = costumerService.save(costumer);
+        assertNotNull(createdCostumer);
+        assertNotNull(createdCostumer.getId());
+        Costumer foundCostumer = costumerService.findById(createdCostumer.getId());
+        Costumer newCostumer = new Costumer();
+        newCostumer.setName("JEHONAAAAA");
+        Costumer updatedCostumer = costumerService.update(newCostumer, foundCostumer.getId());
+        assertEquals("JEHONAAAAA", updatedCostumer.getName());
+    }
+
+    @Test
+    public void WhenFindingCustomer_GivenValidId_ShouldReturnCustomer() {
+        Costumer createdCostumer = costumerService.save(costumer);
+        assertNotNull(createdCostumer);
+        assertNotNull(createdCostumer.getId());
+        Costumer foundCostumer = costumerService.findById(createdCostumer.getId());
+        assertEquals(createdCostumer.getId(), foundCostumer.getId());
     }
 }

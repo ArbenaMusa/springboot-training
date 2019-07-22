@@ -15,15 +15,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -97,8 +100,12 @@ public class CustomerControllerTests {
     }
 
     //FIXME: Not working
-    //@Test
+    @Test
+    @Transactional
     public void testUpdate(){
+        customerService.save(customer);
+        customerList.add(customer);
+
         JSONObject request = new JSONObject();
         request.put("phoneNumber1", "044458485");
 
@@ -107,10 +114,9 @@ public class CustomerControllerTests {
         HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
 
         ResponseEntity<String> updateResponse = restTemplate
-                .exchange("/costumers/4", HttpMethod.PUT, entity, String.class);
-
-        Costumer customer = customerService.findById(4);
-        assertEquals("044458485",customer.getPhoneNumber1());
+                .exchange(String.format("/costumers/%d", customer.getId()), HttpMethod.PUT, entity, String.class);
+        Costumer foundCustomer = customerService.findById(customer.getId());
+        assertEquals("044458485",foundCustomer.getPhoneNumber1());
     }
 
     @Test
