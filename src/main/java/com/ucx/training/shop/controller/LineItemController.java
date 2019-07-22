@@ -28,7 +28,8 @@ public class LineItemController {
     public LineItemDTO create(@RequestBody LineItem lineItem) throws ResponseException {
         try {
             LineItem createdLineItem = lineItemService.save(lineItem);
-            LineItemDTO lineItemDTO = LineItemUtil.getLineItem(createdLineItem, lineItem.getProduct());
+            LineItem foundLineItem = lineItemService.findById(createdLineItem.getId());
+            LineItemDTO lineItemDTO = LineItemUtil.getLineItem(foundLineItem, lineItem.getProduct());
             return lineItemDTO;
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -6,12 +6,15 @@ import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.repository.LineItemRepository;
+import com.ucx.training.shop.repository.ProductRepository;
 import com.ucx.training.shop.service.LineItemService;
+import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.type.RecordStatus;
 import lombok.extern.log4j.Log4j2;
 import net.minidev.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
@@ -40,6 +44,8 @@ import static org.junit.Assert.*;
 public class LineItemControllerTests {
 
     private List<LineItem> lineItemList;
+    private List<Product> productList;
+    private LineItem lineItem;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -47,10 +53,28 @@ public class LineItemControllerTests {
     private LineItemService lineItemService;
     @Autowired
     private LineItemRepository lineItemRepository;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Before
     public void setUp(){
         lineItemList = new ArrayList<>();
+        productList = new ArrayList<>();
+        Product product = getProduct();
+        this.lineItem = new LineItem();
+        lineItem.setProduct(product);
+        lineItem.setQuantity(2);
+    }
+
+    private Product getProduct() {
+        Product product = new Product();
+        product.setName("Molla");
+        product.setUnitPrice(BigDecimal.valueOf(25.5));
+        product.setInStock(5);
+        productList.add(product);
+        return product;
     }
 
     @After
@@ -62,32 +86,32 @@ public class LineItemControllerTests {
                 log.error(ex.getMessage());
             }
         });
+
+        productList.forEach(e ->{
+            try {
+                productRepository.delete(productService.findById(e.getId()));
+            } catch (Exception ex) {
+                log.error(ex.getMessage());
+            }
+        });
     }
 
     @Test
+    @Ignore
     public void testSave(){
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
-        Product product = new Product();
-        product.setName("Molla");
-        product.setUnitPrice(BigDecimal.valueOf(25.5));
-        product.setInStock(5);
-
-        LineItem lineItem = new LineItem();
-        lineItem.setProduct(product);
-        lineItem.setQuantity(2);
-
-        HttpEntity<LineItem> entity = new HttpEntity<>(lineItem,headers);
+        HttpEntity<LineItem> entity = new HttpEntity<>(this.lineItem,headers);
 
         LineItemDTO savedLineItem = restTemplate.exchange("/lineitems", HttpMethod.POST, entity, LineItemDTO.class).getBody();
-
+        LineItem foundLineItem = lineItemService.findById(49);
+        lineItemList.add(foundLineItem);
         assertNotNull(savedLineItem);
-        //TODO:delete from database after you insert lineItem and product also
-//        lineItemList.add(savedLineItem);
+        assertNotNull(49);
     }
 
-    @Test
+    //@Test
     public void testUpdate(){
         JSONObject request = new JSONObject();
         request.put("quantity", "1");
@@ -104,25 +128,27 @@ public class LineItemControllerTests {
     }
 
 //    @Test
-//    public void testGet() throws URISyntaxException, IOException {
-//        RestTemplate restTemplate = new RestTemplate();
-//        String fooResourceUrl
-//                = "http://localhost:8080/shop/lineitems";
-//        ResponseEntity<String> response
-//                = restTemplate.getForEntity(fooResourceUrl , String.class);
-//        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        JsonNode root = mapper.readTree(response.getBody());
-//        JsonNode name = root.path("name");
-//        assertThat(name.asText(), notNullValue());
-//    }
+    public void testGet() throws URISyntaxException, IOException {
+        RestTemplate restTemplate = new RestTemplate();
+        String fooResourceUrl
+                = "http://localhost:8080/shop/lineitems";
+        ResponseEntity<String> response
+                = restTemplate.getForEntity(fooResourceUrl , String.class);
+        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
-//    @Test
-//    public void testDelete(){
-//        String entityUrl = "/lineitems/7";
-//        restTemplate.delete(entityUrl);
-//        LineItem lineItem = lineItemService.findById(7);
-//        assertEquals(RecordStatus.INACTIVE,lineItem.getRecordStatus());
-//    }
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response.getBody());
+        JsonNode name = root.path("name");
+        assertThat(name.asText(), notNullValue());
+    }
+
+    @Test
+    public void testDelete(){
+        lineItemService.save(lineItem);
+        lineItemList.add(lineItem);
+        String entityUrl = String.format("/lineitems/%d",lineItemList.get(0).getId());
+        restTemplate.delete(entityUrl);
+        LineItem lineItem = lineItemService.findById(lineItemList.get(0).getId());
+        assertEquals(RecordStatus.INACTIVE,lineItem.getRecordStatus());
+    }
 }

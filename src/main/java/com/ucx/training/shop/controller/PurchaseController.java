@@ -111,7 +111,7 @@ public class PurchaseController {
     public LineItemDTO changeQuantity(@RequestBody LineItem lineItem, @PathVariable Integer lineItemId) throws NotFoundException, ResponseException {
         try {
             LineItem updatedLineItem = purchaseService.changeQuantity(lineItem, lineItemId);
-            return new LineItemDTO(updatedLineItem.getProduct().getName(), updatedLineItem.getQuantity(), updatedLineItem.getInvoice().getId());
+            return new LineItemDTO(updatedLineItem.getId(),updatedLineItem.getProduct().getName(), updatedLineItem.getQuantity(), updatedLineItem.getInvoice().getId());
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }catch (Exception e) {
