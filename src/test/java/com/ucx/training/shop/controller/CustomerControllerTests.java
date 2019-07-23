@@ -81,7 +81,6 @@ public class CustomerControllerTests {
         customerList.add(foundCostumer);
         assertNotNull(savedCustomer);
         assertNotNull(savedCustomer.getId());
-
     }
 
     //TODO: run test without starting server

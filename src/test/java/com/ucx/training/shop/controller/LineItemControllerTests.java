@@ -44,7 +44,6 @@ import static org.junit.Assert.*;
 public class LineItemControllerTests {
 
     private List<LineItem> lineItemList;
-    private List<Product> productList;
     private LineItem lineItem;
 
     @Autowired
@@ -53,15 +52,10 @@ public class LineItemControllerTests {
     private LineItemService lineItemService;
     @Autowired
     private LineItemRepository lineItemRepository;
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private ProductRepository productRepository;
 
     @Before
     public void setUp(){
         lineItemList = new ArrayList<>();
-        productList = new ArrayList<>();
         Product product = getProduct();
         this.lineItem = new LineItem();
         lineItem.setProduct(product);
@@ -73,7 +67,6 @@ public class LineItemControllerTests {
         product.setName("Molla");
         product.setUnitPrice(BigDecimal.valueOf(25.5));
         product.setInStock(5);
-        productList.add(product);
         return product;
     }
 
@@ -82,14 +75,6 @@ public class LineItemControllerTests {
         lineItemList.forEach(e -> {
             try {
                 lineItemRepository.delete(lineItemService.findById(e.getId()));
-            } catch (Exception ex) {
-                log.error(ex.getMessage());
-            }
-        });
-
-        productList.forEach(e ->{
-            try {
-                productRepository.delete(productService.findById(e.getId()));
             } catch (Exception ex) {
                 log.error(ex.getMessage());
             }
@@ -111,20 +96,25 @@ public class LineItemControllerTests {
         assertNotNull(49);
     }
 
-    //@Test
+    @Test
     public void testUpdate(){
+        lineItemService.save(lineItem);
+        lineItemList.add(lineItem);
+
         JSONObject request = new JSONObject();
-        request.put("quantity", "1");
+        request.put("quantity", "6");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
 
-        ResponseEntity<String> updateResponse = restTemplate
-                .exchange("/lineitems/26", HttpMethod.PUT, entity, String.class);
+        String url = String.format("/lineitems/%d", lineItem.getId());
 
-        LineItem lineItem = lineItemService.findById(26);
-        assertEquals(Integer.valueOf(1),lineItem.getQuantity());
+        ResponseEntity<String> updateResponse = restTemplate
+                .exchange(url, HttpMethod.PUT, entity, String.class);
+
+        LineItem foundLineItem = lineItemService.findById(lineItem.getId());
+        assertEquals(Integer.valueOf(6),lineItem.getQuantity());
     }
 
 //    @Test
