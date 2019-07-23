@@ -18,7 +18,9 @@ public class ProductMapper {
         productList.forEach(e -> {
             productDTO.setName(e.getName());
             productDTO.setUnitPrice(e.getUnitPrice());
-            productDTO.setFileName(e.getFileUpload().getFilePath());
+            if (e.getFileUpload() != null) {
+                productDTO.setFileName(e.getFileUpload().getFilePath());
+            }
             productDTOList.add(productDTO);
         });
 

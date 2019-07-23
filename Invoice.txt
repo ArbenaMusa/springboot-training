@@ -1,9 +1,12 @@
-Customer name: Durim
+Customer name: Filani
 ------------------------------------------------
-Product name: Pixel 3
-Product price: 1000.00 €  x2
-Price: 2000 €
+Product name: Samsung s8
+Product price: 450.00 €  x5
+Price: 2250 €
+Product name: Iphone 10
+Product price: 800.00 €  x5
+Price: 4000 €
 ------------------------------------------------
-Purchase date: 2019-07-17T14:51:32.041311
+Purchase date: 2019-07-23T10:33:44.380634
 ------------------------------------------------
-Total: 2000.00 €
+Total: 6250.00 €
