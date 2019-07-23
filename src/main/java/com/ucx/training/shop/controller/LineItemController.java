@@ -23,19 +23,6 @@ public class LineItemController {
         this.lineItemService = lineItemService;
     }
 
-    @PostMapping
-    public LineItemDTO create(@RequestBody LineItem lineItem) throws ResponseException {
-        try {
-            LineItem createdLineItem = lineItemService.save(lineItem);
-            LineItemDTO lineItemDTO = LineItemMapper.getLineItem(createdLineItem, lineItem.getProduct());
-            return lineItemDTO;
-        } catch (IllegalArgumentException e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @GetMapping
     public List<LineItemDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @PathVariable Integer id, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
@@ -59,16 +46,14 @@ public class LineItemController {
         }
     }
 
-    @DeleteMapping("{id}")
-    public void remove(@PathVariable Integer id) throws ResponseException {
+    @GetMapping("{id}")
+    public LineItemDTO findById(@PathVariable Integer id) throws ResponseException {
         try {
-            lineItemService.remove(id);
-        } catch (NotFoundException | IllegalArgumentException e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
+            LineItem lineItem = lineItemService.findById(id);
+            return LineItemMapper.getLineItem(lineItem,lineItem.getProduct());
+        } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
 
 }
