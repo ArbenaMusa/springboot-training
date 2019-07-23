@@ -20,7 +20,6 @@ import java.util.Map;
 @Log4j2
 @RestController
 @RequestMapping("costumers")
-@CrossOrigin(value = "http://localhost:4200")
 public class CostumerController{
 
     private CostumerService costumerService;

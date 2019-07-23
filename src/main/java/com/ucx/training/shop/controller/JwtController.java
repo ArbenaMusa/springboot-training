@@ -22,7 +22,7 @@ public class JwtController {
     @PostMapping
     public Map<String, String> getToken(@RequestBody Map<String, String> credentials) {
 
-        String decodedCredentials = new String(Base64.getDecoder().decode(credentials.get("cred").getBytes()));
+        String decodedCredentials = new String(Base64.getDecoder().decode(credentials.get("creds").getBytes()));
         String[] parts = decodedCredentials.split(";");
         String email = parts[0];
         String password = parts[1];

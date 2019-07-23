@@ -17,4 +17,8 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS512, JwtConstants.SECRET)
                 .compact();
     }
+
+    public static Boolean applyJwtFilter(String applyJwtFilter) {
+        return Boolean.valueOf(applyJwtFilter);
+    }
 }
