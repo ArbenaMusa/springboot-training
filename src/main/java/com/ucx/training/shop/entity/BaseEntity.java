@@ -29,4 +29,7 @@ public abstract class BaseEntity<T> {
     @Column(length = 1000)
     private String description;
 
+    @Version
+    private Long version;
+
 }
