@@ -35,6 +35,7 @@ public class PurchaseService {
 
     public Integer addToCart(Integer productId, Integer quantity, Integer invoiceId) throws NotFoundException {
         Integer newInvoiceId;
+        if (productId == null) throw new IllegalArgumentException("Null argument provided!");
         Product foundProduct = productService.findById(productId);
         if (foundProduct == null) throw new NotFoundException("Product could not be found!");
         if (foundProduct.getRecordStatus() == RecordStatus.INACTIVE)
