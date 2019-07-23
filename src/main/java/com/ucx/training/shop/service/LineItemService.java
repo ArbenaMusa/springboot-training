@@ -70,28 +70,17 @@ public class LineItemService extends BaseService<LineItem, Integer> {
         return lineItemRepository.findAllByProductAndQuantity(product, quantity);
     }
 
-    public List<LineItemDTO> findAllByInvoiceId(Integer invoiceId) throws NotFoundException {
+    public List<LineItem> findAllByInvoiceId(Integer invoiceId) throws NotFoundException {
         if (invoiceId == null) {
             throw new IllegalArgumentException("Invoice ID cannot be null .-");
         }
-
-        List<LineItemDTO> lineItemDTOList = new ArrayList<>();
-        lineItemRepository.findAllByInvoiceIdAndRecordStatus(invoiceId, RecordStatus.ACTIVE)
-                .stream()
-                .forEach((e) -> {
-                    ProductDTO product = new ProductDTO();
-                    product.setFileName(e.getProduct().getFileUpload().getFileName());
-                    product.setName(e.getProduct().getName());
-                    product.setUnitPrice(e.getProduct().getUnitPrice());
-                    LineItemDTO lineItemDTO = new LineItemDTO();
-                    lineItemDTO.setProduct(product.getName());
-                    lineItemDTO.setQuantity(e.getQuantity());
-                    lineItemDTOList.add(lineItemDTO);
-                });
-        if (lineItemDTOList == null) {
+        List<LineItem> lineItemList = new ArrayList<>();
+        lineItemList=lineItemRepository.findAllByInvoiceIdAndRecordStatus(invoiceId, RecordStatus.ACTIVE);
+        if (lineItemList.size()==0) {
             throw new NotFoundException("There are no lineitems with the given invoice id!" + invoiceId);
         }
-        return lineItemDTOList;
+        return lineItemList;
     }
+
 
 }

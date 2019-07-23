@@ -25,7 +25,7 @@ public class LineItemMapper {
         productDTO.setName(product.getName());
         lineItemDTO.setQuantity(lineItem.getQuantity());
         lineItemDTO.setProduct(product.getName());
-
+        lineItemDTO.setInvoiceId(lineItem.getInvoice().getId());
         return lineItemDTO;
     }
 
@@ -41,6 +41,7 @@ public class LineItemMapper {
             productDTO.setUnitPrice(product.getUnitPrice());
             lineItemDTO.setProduct(product.getName());
             lineItemDTO.setQuantity(e.getQuantity());
+            lineItemDTO.setInvoiceId(e.getInvoice().getId());
             lineItemDTOList.add(lineItemDTO);
         });
         return lineItemDTOList;
