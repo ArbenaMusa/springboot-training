@@ -122,6 +122,9 @@ public class PurchaseService {
         if (foundLineItem == null) {
             throw new NotFoundException("Line item does not exist");
         }
+        if (foundLineItem.getRecordStatus() == RecordStatus.INACTIVE) {
+            throw new RuntimeException("This line item was deleted!");
+        }
         if (lineItem.getQuantity().equals(0)) {
             return cancelLineItem(lineItemId);
         }

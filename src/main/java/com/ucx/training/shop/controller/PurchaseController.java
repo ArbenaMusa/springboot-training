@@ -10,6 +10,8 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.LineItemService;
 import com.ucx.training.shop.service.PurchaseService;
+import com.ucx.training.shop.util.uimapper.InvoiceMapper;
+import com.ucx.training.shop.util.uimapper.LineItemMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -81,30 +83,29 @@ public class PurchaseController {
     }
 
     @DeleteMapping("lineitems/{id}")
-    public LineItem cancelLineItem(@PathVariable Integer id) throws ResponseException {
-        LineItem lineItem = null;
+    public LineItemDTO cancelLineItem(@PathVariable Integer id) throws ResponseException {
         try {
-            lineItem = purchaseService.cancelLineItem(id);
+            LineItem lineItem = purchaseService.cancelLineItem(id);
+            LineItemDTO lineItemDTO = LineItemMapper.getLineItem(lineItem, lineItem.getProduct());
+            return lineItemDTO;
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return lineItem;
     }
 
     @DeleteMapping("{id}")
-    public Invoice cancelPurchase(@PathVariable Integer id) throws ResponseException {
-        Invoice invoice = null;
+    public InvoiceDTO cancelPurchase(@PathVariable Integer id) throws ResponseException {
         try {
-            invoice = purchaseService.cancelPurchase(id);
+            Invoice invoice = purchaseService.cancelPurchase(id);
+            InvoiceDTO invoiceDTO = InvoiceMapper.getInvoice(invoice);
+            return invoiceDTO;
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
-        return invoice;
     }
 
     @PatchMapping("lineitems/{lineItemId}")
@@ -114,7 +115,7 @@ public class PurchaseController {
             return new LineItemDTO(updatedLineItem.getProduct().getName(), updatedLineItem.getQuantity(), updatedLineItem.getInvoice().getId());
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
