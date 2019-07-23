@@ -29,18 +29,6 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
-    @PostMapping
-    public InvoiceDTO create(@RequestBody Invoice invoice) throws ResponseException {
-        try {
-            Invoice createdInvoice = invoiceService.save(invoice);
-            return InvoiceMapper.getInvoice(createdInvoice);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @PutMapping("{id}")
     public InvoiceDTO update(@RequestBody Invoice invoice, @PathVariable Integer id) throws ResponseException {
         try {
@@ -66,14 +54,22 @@ public class InvoiceController {
         }
     }
 
-
-
-    @DeleteMapping("{id}")
-    public void remove(@PathVariable Integer id) throws ResponseException {
+    @GetMapping("{id}")
+    public InvoiceDTO findById(@PathVariable Integer id) throws ResponseException {
         try {
-            invoiceService.remove(id);
-        } catch (NotFoundException | IllegalArgumentException e) {
+            Invoice invoice = invoiceService.findById(id);
+            return InvoiceMapper.getInvoice(invoice);
+        } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping
+    public List<InvoiceDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @PathVariable Integer id, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
+        try {
+            List<Invoice> invoiceList = invoiceService.findAllSorted(direction, properties);
+            List<InvoiceDTO> invoiceDTOS = InvoiceMapper.getInvoices(invoiceList);
+            return invoiceDTOS;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
