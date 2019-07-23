@@ -8,10 +8,12 @@ import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.InvoiceService;
 import com.ucx.training.shop.service.LineItemService;
 import com.ucx.training.shop.util.uimapper.InvoiceMapper;
+import com.ucx.training.shop.util.uimapper.LineItemMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
@@ -51,27 +53,20 @@ public class InvoiceController {
         }
     }
 
-    @GetMapping("{id}")
-    public InvoiceDTO findInvoiceById(@PathVariable Integer id) throws ResponseException {
-        try {
-            return InvoiceMapper.getInvoice(invoiceService.findById(id));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @GetMapping("/lineitems/{invoiceId}")
     public List<LineItemDTO> getLineItemsByInvoiceId(@PathVariable Integer invoiceId) throws ResponseException {
         try {
-            return lineItemService.findAllByInvoiceId(invoiceId);
+            List <LineItemDTO> lineItemDTOs=new ArrayList<>();
+            lineItemDTOs= LineItemMapper.getLineItems(lineItemService.findAllByInvoiceId(invoiceId));
+            return lineItemDTOs;
         } catch (IllegalArgumentException | NotFoundException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+
 
     @DeleteMapping("{id}")
     public void remove(@PathVariable Integer id) throws ResponseException {
