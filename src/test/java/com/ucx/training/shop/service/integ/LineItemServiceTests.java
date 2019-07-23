@@ -32,16 +32,12 @@ public class LineItemServiceTests {
     private LineItemRepository lineItemRepository;
 
     private List<LineItem> lineItemList;
-    private List<Product> productList;
     private LineItem lineItem;
 
     @Before
     public void setup(){
         lineItemList = new ArrayList<>();
-        productList = new ArrayList<>();
         Product product = getProduct();
-//        productList.add(product);
-
         lineItem = new LineItem();
         lineItem.setProduct(product);
         lineItem.setQuantity(2);
@@ -51,10 +47,9 @@ public class LineItemServiceTests {
 
     private Product getProduct() {
         Product product = new Product();
-        product.setName("Pjeshka");
+        product.setName("Test-Produkt");
         product.setUnitPrice(BigDecimal.valueOf(25.5));
         product.setInStock(5);
-        productList.add(product);
         return product;
     }
 
@@ -64,7 +59,7 @@ public class LineItemServiceTests {
     }
 
     @Test
-    public void testCreate() throws NotFoundException {
+    public void testCreate() {
         LineItem createdLineItem = lineItemService.save(lineItem);
         assertNotNull(createdLineItem);
         assertNotNull(createdLineItem.getId());

@@ -118,8 +118,7 @@ public class LineItemServiceUnitTests {
         assertEquals(foundLineItem, lineItem);
     }
 
-    @Test(expected = NotFoundException.class)
-    @Ignore
+    @Test
     public void WhenRemovingEntity_GivenInvalidId_ShouldThrowNotFoundException() throws NotFoundException {
         doThrow(NotFoundException.class).when(lineItemService).remove(200);
     }

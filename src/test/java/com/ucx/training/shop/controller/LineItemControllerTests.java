@@ -27,7 +27,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +35,8 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @Log4j2
 @RunWith(SpringRunner.class)
@@ -59,7 +59,7 @@ public class LineItemControllerTests {
     private ProductRepository productRepository;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         lineItemList = new ArrayList<>();
         productList = new ArrayList<>();
         Product product = getProduct();
@@ -70,7 +70,7 @@ public class LineItemControllerTests {
 
     private Product getProduct() {
         Product product = new Product();
-        product.setName("Molla");
+        product.setName("Apple");
         product.setUnitPrice(BigDecimal.valueOf(25.5));
         product.setInStock(5);
         productList.add(product);
@@ -78,7 +78,7 @@ public class LineItemControllerTests {
     }
 
     @After
-    public void cleanUp(){
+    public void cleanUp() {
         lineItemList.forEach(e -> {
             try {
                 lineItemRepository.delete(lineItemService.findById(e.getId()));
@@ -87,7 +87,7 @@ public class LineItemControllerTests {
             }
         });
 
-        productList.forEach(e ->{
+        productList.forEach(e -> {
             try {
                 productRepository.delete(productService.findById(e.getId()));
             } catch (Exception ex) {
@@ -97,22 +97,25 @@ public class LineItemControllerTests {
     }
 
     @Test
-    @Ignore
-    public void testSave(){
+    public void testSave() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
-        HttpEntity<LineItem> entity = new HttpEntity<>(this.lineItem,headers);
+        HttpEntity<LineItem> entity = new HttpEntity<>(this.lineItem, headers);
 
         LineItemDTO savedLineItem = restTemplate.exchange("/lineitems", HttpMethod.POST, entity, LineItemDTO.class).getBody();
-        LineItem foundLineItem = lineItemService.findById(49);
+        LineItem foundLineItem = lineItemService.findById(savedLineItem.getId());
         lineItemList.add(foundLineItem);
         assertNotNull(savedLineItem);
-        assertNotNull(49);
+        assertNotNull(foundLineItem);
     }
 
-    //@Test
-    public void testUpdate(){
+    @Test
+    @Transactional
+    public void testUpdate() {
+        lineItemService.save(lineItem);
+        lineItemList.add(lineItem);
+
         JSONObject request = new JSONObject();
         request.put("quantity", "1");
 
@@ -121,19 +124,19 @@ public class LineItemControllerTests {
         HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
 
         ResponseEntity<String> updateResponse = restTemplate
-                .exchange("/lineitems/26", HttpMethod.PUT, entity, String.class);
+                .exchange(String.format("/lineitems/%d", lineItem.getId()), HttpMethod.PUT, entity, String.class);
 
-        LineItem lineItem = lineItemService.findById(26);
-        assertEquals(Integer.valueOf(1),lineItem.getQuantity());
+        LineItem foundLineItem = lineItemService.findById(lineItem.getId());
+        assertEquals(Integer.valueOf(1), lineItem.getQuantity());
     }
 
-//    @Test
+    //    @Test
     public void testGet() throws URISyntaxException, IOException {
         RestTemplate restTemplate = new RestTemplate();
         String fooResourceUrl
                 = "http://localhost:8080/shop/lineitems";
         ResponseEntity<String> response
-                = restTemplate.getForEntity(fooResourceUrl , String.class);
+                = restTemplate.getForEntity(fooResourceUrl, String.class);
         assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
 
         ObjectMapper mapper = new ObjectMapper();
@@ -143,12 +146,12 @@ public class LineItemControllerTests {
     }
 
     @Test
-    public void testDelete(){
+    public void testDelete() {
         lineItemService.save(lineItem);
         lineItemList.add(lineItem);
-        String entityUrl = String.format("/lineitems/%d",lineItemList.get(0).getId());
+        String entityUrl = String.format("/lineitems/%d", lineItemList.get(0).getId());
         restTemplate.delete(entityUrl);
         LineItem lineItem = lineItemService.findById(lineItemList.get(0).getId());
-        assertEquals(RecordStatus.INACTIVE,lineItem.getRecordStatus());
+        assertEquals(RecordStatus.INACTIVE, lineItem.getRecordStatus());
     }
 }
