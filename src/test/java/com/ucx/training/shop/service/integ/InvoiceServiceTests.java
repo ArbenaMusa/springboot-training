@@ -99,4 +99,26 @@ public class InvoiceServiceTests {
     }
 
 
+
+
+
+
+    Invoice invoiceToBePrinted;
+
+    @Before
+    public void printSetup(){
+
+        invoiceToBePrinted=new Invoice();
+
+    }
+
+    @Test
+    public void testPrint(){
+        Invoice updatedInvoice = invoiceService.update(lineItemList, costumer, priorInvoice);
+        Invoice testInvoice1=invoiceService.findById(priorInvoice.getId());
+      assertTrue(testInvoice1.getId().equals(invoiceService.print(priorInvoice.getId()).getId()));
+    }
+
+
+
 }
