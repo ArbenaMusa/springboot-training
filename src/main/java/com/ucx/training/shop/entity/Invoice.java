@@ -21,7 +21,7 @@ public class Invoice extends BaseEntity<Integer> {
     private Integer invoiceNumber;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne( fetch = FetchType.LAZY)
     @JoinColumn(name = "costumer_id")
     private Costumer costumer;
 

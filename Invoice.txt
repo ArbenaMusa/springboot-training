@@ -1,12 +1,9 @@
-Customer name: Filani
+Customer name: agron
 ------------------------------------------------
-Product name: Samsung s8
-Product price: 450.00 €  x5
-Price: 2250 €
-Product name: Iphone 10
-Product price: 800.00 €  x5
-Price: 4000 €
+Product name: Schauma
+Product price: 3.00 â‚¬  x8
+Price: 24 â‚¬
 ------------------------------------------------
-Purchase date: 2019-07-23T10:33:44.380634
+Purchase date: 2019-07-23T14:53:31.896482
 ------------------------------------------------
-Total: 6250.00 €
+Total: 24.00 â‚¬
