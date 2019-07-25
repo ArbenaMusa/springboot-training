@@ -9,6 +9,7 @@ import com.ucx.training.shop.util.uimapper.AddressMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 import java.util.Iterator;
 import java.util.List;
@@ -81,5 +82,9 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         });
         t.setAddresses(null);
         BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
+    }
+
+    public Tuple readByCostumerId(Integer id) {
+        return costumerRepository.readCostumerById(id);
     }
 }

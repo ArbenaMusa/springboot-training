@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @Log4j2
 @RestController
-@RequestMapping("lineitems")
+@RequestMapping("v1/lineitems")
 public class LineItemController {
 
     private LineItemService lineItemService;

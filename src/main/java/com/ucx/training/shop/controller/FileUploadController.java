@@ -15,7 +15,7 @@ import java.io.IOException;
 
 
 @RestController
-@RequestMapping("upload")
+@RequestMapping("v1/upload")
 @Log4j2
 public class FileUploadController {
 

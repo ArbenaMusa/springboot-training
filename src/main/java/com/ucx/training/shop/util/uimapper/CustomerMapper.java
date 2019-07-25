@@ -9,9 +9,7 @@ import java.util.List;
 
 public class CustomerMapper {
 
-    public CustomerMapper() {
-
-    }
+    private CustomerMapper() {}
 
     public static CustomerDTO getCustomer(Costumer costumer) {
         if (costumer == null) {

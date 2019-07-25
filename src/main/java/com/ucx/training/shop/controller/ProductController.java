@@ -21,7 +21,7 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping("products")
+@RequestMapping("v1/products")
 public class ProductController {
 
     @Value("${file.upload}")

@@ -18,7 +18,7 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping("invoices")
+@RequestMapping("v1/invoices")
 public class InvoiceController {
 
     private LineItemService lineItemService;

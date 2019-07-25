@@ -7,19 +7,21 @@ import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CostumerService;
+import com.ucx.training.shop.util.EntityUtil;
 import com.ucx.training.shop.util.uimapper.CustomerMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.Tuple;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Log4j2
 @RestController
-@RequestMapping("costumers")
+@RequestMapping("v1/costumers")
 public class CostumerController{
 
     private CostumerService costumerService;
@@ -29,10 +31,10 @@ public class CostumerController{
     }
 
     @PostMapping
-    public CustomerDTO create(@RequestBody Costumer costumer) throws ResponseException {
+    public Costumer create(@RequestBody Costumer costumer) throws ResponseException {
         try {
             Costumer customer = costumerService.save(costumer);
-            return CustomerMapper.getCustomer(customer);
+            return customer;//CustomerMapper.getCustomer(customer);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -101,5 +103,11 @@ public class CostumerController{
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/read/{id}")
+    public Map<String, Object> readById(@PathVariable Integer id) {
+        Tuple tuple = costumerService.readByCostumerId(id);
+        return EntityUtil.toList(tuple);
     }
 }

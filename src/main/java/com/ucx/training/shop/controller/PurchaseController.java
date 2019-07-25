@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
-@RequestMapping("purchases")
+@RequestMapping("v1/purchases")
 public class PurchaseController {
 
     private PurchaseService purchaseService;
