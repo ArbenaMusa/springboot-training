@@ -69,11 +69,11 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
+    public List<Product> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<Product> products = productService.findAllSorted(direction, properties);
-            List<ProductDTO> productDTOList = ProductMapper.getProducts(products);
-            return productDTOList;
+            //List<ProductDTO> productDTOList = ProductMapper.getProducts(products);
+            return products;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

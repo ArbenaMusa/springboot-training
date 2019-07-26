@@ -82,7 +82,7 @@ public class CustomerControllerTests {
 
         HttpEntity<Costumer> entity = new HttpEntity<>(customer, headers);
 
-        CustomerDTO savedCustomer = restTemplate.exchange("/costumers", HttpMethod.POST, entity, CustomerDTO.class).getBody();
+        CustomerDTO savedCustomer = restTemplate.exchange("/v1/costumers", HttpMethod.POST, entity, CustomerDTO.class).getBody();
 
         assertNotNull(savedCustomer);
         assertNotNull(savedCustomer.getId());

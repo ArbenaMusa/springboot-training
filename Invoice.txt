@@ -1,12 +1,9 @@
-Customer name: Filani
+Customer name: Fisteku
 ------------------------------------------------
 Product name: Samsung s8
-Product price: 450.00 €  x5
-Price: 2250 €
-Product name: Iphone 10
-Product price: 800.00 €  x5
-Price: 4000 €
+Product price: 450.00 €  x2
+Price: 900 €
 ------------------------------------------------
-Purchase date: 2019-07-23T10:33:44.380634
+Purchase date: 2019-07-26T13:52:06.619449
 ------------------------------------------------
-Total: 6250.00 €
+Total: 900.00 €

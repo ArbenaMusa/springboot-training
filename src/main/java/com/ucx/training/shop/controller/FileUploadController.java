@@ -27,17 +27,18 @@ public class FileUploadController {
 
     @PostMapping
     public FileUpload uploadFile(@RequestParam("files") MultipartFile file, @RequestParam("productId") Integer productId) throws ResponseException {
-        FileUpload uploadedFile = null;
+        FileUpload uploadedFile = null,
+                savedUpload = null;
         try {
             uploadedFile = fileUploadService.uploadFile(file);
-            fileUploadService.save(uploadedFile, productId);
+            savedUpload = fileUploadService.save(uploadedFile, productId);
         } catch (IOException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         if (uploadedFile == null) throw new ResponseException("File upload failed", HttpStatus.BAD_REQUEST);
-        return uploadedFile;
+        return savedUpload;
     }
 
 }
