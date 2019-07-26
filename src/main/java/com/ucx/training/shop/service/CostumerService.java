@@ -1,13 +1,12 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.CostumerRepository;
-import com.ucx.training.shop.util.uimapper.AddressMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.persistence.Tuple;
 import javax.transaction.Transactional;
@@ -42,14 +41,6 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         return costumerRepository.findAllByName(name);
     }
 
-    public AddressDTO updateAddress(Address address, Integer addressId) throws NotFoundException {
-        if (address == null || addressId == null) {
-            throw new IllegalArgumentException("Either address or addressId is null!");
-        }
-
-        return AddressMapper.getAddress(addressService.update(address, addressId));
-    }
-
     public void updateWithAddresses(Costumer t, Integer u) throws NotFoundException {
         if (t == null) {
             throw new IllegalArgumentException(String.format("One of the arguments is invalid: %s", t));
@@ -82,6 +73,29 @@ public class CostumerService extends BaseService<Costumer, Integer> {
         });
         t.setAddresses(null);
         BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
+    }
+
+    public Costumer updateCostumerWithAddress(Costumer newCostumer, Integer costumerId) throws NotFoundException {
+        Assert.isTrue(newCostumer != null, "One of the arguments is invalid!");
+        Costumer foundCostumer = findById(costumerId);
+        Assert.isTrue(foundCostumer != null, "Entity not found!");
+        //if (foundCostumer == null) throw new NotFoundException("Entity not found");
+
+        List<Address> addresses = newCostumer.getAddresses();
+        for (Address address : addresses) {
+            if (address.getId() == null) {
+                address.setCostumer(foundCostumer);
+                addressService.save(address);
+            } else {
+                Address foundAddress = addressService.findById(address.getId());
+                if (foundAddress == null) {
+                    throw new NotFoundException("Address with the given id does not exist!");
+                }
+                addressService.update(address, foundAddress.getId());
+            }
+        }
+        newCostumer.setAddresses(null);
+        return update(newCostumer, costumerId);
     }
 
     public Tuple readByCostumerId(Integer id) {

@@ -96,15 +96,6 @@ public class CostumerController{
         }
     }
 
-    @PutMapping("/addresses/{addressId}")
-    public AddressDTO updateAddress(@RequestBody Address address, @PathVariable("addressId") Integer addressId) throws ResponseException {
-        try {
-            return costumerService.updateAddress(address, addressId);
-        } catch (Exception e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @GetMapping("/read/{id}")
     public Map<String, Object> readById(@PathVariable Integer id) {
         Tuple tuple = costumerService.readByCostumerId(id);
