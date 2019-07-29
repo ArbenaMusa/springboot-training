@@ -1,6 +1,6 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.entity.Costumer;
+import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.repository.InvoiceRepository;
@@ -18,11 +18,11 @@ public class InvoiceService extends BaseService<Invoice, Integer> {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    public Invoice update(List<LineItem> lineItemList, Costumer costumer, Invoice invoice) {
+    public Invoice update(List<LineItem> lineItemList, Customer customer, Invoice invoice) {
         if (lineItemList == null || lineItemList.isEmpty()) {
             throw new IllegalArgumentException("Cannot print Invoice, list is missing");
         }
-        if (costumer == null) {
+        if (customer == null) {
             throw new IllegalArgumentException("Cannot print Invoice, Costumer is missing");
         }
         if (invoice == null) {
@@ -34,7 +34,7 @@ public class InvoiceService extends BaseService<Invoice, Integer> {
                 .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
         invoice.setInvoiceNumber((int) (Math.random() * 100 + 1));
         invoice.setLineItemList(lineItemList);
-        invoice.setCostumer(costumer);
+        invoice.setCustomer(customer);
         invoice.setTotal(total);
         return invoice;
     }
@@ -46,12 +46,12 @@ public class InvoiceService extends BaseService<Invoice, Integer> {
         return findById(id);
     }
 
-    public List<Invoice> findAllByCostumer(Costumer costumer) {
-        if (costumer == null) {
-            throw new IllegalArgumentException("Invalid argument: " + costumer);
+    public List<Invoice> findAllByCostumer(Customer customer) {
+        if (customer == null) {
+            throw new IllegalArgumentException("Invalid argument: " + customer);
         }
 
-        return invoiceRepository.findAllByCostumer(costumer);
+        return invoiceRepository.findAllByCustomer(customer);
     }
 
 

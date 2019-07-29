@@ -1,9 +1,9 @@
 package com.ucx.training.shop.service;
 
 import com.ucx.training.shop.entity.Address;
-import com.ucx.training.shop.entity.Costumer;
+import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.exception.NotFoundException;
-import com.ucx.training.shop.repository.CostumerRepository;
+import com.ucx.training.shop.repository.CustomerRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -15,37 +15,37 @@ import java.util.List;
 
 @Service
 @Transactional
-public class CostumerService extends BaseService<Costumer, Integer> {
+public class CustomerService extends BaseService<Customer, Integer> {
 
-    private CostumerRepository costumerRepository;
+    private CustomerRepository customerRepository;
     private AddressService addressService;
 
-    public CostumerService(CostumerRepository costumerRepository, AddressService addressService) {
-        this.costumerRepository = costumerRepository;
+    public CustomerService(CustomerRepository customerRepository, AddressService addressService) {
+        this.customerRepository = customerRepository;
         this.addressService = addressService;
     }
 
     @Override
-    public Costumer save(Costumer costumer) {
-        if (costumer.getAddresses() == null) {
+    public Customer save(Customer customer) {
+        if (customer.getAddresses() == null) {
             throw new IllegalArgumentException("You must have at least 1 address");
         }
-        costumer.getAddresses().forEach(e -> e.setCostumer(costumer));
-        return super.save(costumer);
+        customer.getAddresses().forEach(e -> e.setCustomer(customer));
+        return super.save(customer);
     }
 
-    public List<Costumer> findAllByName(String name) {
+    public List<Customer> findAllByName(String name) {
         if (name == null) {
             throw new IllegalArgumentException("Name must not be null!");
         }
-        return costumerRepository.findAllByName(name);
+        return customerRepository.findAllByName(name);
     }
 
-    public void updateWithAddresses(Costumer t, Integer u) throws NotFoundException {
+    public void updateWithAddresses(Customer t, Integer u) throws NotFoundException {
         if (t == null) {
             throw new IllegalArgumentException(String.format("One of the arguments is invalid: %s", t));
         }
-        Costumer foundT = findById(u);
+        Customer foundT = findById(u);
         if (foundT == null) {
             throw new NotFoundException("Entity not found");
         }
@@ -68,23 +68,23 @@ public class CostumerService extends BaseService<Costumer, Integer> {
             });
         }
         receivedAddressList.forEach((e) -> {
-            e.setCostumer(foundT);
+            e.setCustomer(foundT);
             addressService.save(e);
         });
         t.setAddresses(null);
-        BeanUtils.copyProperties(t, foundT, BaseService.<Costumer>getNullPropertyNames(t));
+        BeanUtils.copyProperties(t, foundT, BaseService.<Customer>getNullPropertyNames(t));
     }
 
-    public Costumer updateCostumerWithAddress(Costumer newCostumer, Integer costumerId) throws NotFoundException {
-        Assert.isTrue(newCostumer != null, "One of the arguments is invalid!");
-        Costumer foundCostumer = findById(costumerId);
-        Assert.isTrue(foundCostumer != null, "Entity not found!");
+    public Customer updateCostumerWithAddress(Customer newCustomer, Integer costumerId) throws NotFoundException {
+        Assert.isTrue(newCustomer != null, "One of the arguments is invalid!");
+        Customer foundCustomer = findById(costumerId);
+        Assert.isTrue(foundCustomer != null, "Entity not found!");
         //if (foundCostumer == null) throw new NotFoundException("Entity not found");
 
-        List<Address> addresses = newCostumer.getAddresses();
+        List<Address> addresses = newCustomer.getAddresses();
         for (Address address : addresses) {
             if (address.getId() == null) {
-                address.setCostumer(foundCostumer);
+                address.setCustomer(foundCustomer);
                 addressService.save(address);
             } else {
                 Address foundAddress = addressService.findById(address.getId());
@@ -94,11 +94,11 @@ public class CostumerService extends BaseService<Costumer, Integer> {
                 addressService.update(address, foundAddress.getId());
             }
         }
-        newCostumer.setAddresses(null);
-        return update(newCostumer, costumerId);
+        newCustomer.setAddresses(null);
+        return update(newCustomer, costumerId);
     }
 
     public Tuple readByCostumerId(Integer id) {
-        return costumerRepository.readCostumerById(id);
+        return customerRepository.readCostumerById(id);
     }
 }

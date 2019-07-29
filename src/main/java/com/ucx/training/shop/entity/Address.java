@@ -24,5 +24,5 @@ public class Address extends BaseEntity<Integer> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "costumer_id")
-    private Costumer costumer;
+    private Customer customer;
 }

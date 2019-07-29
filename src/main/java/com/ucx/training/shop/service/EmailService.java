@@ -1,9 +1,8 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.entity.Costumer;
+import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -27,21 +26,21 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendMail(Costumer costumer, Invoice invoice) throws MessagingException, IOException {
+    public void sendMail(Customer customer, Invoice invoice) throws MessagingException, IOException {
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-        helper.setTo(costumer.getEmail());
+        helper.setTo(customer.getEmail());
         helper.setSubject("Invoice for your purchase!");
         helper.setText("Here is your invoice....!");
-        helper.addAttachment("Invoice.txt",createFile(costumer, invoice));
+        helper.addAttachment("Invoice.txt",createFile(customer, invoice));
         send(msg);
     }
 
-    public File createFile(Costumer costumer, Invoice invoice) throws IOException {
+    public File createFile(Customer customer, Invoice invoice) throws IOException {
         List<LineItem> list = invoice.getLineItemList();
         File file = new File("Invoice.txt");
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-            writer.write("Customer name: " + costumer.getName() +
+            writer.write("Customer name: " + customer.getName() +
                     "\n------------------------------------------------");
             list.forEach(e ->
                     writer.write("\nProduct name: " + e.getProduct().getName() +

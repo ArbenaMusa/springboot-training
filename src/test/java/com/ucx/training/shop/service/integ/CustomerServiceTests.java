@@ -1,10 +1,9 @@
 package com.ucx.training.shop.service.integ;
 
 import com.ucx.training.shop.entity.Address;
-import com.ucx.training.shop.entity.Costumer;
-import com.ucx.training.shop.repository.BaseRepository;
-import com.ucx.training.shop.repository.CostumerRepository;
-import com.ucx.training.shop.service.CostumerService;
+import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.repository.CustomerRepository;
+import com.ucx.training.shop.service.CustomerService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,21 +23,21 @@ import static org.junit.Assert.*;
 public class CustomerServiceTests {
 
     @Autowired
-    private CostumerService costumerService;
+    private CustomerService customerService;
 
     @Autowired
-    private CostumerRepository costumerRepository;
+    private CustomerRepository customerRepository;
 
-    private List<Costumer> costumers;
+    private List<Customer> customers;
 
     @Before
     public void setup(){
-        costumers = new ArrayList<>();
+        customers = new ArrayList<>();
     }
 
     @After
     public void cleanup(){
-        costumers.forEach(e -> costumerRepository.delete(e));
+        customers.forEach(e -> customerRepository.delete(e));
     }
 
     /**
@@ -48,14 +47,14 @@ public class CustomerServiceTests {
      */
     @Test
     public void testCreate() {
-        Costumer costumer = new Costumer();
-        costumer.setName("TestFilani");
-        costumer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
-        Costumer createdCostumer = costumerService.save(costumer);
-        assertNotNull(createdCostumer);
-        assertNotNull(createdCostumer.getId());
-        Costumer foundCostumer = costumerService.findById(createdCostumer.getId());
-        assertEquals(foundCostumer.getId(), createdCostumer.getId());
-        costumers.add(createdCostumer);
+        Customer customer = new Customer();
+        customer.setName("TestFilani");
+        customer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
+        Customer createdCustomer = customerService.save(customer);
+        assertNotNull(createdCustomer);
+        assertNotNull(createdCustomer.getId());
+        Customer foundCustomer = customerService.findById(createdCustomer.getId());
+        assertEquals(foundCustomer.getId(), createdCustomer.getId());
+        customers.add(createdCustomer);
     }
 }

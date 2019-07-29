@@ -32,7 +32,7 @@ public class InvoiceController {
     @PutMapping("{id}")
     public InvoiceDTO update(@RequestBody Invoice invoice, @PathVariable Integer id) throws ResponseException {
         try {
-            Invoice updatedInvoice = invoiceService.update(invoice.getLineItemList(), invoice.getCostumer(), invoice);
+            Invoice updatedInvoice = invoiceService.update(invoice.getLineItemList(), invoice.getCustomer(), invoice);
             return InvoiceMapper.getInvoice(updatedInvoice);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);

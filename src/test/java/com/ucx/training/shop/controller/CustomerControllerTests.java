@@ -2,9 +2,9 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.entity.Address;
-import com.ucx.training.shop.entity.Costumer;
-import com.ucx.training.shop.repository.CostumerRepository;
-import com.ucx.training.shop.service.CostumerService;
+import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.repository.CustomerRepository;
+import com.ucx.training.shop.service.CustomerService;
 import com.ucx.training.shop.util.JwtUtil;
 import lombok.extern.log4j.Log4j2;
 import org.junit.After;
@@ -38,9 +38,9 @@ public class CustomerControllerTests {
     @Autowired
     private TestRestTemplate restTemplate;
     @Autowired
-    private CostumerService customerService;
+    private CustomerService customerService;
     @Autowired
-    private CostumerRepository costumerRepository;
+    private CustomerRepository customerRepository;
 
     @Before
     public void setUp() {
@@ -61,7 +61,7 @@ public class CustomerControllerTests {
     public void cleanUp() {
         customerList.forEach(e -> {
             try {
-                costumerRepository.delete(customerService.findById(e));
+                customerRepository.delete(customerService.findById(e));
             } catch (Exception ex) {
                 log.error(ex.getMessage());
             }
@@ -76,11 +76,11 @@ public class CustomerControllerTests {
         if (JwtUtil.applyJwtFilter(applyJwtFilter)) {
             headers.add("Authorization", "Bearer " + tokenMap.get("accessToken"));
         }
-        Costumer customer = new Costumer();
+        Customer customer = new Customer();
         customer.setName("testName");
         customer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
 
-        HttpEntity<Costumer> entity = new HttpEntity<>(customer, headers);
+        HttpEntity<Customer> entity = new HttpEntity<>(customer, headers);
 
         CustomerDTO savedCustomer = restTemplate.exchange("/v1/costumers", HttpMethod.POST, entity, CustomerDTO.class).getBody();
 

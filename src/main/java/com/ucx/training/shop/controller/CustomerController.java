@@ -1,12 +1,10 @@
 package com.ucx.training.shop.controller;
 
-import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
-import com.ucx.training.shop.entity.Address;
-import com.ucx.training.shop.entity.Costumer;
+import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
-import com.ucx.training.shop.service.CostumerService;
+import com.ucx.training.shop.service.CustomerService;
 import com.ucx.training.shop.util.EntityUtil;
 import com.ucx.training.shop.util.uimapper.CustomerMapper;
 import lombok.extern.log4j.Log4j2;
@@ -22,18 +20,18 @@ import java.util.Map;
 @Log4j2
 @RestController
 @RequestMapping("v1/costumers")
-public class CostumerController{
+public class CustomerController {
 
-    private CostumerService costumerService;
+    private CustomerService customerService;
 
-    private CostumerController(CostumerService costumerService) {
-        this.costumerService = costumerService;
+    private CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     @PostMapping
-    public Costumer create(@RequestBody Costumer costumer) throws ResponseException {
+    public Customer create(@RequestBody Customer costumer) throws ResponseException {
         try {
-            Costumer customer = costumerService.save(costumer);
+            Customer customer = customerService.save(costumer);
             return customer;//CustomerMapper.getCustomer(customer);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -43,10 +41,10 @@ public class CostumerController{
     }
 
     @PutMapping("{id}")
-    public Map<String, Integer> update(@RequestBody Costumer costumer, @PathVariable Integer id) throws ResponseException {
+    public Map<String, Integer> update(@RequestBody Customer customer, @PathVariable Integer id) throws ResponseException {
         Map<String, Integer> responseMap = new HashMap<>();
         try {
-            costumerService.updateWithAddresses(costumer, id);
+            customerService.updateWithAddresses(customer, id);
             responseMap.put("id", id);
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -58,14 +56,14 @@ public class CostumerController{
 
     @GetMapping("{costumerId}")
     public CustomerDTO getById(@PathVariable Integer costumerId) {
-        Costumer foundCustomer = costumerService.findById(costumerId);
+        Customer foundCustomer = customerService.findById(costumerId);
         return CustomerMapper.getCustomer(foundCustomer);
     }
 
     @DeleteMapping("{id}")
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
-            costumerService.remove(id);
+            customerService.remove(id);
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -76,8 +74,8 @@ public class CostumerController{
     @GetMapping
     public List<CustomerDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
-            List<Costumer> costumers = costumerService.findAllSorted(direction, properties);
-            List<CustomerDTO> customerDTOList = CustomerMapper.getCustomers(costumers);
+            List<Customer> customers = customerService.findAllSorted(direction, properties);
+            List<CustomerDTO> customerDTOList = CustomerMapper.getCustomers(customers);
             return customerDTOList;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -87,9 +85,9 @@ public class CostumerController{
     @GetMapping("/paged")
     public List<CustomerDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
         try {
-            Page<Costumer> costumerPage = costumerService.findAllPaged(pageNumber, pageSize);
-            List<Costumer> costumers = costumerPage.getContent();
-            List<CustomerDTO> customerDTOList = CustomerMapper.getCustomers(costumers);
+            Page<Customer> costumerPage = customerService.findAllPaged(pageNumber, pageSize);
+            List<Customer> customers = costumerPage.getContent();
+            List<CustomerDTO> customerDTOList = CustomerMapper.getCustomers(customers);
             return customerDTOList;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -98,7 +96,7 @@ public class CostumerController{
 
     @GetMapping("/read/{id}")
     public Map<String, Object> readById(@PathVariable Integer id) {
-        Tuple tuple = costumerService.readByCostumerId(id);
+        Tuple tuple = customerService.readByCostumerId(id);
         return EntityUtil.toList(tuple);
     }
 }
