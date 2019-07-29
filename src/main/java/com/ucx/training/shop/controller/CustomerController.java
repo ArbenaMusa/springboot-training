@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Log4j2
 @RestController
-@RequestMapping("v1/costumers")
+@RequestMapping("v1/customers")
 public class CustomerController {
 
     private CustomerService customerService;
@@ -44,7 +44,7 @@ public class CustomerController {
     public Map<String, Integer> update(@RequestBody Customer customer, @PathVariable Integer id) throws ResponseException {
         Map<String, Integer> responseMap = new HashMap<>();
         try {
-            customerService.updateWithAddresses(customer, id);
+            customerService.updateCostumerWithAddress(customer, id);
             responseMap.put("id", id);
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);

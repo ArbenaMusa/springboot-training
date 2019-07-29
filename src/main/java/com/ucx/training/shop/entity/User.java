@@ -19,6 +19,6 @@ public class User extends BaseEntity<Integer> {
     private String password;
     private Boolean isVerified = Boolean.FALSE;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
 }

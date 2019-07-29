@@ -17,7 +17,7 @@ public class Permission extends BaseEntity<Integer> {
     private String module;
     private String action;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "permission_role", joinColumns = {@JoinColumn(name = "permission_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")}

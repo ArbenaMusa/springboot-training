@@ -1,10 +1,10 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.entity.Address;
-import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.entity.*;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.CustomerRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -12,6 +12,7 @@ import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -19,10 +20,15 @@ public class CustomerService extends BaseService<Customer, Integer> {
 
     private CustomerRepository customerRepository;
     private AddressService addressService;
+    private PhoneService phoneService;
+    @Autowired
+    private RoleService roleService;
 
-    public CustomerService(CustomerRepository customerRepository, AddressService addressService) {
+
+    public CustomerService(CustomerRepository customerRepository, AddressService addressService, PhoneService phoneService) {
         this.customerRepository = customerRepository;
         this.addressService = addressService;
+        this.phoneService = phoneService;
     }
 
     @Override
@@ -31,6 +37,11 @@ public class CustomerService extends BaseService<Customer, Integer> {
             throw new IllegalArgumentException("You must have at least 1 address");
         }
         customer.getAddresses().forEach(e -> e.setCustomer(customer));
+        customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));
+        //TODO: Default Role for Customer
+        final Integer CUSTOMER_ROLE_ID = 1;
+        final Role ROLE = roleService.findById(CUSTOMER_ROLE_ID);
+        customer.getUser().setRole(ROLE);
         return super.save(customer);
     }
 
@@ -81,7 +92,18 @@ public class CustomerService extends BaseService<Customer, Integer> {
         Assert.isTrue(foundCustomer != null, "Entity not found!");
         //if (foundCostumer == null) throw new NotFoundException("Entity not found");
 
-        List<Address> addresses = newCustomer.getAddresses();
+        if (!newCustomer.getAddresses().isEmpty()) {
+            updateAddresses(foundCustomer, newCustomer.getAddresses());
+        }
+        if (!newCustomer.getPhoneNumbers().isEmpty()) {
+            updatePhones(foundCustomer, newCustomer.getPhoneNumbers());
+        }
+
+        newCustomer.setAddresses(null);
+        return update(newCustomer, costumerId);
+    }
+
+    private void updateAddresses(Customer foundCustomer, List<Address> addresses) throws NotFoundException {
         for (Address address : addresses) {
             if (address.getId() == null) {
                 address.setCustomer(foundCustomer);
@@ -91,11 +113,30 @@ public class CustomerService extends BaseService<Customer, Integer> {
                 if (foundAddress == null) {
                     throw new NotFoundException("Address with the given id does not exist!");
                 }
+                if (!foundAddress.getCustomer().equals(foundCustomer)) {
+                    throw new RuntimeException("This address does not belong to this customer");
+                }
                 addressService.update(address, foundAddress.getId());
             }
         }
-        newCustomer.setAddresses(null);
-        return update(newCustomer, costumerId);
+    }
+
+    private void updatePhones(Customer foundCustomer, Set<Phone> phones) throws NotFoundException {
+        for (Phone phone : phones) {
+            if (phone.getId() == null) {
+                phone.setCustomer(foundCustomer);
+                phoneService.save(phone);
+            } else {
+                Phone foundPhone = phoneService.findById(phone.getId());
+                if (foundPhone == null) {
+                    throw new NotFoundException("Address with the given id does not exist!");
+                }
+                if (!foundPhone.getCustomer().equals(foundCustomer)) {
+                    throw new RuntimeException("This address does not belong to this customer");
+                }
+                phoneService.update(phone, foundPhone.getId());
+            }
+        }
     }
 
     public Tuple readByCostumerId(Integer id) {
