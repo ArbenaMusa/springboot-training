@@ -5,8 +5,12 @@ import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.dto.PhoneDTO;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.entity.Phone;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CustomerMapper {
 
@@ -16,23 +20,18 @@ public class CustomerMapper {
         if (customer == null) {
             throw new IllegalArgumentException("Costumer must not be null!");
         }
+
         List<Address> addressList = customer.getAddresses();
         List<AddressDTO> addressDTOList = new ArrayList<>();
+        Set<Phone> phoneList = customer.getPhoneNumbers();
         List<PhoneDTO> phoneDTOList = new ArrayList<>();
 
-        addressList.forEach(e -> {
-            AddressDTO addressDTO = new AddressDTO();
-            addressDTO.setStreet(e.getStreet());
-            addressDTO.setCity(e.getCity());
-            addressDTO.setZipCode(e.getZipCode());
-            addressDTO.setCountry(e.getCountry());
-            addressDTOList.add(addressDTO);
-        });
-        phoneDTOList.forEach(e -> {
-            PhoneDTO phoneDTO = new PhoneDTO();
-            phoneDTO.setPhoneNumber(e.getPhoneNumber());
-            phoneDTOList.add(phoneDTO);
-        });
+        if (!addressList.isEmpty()) {
+            convertAddressToDTOList(addressList, addressDTOList);
+        }
+        if (!phoneList.isEmpty()) {
+            convertPhoneToDTOList(phoneList, phoneDTOList);
+        }
 
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setId(customer.getId());
@@ -43,34 +42,26 @@ public class CustomerMapper {
         return customerDTO;
     }
 
-    public static List<CustomerDTO> getCustomers(List<Customer> customerList) {
-        List<CustomerDTO> customerDTOList = new ArrayList<>();
-        List<AddressDTO> addressDTOList = new ArrayList<>();
-        List<PhoneDTO> phoneDTOList = new ArrayList<>();
-
-        customerList.forEach(e -> {
-            CustomerDTO customerDTO = new CustomerDTO();
-            List<Address> addresses = e.getAddresses();
-            addresses.forEach(f -> {
-                AddressDTO addressDTO = new AddressDTO();
-                addressDTO.setCountry(f.getCountry());
-                addressDTO.setZipCode(f.getZipCode());
-                addressDTO.setCity(f.getCity());
-                addressDTO.setStreet(f.getStreet());
-                addressDTOList.add(addressDTO);
-            });
-            customerDTO.setAddresses(addressDTOList);
-            customerDTO.setName(e.getName());
-            customerDTO.setPhoneDTOS(phoneDTOList);
-            customerDTO.setEmail(e.getEmail());
-            customerDTOList.add(customerDTO);
-
-        });
-        phoneDTOList.forEach(e -> {
+    private static void convertPhoneToDTOList(Set<Phone> phoneList, List<PhoneDTO> phoneDTOList) {
+        phoneList.forEach(e -> {
             PhoneDTO phoneDTO = new PhoneDTO();
             phoneDTO.setPhoneNumber(e.getPhoneNumber());
             phoneDTOList.add(phoneDTO);
         });
-        return customerDTOList;
+    }
+
+    private static void convertAddressToDTOList(List<Address> addressList, List<AddressDTO> addressDTOList) {
+        addressList.forEach(e -> {
+            AddressDTO addressDTO = new AddressDTO();
+            addressDTO.setStreet(e.getStreet());
+            addressDTO.setCity(e.getCity());
+            addressDTO.setZipCode(e.getZipCode());
+            addressDTO.setCountry(e.getCountry());
+            addressDTOList.add(addressDTO);
+        });
+    }
+
+    public static List<CustomerDTO> getCustomers(List<Customer> customerList) {
+        return customerList.stream().map(CustomerMapper::getCustomer).collect(Collectors.toList());
     }
 }
