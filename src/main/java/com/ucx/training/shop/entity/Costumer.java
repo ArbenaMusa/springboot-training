@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -23,6 +24,6 @@ public class Costumer extends BaseEntity<Integer> {
 
     @Column(unique = true)
     private String email;
-    private String phoneNumber1;
-    private String phoneNumber2;
+    @OneToMany(mappedBy = "costumer",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    Set<Phone> phoneNumbers;
 }

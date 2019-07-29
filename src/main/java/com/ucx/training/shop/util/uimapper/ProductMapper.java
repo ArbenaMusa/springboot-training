@@ -18,6 +18,9 @@ public class ProductMapper {
         productList.forEach(e -> {
             productDTO.setName(e.getName());
             productDTO.setUnitPrice(e.getUnitPrice());
+            if(e.getFileUpload() == null){
+                productDTO.setFileName("There is no picture for this product!");
+            }
             productDTO.setFileName(e.getFileUpload().getFilePath());
             productDTOList.add(productDTO);
         });
@@ -33,7 +36,10 @@ public class ProductMapper {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setName(product.getName());
         productDTO.setUnitPrice(product.getUnitPrice());
-        //productDTO.setFileName(product.getFileUpload().getFilePath());
+        if(product.getFileUpload() == null){
+            productDTO.setFileName("There is no picture for this product!");
+        }
+        productDTO.setFileName(product.getFileUpload().getFilePath());
         return productDTO;
     }
 }

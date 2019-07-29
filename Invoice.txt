@@ -1,9 +1,12 @@
-Customer name: Durim
+Customer name: Andi Hoxha
 ------------------------------------------------
-Product name: Pixel 3
-Product price: 1000.00 €  x2
-Price: 2000 €
+Product name: Coca-Cola
+Product price: 1.25 â‚¬  x8
+Price: 8 â‚¬
+Product name: Coca-Cola
+Product price: 1.25 â‚¬  x2
+Price: 2 â‚¬
 ------------------------------------------------
-Purchase date: 2019-07-17T14:51:32.041311
+Purchase date: 2019-07-23T14:40:32.262484
 ------------------------------------------------
-Total: 2000.00 €
+Total: 12.50 â‚¬

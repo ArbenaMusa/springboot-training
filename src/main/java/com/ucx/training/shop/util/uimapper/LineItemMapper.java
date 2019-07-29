@@ -28,6 +28,7 @@ public class LineItemMapper {
         productDTO.setName(product.getName());
         lineItemDTO.setQuantity(lineItem.getQuantity());
         lineItemDTO.setProduct(product.getName());
+        lineItemDTO.setInvoiceId(lineItem.getInvoice().getInvoiceNumber());
 
         return lineItemDTO;
     }
@@ -40,10 +41,11 @@ public class LineItemMapper {
             Product product = e.getProduct();
             ProductDTO productDTO = new ProductDTO();
             productDTO.setName(product.getName());
-            //productDTO.setFileName(product.getFileUpload().getFilePath());
+            productDTO.setFileName(product.getFileUpload().getFilePath());
             productDTO.setUnitPrice(product.getUnitPrice());
             lineItemDTO.setProduct(product.getName());
             lineItemDTO.setQuantity(e.getQuantity());
+            lineItemDTO.setInvoiceId(e.getInvoice().getInvoiceNumber());
             lineItemDTOList.add(lineItemDTO);
         });
         return lineItemDTOList;

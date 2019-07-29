@@ -61,10 +61,10 @@ public class LineItemController {
     }
 
     @GetMapping("{id}")
-    public LineItem findById(@PathVariable Integer id) throws ResponseException {
+    public LineItemDTO findById(@PathVariable Integer id) throws ResponseException {
         try {
             LineItem lineItem = lineItemService.findById(id);
-            return lineItem;
+            return LineItemMapper.getLineItem(lineItem,lineItem.getProduct());
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -91,6 +91,7 @@ public class LineItemController {
         } catch (Exception e){
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+
     }
 
 

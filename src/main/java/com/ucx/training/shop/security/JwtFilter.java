@@ -1,5 +1,6 @@
 package com.ucx.training.shop.security;
 
+import com.ucx.training.shop.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.log4j.Log4j2;
@@ -11,6 +12,7 @@ import java.io.IOException;
 @Log4j2
 public class JwtFilter extends GenericFilter {
 
+    private static final Integer ACCESS_TOKEN_INDEX = 7;
     private final static String TOKEN_ENDPOINT = "/shop/tokens";
 
     @Override
@@ -19,7 +21,6 @@ public class JwtFilter extends GenericFilter {
         String header = request.getHeader(JwtConstants.HEADER_KEY);
 
         if (request.getRequestURI().startsWith(TOKEN_ENDPOINT)) {
-            log.info("REQUEST: " + request.getRequestURI());
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
@@ -27,13 +28,9 @@ public class JwtFilter extends GenericFilter {
             throw new ServletException("Missing or invalid authorization header");
         }
 
-        String token = header.substring(7);
+        String token = header.substring(ACCESS_TOKEN_INDEX);
         try {
-            Claims claims = Jwts
-                    .parser()
-                    .setSigningKey(JwtConstants.SECRET)
-                    .parseClaimsJws(token)
-                    .getBody();
+            Claims claims = JwtUtil.parse(token);
             request.setAttribute("claims", claims);
         } catch (Exception e) {
             throw new ServletException(e.getMessage());
@@ -41,4 +38,6 @@ public class JwtFilter extends GenericFilter {
 
         filterChain.doFilter(servletRequest, servletResponse);
     }
+
+
 }

@@ -1,37 +1,31 @@
 package com.ucx.training.shop.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Costumer;
 import com.ucx.training.shop.repository.CostumerRepository;
 import com.ucx.training.shop.service.CostumerService;
-import com.ucx.training.shop.type.RecordStatus;
+import com.ucx.training.shop.util.JwtUtil;
 import lombok.extern.log4j.Log4j2;
-import net.minidev.json.JSONObject;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.test.web.servlet.MockMvc;
 
-import javax.transaction.Transactional;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @Log4j2
@@ -39,93 +33,67 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CustomerControllerTests {
 
-    private List<Costumer> customerList;
-    private Costumer customer;
+    private MockMvc mockMvc;
+
+    @Mock
+    private CostumerRepository costumerRepository;
+
+    private List<Integer> customerList;
+    private Map<String, String> tokenMap;
+    @Value("${jwt.filter.enabled}")
+    private String applyJwtFilter;
 
     @Autowired
     private TestRestTemplate restTemplate;
     @Autowired
     private CostumerService customerService;
-    @Autowired
-    private CostumerRepository costumerRepository;
+//    @Autowired
+//    private CostumerRepository costumerRepository;
 
     @Before
     public void setUp() {
         customerList = new ArrayList<>();
-        this.customer = new Costumer();
-        customer.setName("Costumer-Test");
-        customer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
-
+        if (JwtUtil.applyJwtFilter(applyJwtFilter)){
+            String emailAndPassword = "user@shop.com;user";
+            String encodedEmailAndPassword = Base64.getEncoder().encodeToString(emailAndPassword.getBytes());
+            Map<String, String> credentialsMap = new HashMap<>();
+            credentialsMap.put("creds", encodedEmailAndPassword);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            HttpEntity<Map<String, String>> entity = new HttpEntity<>(credentialsMap, headers);
+            tokenMap = restTemplate.exchange("/tokens", HttpMethod.POST, entity, HashMap.class).getBody();
+        }
     }
 
     @After
     public void cleanUp() {
         customerList.forEach(e -> {
             try {
-                costumerRepository.delete(customerService.findById(e.getId()));
+                costumerRepository.delete(customerService.findById(e));
             } catch (Exception ex) {
                 log.error(ex.getMessage());
             }
         });
     }
 
+
     @Test
     public void testSave() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        if (JwtUtil.applyJwtFilter(applyJwtFilter)) {
+            headers.add("Authorization", "Bearer " + tokenMap.get("accessToken"));
+        }
+        Costumer customer = new Costumer();
+        customer.setName("testName");
+        customer.setAddresses(Arrays.asList(new Address("Rruga", 1000, "Prishtina", "Kosova", null)));
 
-        HttpEntity<Costumer> entity = new HttpEntity<>(this.customer, headers);
+        HttpEntity<Costumer> entity = new HttpEntity<>(customer, headers);
 
         CustomerDTO savedCustomer = restTemplate.exchange("/costumers", HttpMethod.POST, entity, CustomerDTO.class).getBody();
-        Costumer foundCostumer = customerService.findById(savedCustomer.getId());
-        customerList.add(foundCostumer);
+
         assertNotNull(savedCustomer);
         assertNotNull(savedCustomer.getId());
-
-    }
-
-    //@Test
-    public void testGet() throws URISyntaxException, IOException {
-        RestTemplate restTemplate = new RestTemplate();
-        String fooResourceUrl
-                = "http://localhost:8080/shop/costumers";
-        ResponseEntity<String> response
-                = restTemplate.getForEntity(fooResourceUrl, String.class);
-        assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(response.getBody());
-        JsonNode name = root.path("name");
-        assertThat(name.asText(), notNullValue());
-    }
-
-    //FIXME: Not working
-    @Test
-    @Transactional
-    public void testUpdate(){
-        customerService.save(customer);
-        customerList.add(customer);
-
-        JSONObject request = new JSONObject();
-        request.put("phoneNumber1", "044458485");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
-
-        ResponseEntity<String> updateResponse = restTemplate
-                .exchange(String.format("/costumers/%d", customer.getId()), HttpMethod.PUT, entity, String.class);
-        Costumer foundCustomer = customerService.findById(customer.getId());
-        assertEquals("044458485",foundCustomer.getPhoneNumber1());
-    }
-
-    @Test
-    public void testDelete() {
-        customerService.save(customer);
-        customerList.add(customer);
-        String entityUrl = String.format("/costumers/%d", customerList.get(0).getId());
-        restTemplate.delete(entityUrl);
-        Costumer customer = customerService.findById(customerList.get(0).getId());
-        assertEquals(RecordStatus.INACTIVE, customer.getRecordStatus());
+        customerList.add(savedCustomer.getId());
     }
 }

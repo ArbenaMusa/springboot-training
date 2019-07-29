@@ -14,6 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -39,14 +40,17 @@ import static org.junit.Assert.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class LineItemControllerTests {
 
+    @Mock
+    private LineItemRepository lineItemRepository;
+
     private List<LineItem> lineItemList;
 
     @Autowired
     private TestRestTemplate restTemplate;
     @Autowired
     private LineItemService lineItemService;
-    @Autowired
-    private LineItemRepository lineItemRepository;
+//    @Autowired
+//    private LineItemRepository lineItemRepository;
 
     @Before
     public void setUp(){
@@ -90,17 +94,18 @@ public class LineItemControllerTests {
     @Test
     public void testUpdate(){
         JSONObject request = new JSONObject();
-        request.put("quantity", "1");
+        request.put("quantity", "29");
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(request.toString(), headers);
 
         ResponseEntity<String> updateResponse = restTemplate
-                .exchange("/lineitems/26", HttpMethod.PUT, entity, String.class);
+                .exchange("/lineitems/4", HttpMethod.PUT, entity, String.class);
 
-        LineItem lineItem = lineItemService.findById(26);
+        LineItem lineItem = lineItemService.findById(4);
         assertEquals(Integer.valueOf(1),lineItem.getQuantity());
+        assertNotNull(updateResponse);
     }
 
 //    @Test

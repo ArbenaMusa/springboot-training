@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -16,6 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product extends BaseEntity<Integer> {
+    @Column(unique = true)
     private String name;
     private BigDecimal unitPrice;
     private Integer inStock;
@@ -23,4 +23,10 @@ public class Product extends BaseEntity<Integer> {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(mappedBy = "product")
     private FileUpload fileUpload;
+
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Category category;
+
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Brand brand;
 }
