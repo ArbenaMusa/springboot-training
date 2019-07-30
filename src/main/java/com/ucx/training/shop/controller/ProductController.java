@@ -1,11 +1,13 @@
 package com.ucx.training.shop.controller;
 
+import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.util.FileUploadUtil;
+import com.ucx.training.shop.util.uimapper.DTOMapper;
 import com.ucx.training.shop.util.uimapper.ProductMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,11 +71,10 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
+    public List<DTOEntity> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<Product> products = productService.findAllSorted(direction, properties);
-            //List<ProductDTO> productDTOList = ProductMapper.getProducts(products);
-            return products;
+            return DTOMapper.converToDTOList(products,new ProductDTO());
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
