@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,6 +24,7 @@ public class Invoice extends BaseEntity<Integer> {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "costumer_id")
+    @NotNull
     private Customer customer;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})

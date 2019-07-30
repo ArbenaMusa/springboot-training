@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @Table(name = "phone")
 public class Phone extends BaseEntity<Integer> {
 
+    @NotNull
     private String phoneNumber;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
