@@ -61,6 +61,10 @@ public class BaseService<T extends BaseEntity<U>,U> {
     public T findById(U u){
         if (u == null) {
             throw new IllegalArgumentException("Invalid argument: " + u);
+
+
+
+
         }
         Optional<T> optionalT = baseRepository.findById(u);
 

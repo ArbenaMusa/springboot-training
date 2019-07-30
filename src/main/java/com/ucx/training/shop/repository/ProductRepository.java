@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends BaseRepository<Product,Integer> {
-    List<Product> findAllByName(String name);
+    Product findByName(String name);
     List<Product> findAllByInStock(Boolean inStock);
     List<Product> findAllByUnitPrice(BigDecimal unitPrice);
 }
