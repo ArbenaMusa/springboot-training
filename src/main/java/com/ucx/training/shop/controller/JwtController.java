@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("tokens")
+@RequestMapping("v1/tokens")
 
 public class JwtController {
 
@@ -37,11 +37,9 @@ public class JwtController {
         //TODO: findCustomerByEmail(email)
         User foundUser = userService.findByEmail(email);
 
-        CredentialDTO credentialDTO = new CredentialDTO(foundUser.getEmail(), foundUser.getPassword());
-
         //TODO: hash(password).equals(foundUser.getPassword())
 
-        if (!password.equals(credentialDTO.getPassword())) {
+        if (!password.equals(foundUser.getPassword())) {
             throw new RuntimeException("Invalid login, please check your email and password");
         }
 
@@ -51,7 +49,6 @@ public class JwtController {
         foundUser.setAccessToken(JwtUtil.getAccessToken(email));
         foundUser.setRefreshToken(JwtUtil.getRefreshToken(email));
         userService.update(user, foundUser.getId());
-
 
         Map<String, String> responseMap = new HashMap<>();
 
