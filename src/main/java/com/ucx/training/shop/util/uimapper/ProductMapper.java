@@ -19,8 +19,10 @@ public class ProductMapper {
             productDTO.setName(e.getName());
             productDTO.setUnitPrice(e.getUnitPrice());
             if (e.getFileUpload() != null) {
-                productDTO.setFileName(e.getFileUpload().getFileName());
+                productDTO.setFileName(e.getFileUpload().getFilePath());
             }
+            productDTO.setBrand(e.getBrand().getName());
+            productDTO.setCategory(e.getCategory().getName());
             productDTOList.add(productDTO);
         });
 
@@ -35,9 +37,13 @@ public class ProductMapper {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setName(product.getName());
         productDTO.setUnitPrice(product.getUnitPrice());
+        productDTO.setCategory(product.getCategory().getName());
+        productDTO.setBrand(product.getBrand().getName());
         if (product.getFileUpload() != null) {
-            productDTO.setFileName(product.getFileUpload().getFileName());
+            productDTO.setFileName(product.getFileUpload().getFilePath());
         }
         return productDTO;
     }
 }
+
+

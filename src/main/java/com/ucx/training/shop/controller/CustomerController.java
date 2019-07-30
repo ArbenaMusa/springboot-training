@@ -1,12 +1,14 @@
 package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.CustomerDTO;
+import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CustomerService;
 import com.ucx.training.shop.util.EntityUtil;
 import com.ucx.training.shop.util.uimapper.CustomerMapper;
+import com.ucx.training.shop.util.uimapper.DTOMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -29,10 +31,10 @@ public class CustomerController {
     }
 
     @PostMapping
-    public Customer create(@RequestBody Customer costumer) throws ResponseException {
+    public DTOEntity create(@RequestBody Customer costumer) throws ResponseException {
         try {
             Customer customer = customerService.save(costumer);
-            return customer;//CustomerMapper.getCustomer(customer);
+            return new DTOMapper().convertToDto(customer,new CustomerDTO());
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -55,9 +57,9 @@ public class CustomerController {
     }
 
     @GetMapping("{costumerId}")
-    public CustomerDTO getById(@PathVariable Integer costumerId) {
+    public DTOEntity getById(@PathVariable Integer costumerId) {
         Customer foundCustomer = customerService.findById(costumerId);
-        return CustomerMapper.getCustomer(foundCustomer);
+        return new DTOMapper().convertToDto(foundCustomer,new CustomerDTO());
     }
 
     @DeleteMapping("{id}")
