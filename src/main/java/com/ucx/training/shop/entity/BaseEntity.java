@@ -26,6 +26,8 @@ public abstract class BaseEntity<T> {
     @UpdateTimestamp
     private LocalDateTime updateDateTime;
 
+    private LocalDateTime deletedDateTime;
+
     @Column(length = 1000)
     private String description;
 
