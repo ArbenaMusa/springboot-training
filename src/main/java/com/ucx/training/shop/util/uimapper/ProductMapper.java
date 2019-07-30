@@ -19,7 +19,7 @@ public class ProductMapper {
             productDTO.setName(e.getName());
             productDTO.setUnitPrice(e.getUnitPrice());
             if (e.getFileUpload() != null) {
-                productDTO.setFileName(e.getFileUpload().getFileName());
+                productDTO.setFileName(e.getFileUpload().getFilePath());
             }
             productDTOList.add(productDTO);
         });
@@ -36,7 +36,7 @@ public class ProductMapper {
         productDTO.setName(product.getName());
         productDTO.setUnitPrice(product.getUnitPrice());
         if (product.getFileUpload() != null) {
-            productDTO.setFileName(product.getFileUpload().getFileName());
+            productDTO.setFileName(product.getFileUpload().getFilePath());
         }
         return productDTO;
     }

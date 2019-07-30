@@ -36,7 +36,7 @@ public class ProductController {
     public ProductDTO create(@RequestBody Product product) throws ResponseException {
         Product createdProduct = null;
         try {
-            createdProduct = productService.save(product);
+            createdProduct = productService.createProductWithCategoryAndBrand(product);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
