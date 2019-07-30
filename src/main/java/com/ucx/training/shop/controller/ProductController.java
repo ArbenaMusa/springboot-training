@@ -35,7 +35,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ProductDTO create(@RequestBody Product product) throws ResponseException {
+    public DTOEntity create(@RequestBody Product product) throws ResponseException {
         Product createdProduct = null;
         try {
             createdProduct = productService.createProductWithCategoryAndBrand(product);
@@ -45,7 +45,7 @@ public class ProductController {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        return ProductMapper.getProduct(createdProduct);
+        return new DTOMapper().convertToDto(createdProduct, new ProductDTO());
     }
 
     @PutMapping("{productId}")
@@ -93,10 +93,10 @@ public class ProductController {
     }
 
     @GetMapping("{id}")
-    public ProductDTO findByID(@PathVariable Integer id) throws ResponseException {
+    public DTOEntity findByID(@PathVariable Integer id) throws ResponseException {
         try {
             Product product = productService.findById(id);
-            return ProductMapper.getProduct(product);
+            return new DTOMapper().convertToDto(product,new ProductDTO());
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
