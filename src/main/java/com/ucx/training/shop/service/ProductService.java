@@ -52,16 +52,17 @@ public class ProductService extends BaseService<Product, Integer> {
         if (foundedProduct != null) {
             throw new RuntimeException("This product already exist");
         }
-        Category foundCategory = categoryService.findById(category.getId());
-        if (foundCategory == null) {
+        if (category.getId() == null && brand.getId() == null) {
             categoryService.save(category);
-        }
-        Brand foundBrand = brandService.findById(brand.getId());
-        if (foundBrand == null) {
             brandService.save(brand);
+            product.setCategory(category);
+            product.setBrand(brand);
+        }else {
+            Category foundCategory = categoryService.findById(category.getId());
+            Brand foundBrand = brandService.findById(brand.getId());
+            product.setCategory(foundCategory);
+            product.setBrand(foundBrand);
         }
-        product.setCategory(category);
-        product.setBrand(brand);
         return super.save(product);
     }
 
