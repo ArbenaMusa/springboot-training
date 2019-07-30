@@ -42,6 +42,7 @@ public class CustomerService extends BaseService<Customer, Integer> {
         final Integer CUSTOMER_ROLE_ID = 1;
         final Role ROLE = roleService.findById(CUSTOMER_ROLE_ID);
         customer.getUser().setRole(ROLE);
+        customer.getUser().setEmail(customer.getEmail());
         return super.save(customer);
     }
 
