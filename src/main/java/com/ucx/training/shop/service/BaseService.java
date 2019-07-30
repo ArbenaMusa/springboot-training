@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -56,6 +57,7 @@ public class BaseService<T extends BaseEntity<U>,U> {
         }
 
         t.setRecordStatus(RecordStatus.INACTIVE);
+        t.setDeletedDateTime(LocalDateTime.now());
     }
 
     public T findById(U u){
