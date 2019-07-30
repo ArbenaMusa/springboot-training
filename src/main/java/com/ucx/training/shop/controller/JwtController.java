@@ -1,23 +1,17 @@
 package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.CredentialDTO;
-import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.User;
 import com.ucx.training.shop.exception.NotFoundException;
-import com.ucx.training.shop.security.JwtConstants;
-import com.ucx.training.shop.service.CustomerService;
 import com.ucx.training.shop.service.UserService;
 import com.ucx.training.shop.util.JwtUtil;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
 import java.util.Base64;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,8 +21,8 @@ import java.util.Map;
 public class JwtController {
 
     private UserService userService;
-    private JwtController(UserService userService)
-    {
+
+    public JwtController(UserService userService) {
         this.userService = userService;
     }
 
@@ -51,9 +45,12 @@ public class JwtController {
             throw new RuntimeException("Invalid login, please check your email and password");
         }
 
+        User user = new User();
+        user.setAccessToken(JwtUtil.getAccessToken(email));
+        user.setRefreshToken(JwtUtil.getRefreshToken(email));
         foundUser.setAccessToken(JwtUtil.getAccessToken(email));
         foundUser.setRefreshToken(JwtUtil.getRefreshToken(email));
-        userService.update(foundUser, foundUser.getId());
+        userService.update(user, foundUser.getId());
 
 
         Map<String, String> responseMap = new HashMap<>();
