@@ -15,8 +15,18 @@ public class JwtUtil {
                 .setSubject(email)
                 .claim("roles", "user")
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + JwtConstants.EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, JwtConstants.SECRET)
+                .setExpiration(new Date(System.currentTimeMillis() + JwtConstants.EXPIRATION_TIME_ACCESS))
+                .signWith(SignatureAlgorithm.HS512, JwtConstants.SECRET_ACCESS)
+                .compact();
+    }
+
+    public static String getRefreshToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("roles", "user")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + JwtConstants.EXPIRATION_TIME_REFRESH))
+                .signWith(SignatureAlgorithm.HS256, JwtConstants.SECRET_REFRESH)
                 .compact();
     }
 
@@ -27,7 +37,7 @@ public class JwtUtil {
     public static Claims parse(String token) {
         Claims claims = Jwts
                 .parser()
-                .setSigningKey(JwtConstants.SECRET)
+                .setSigningKey(JwtConstants.SECRET_ACCESS)
                 .parseClaimsJws(token)
                 .getBody();
         return claims;
