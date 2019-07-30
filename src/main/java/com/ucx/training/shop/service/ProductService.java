@@ -3,11 +3,11 @@ package com.ucx.training.shop.service;
 import com.ucx.training.shop.entity.Brand;
 import com.ucx.training.shop.entity.Category;
 import com.ucx.training.shop.entity.Product;
-import com.ucx.training.shop.repository.CategoryRepository;
 import com.ucx.training.shop.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -42,28 +42,24 @@ public class ProductService extends BaseService<Product, Integer> {
     }
 
 
-    public Product createProductWithCategoryAndBrand(Product product){
+    public Product createProductWithCategoryAndBrand(Product product) {
         Category category = product.getCategory();
         Brand brand = product.getBrand();
-        if (product == null || category == null || brand == null) {
-            throw new IllegalArgumentException("Invalid argument found, please check for null!");
-        }
-        Product foundedProduct = findByName(product.getName());
-        if (foundedProduct != null) {
-            throw new RuntimeException("This product already exist");
-        }
-        if (category.getId() == null && brand.getId() == null) {
+        if (category.getId() == null) {
             categoryService.save(category);
-            brandService.save(brand);
-            product.setCategory(category);
-            product.setBrand(brand);
-        }else {
+        } else {
             Category foundCategory = categoryService.findById(category.getId());
-            Brand foundBrand = brandService.findById(brand.getId());
+            Assert.isTrue(foundCategory != null, "Entity not found!");
             product.setCategory(foundCategory);
+        }
+
+        if (brand.getId() == null) {
+            brandService.save(brand);
+        } else {
+            Brand foundBrand = brandService.findById(brand.getId());
+            Assert.isTrue(foundBrand != null, "Entity not found!");
             product.setBrand(foundBrand);
         }
         return super.save(product);
     }
-
 }
