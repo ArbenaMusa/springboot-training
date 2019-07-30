@@ -7,7 +7,6 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CustomerService;
 import com.ucx.training.shop.util.EntityUtil;
-import com.ucx.training.shop.util.uimapper.CustomerMapper;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -74,23 +73,21 @@ public class CustomerController {
     }
 
     @GetMapping
-    public List<CustomerDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
+    public List<DTOEntity> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<Customer> customers = customerService.findAllSorted(direction, properties);
-            List<CustomerDTO> customerDTOList = CustomerMapper.getCustomers(customers);
-            return customerDTOList;
+            return DTOMapper.converToDTOList(customers,new CustomerDTO());
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/paged")
-    public List<CustomerDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
+    public List<DTOEntity> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
         try {
             Page<Customer> costumerPage = customerService.findAllPaged(pageNumber, pageSize);
             List<Customer> customers = costumerPage.getContent();
-            List<CustomerDTO> customerDTOList = CustomerMapper.getCustomers(customers);
-            return customerDTOList;
+            return DTOMapper.converToDTOList(customers,new CustomerDTO());
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

@@ -8,8 +8,6 @@ import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.LineItemService;
 import com.ucx.training.shop.service.PurchaseService;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
-import com.ucx.training.shop.util.uimapper.InvoiceMapper;
-import com.ucx.training.shop.util.uimapper.LineItemMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

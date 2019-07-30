@@ -8,7 +8,6 @@ import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
-import com.ucx.training.shop.util.uimapper.ProductMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -81,12 +80,11 @@ public class ProductController {
     }
 
     @GetMapping("/paged")
-    public List<ProductDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
+    public List<DTOEntity> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
         try {
             Page<Product> productPage = productService.findAllPaged(pageNumber, pageSize);
             List<Product> products = productPage.getContent();
-            List<ProductDTO> productDTOList = ProductMapper.getProducts(products);
-            return productDTOList;
+            return DTOMapper.converToDTOList(products,new ProductDTO());
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

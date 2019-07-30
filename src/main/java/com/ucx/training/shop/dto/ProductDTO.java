@@ -14,6 +14,6 @@ public class ProductDTO implements DTOEntity{
     private String name;
     private BigDecimal unitPrice;
     private String fileName;
-    private String category;
-    private String brand;
+    private CategoryDTO category;
+    private BrandDTO brand;
 }
