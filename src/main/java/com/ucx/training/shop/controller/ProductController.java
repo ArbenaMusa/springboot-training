@@ -1,11 +1,13 @@
 package com.ucx.training.shop.controller;
 
+import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.util.FileUploadUtil;
+import com.ucx.training.shop.util.uimapper.DTOMapper;
 import com.ucx.training.shop.util.uimapper.ProductMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +35,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ProductDTO create(@RequestBody Product product) throws ResponseException {
+    public DTOEntity create(@RequestBody Product product) throws ResponseException {
         Product createdProduct = null;
         try {
             createdProduct = productService.createProductWithCategoryAndBrand(product);
@@ -43,7 +45,7 @@ public class ProductController {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        return ProductMapper.getProduct(createdProduct);
+        return new DTOMapper().convertToDto(createdProduct, new ProductDTO());
     }
 
     @PutMapping("{productId}")
@@ -92,10 +94,10 @@ public class ProductController {
     }
 
     @GetMapping("{id}")
-    public ProductDTO findByID(@PathVariable Integer id) throws ResponseException {
+    public DTOEntity findByID(@PathVariable Integer id) throws ResponseException {
         try {
             Product product = productService.findById(id);
-            return ProductMapper.getProduct(product);
+            return new DTOMapper().convertToDto(product,new ProductDTO());
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
