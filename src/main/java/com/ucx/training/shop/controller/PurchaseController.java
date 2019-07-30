@@ -54,7 +54,7 @@ public class PurchaseController {
         try {
             Invoice invoice = purchaseService.buy(purchaseDTO.getCostumerId(), purchaseDTO.getInvoiceId());
             invoiceDTO.setCreatedDateTime(invoice.getCreateDateTime());
-            invoiceDTO.setCostumerName(invoice.getCostumer().getName());
+            invoiceDTO.setCostumerName(invoice.getCustomer().getName());
             invoiceDTO.setInvoiceNumber(invoice.getInvoiceNumber());
             invoiceDTO.setTotal(invoice.getTotal());
             invoiceDTO.setLineItemList(converToDTOList(invoice.getLineItemList()));

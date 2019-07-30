@@ -1,6 +1,6 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.entity.Costumer;
+import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.entity.Product;
@@ -22,14 +22,14 @@ public class PurchaseService {
     private LineItemService lineItemService;
     private InvoiceService invoiceService;
     private ProductService productService;
-    private CostumerService costumerService;
+    private CustomerService customerService;
     private EmailService emailService;
 
-    public PurchaseService(LineItemService lineItemService, InvoiceService invoiceService, ProductService productService, CostumerService costumerService, EmailService emailService) {
+    public PurchaseService(LineItemService lineItemService, InvoiceService invoiceService, ProductService productService, CustomerService customerService, EmailService emailService) {
         this.lineItemService = lineItemService;
         this.invoiceService = invoiceService;
         this.productService = productService;
-        this.costumerService = costumerService;
+        this.customerService = customerService;
         this.emailService = emailService;
     }
 
@@ -64,16 +64,16 @@ public class PurchaseService {
         if (foundInvoice == null) throw new NotFoundException("No such Invoice found" + invoiceId);
         if (foundInvoice.getRecordStatus() == RecordStatus.INACTIVE)
             throw new IllegalArgumentException("Invoice is deleted: " + foundInvoice);
-        Costumer foundCostumer = costumerService.findById(costumerId);
-        if (foundCostumer == null) throw new NotFoundException("No such Costumer found" + costumerId);
-        if (foundCostumer.getRecordStatus() == RecordStatus.INACTIVE)
-            throw new IllegalArgumentException("Costumer is deleted: " + foundCostumer);
+        Customer foundCustomer = customerService.findById(costumerId);
+        if (foundCustomer == null) throw new NotFoundException("No such Costumer found" + costumerId);
+        if (foundCustomer.getRecordStatus() == RecordStatus.INACTIVE)
+            throw new IllegalArgumentException("Costumer is deleted: " + foundCustomer);
         List<LineItem> lineItemList = lineItemService.findAllByInvoiceAndRecordStatusActive(foundInvoice);
-        Invoice generatedInvoice = invoiceService.update(lineItemList, foundCostumer, foundInvoice);
+        Invoice generatedInvoice = invoiceService.update(lineItemList, foundCustomer, foundInvoice);
         Invoice printedInvoice = invoiceService.print(generatedInvoice.getId());
         reduceStock(lineItemList);
 
-        emailService.sendMail(foundCostumer, generatedInvoice);
+        emailService.sendMail(foundCustomer, generatedInvoice);
         return printedInvoice;
     }
 

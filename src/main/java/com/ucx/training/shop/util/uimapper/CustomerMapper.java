@@ -2,22 +2,55 @@ package com.ucx.training.shop.util.uimapper;
 
 import com.ucx.training.shop.dto.AddressDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
+import com.ucx.training.shop.dto.PhoneDTO;
 import com.ucx.training.shop.entity.Address;
-import com.ucx.training.shop.entity.Costumer;
+import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.entity.Phone;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CustomerMapper {
 
     private CustomerMapper() {}
 
-    public static CustomerDTO getCustomer(Costumer costumer) {
-        if (costumer == null) {
+    public static CustomerDTO getCustomer(Customer customer) {
+        if (customer == null) {
             throw new IllegalArgumentException("Costumer must not be null!");
         }
-        List<Address> addressList = costumer.getAddresses();
-        List<AddressDTO> addressDTOList = new ArrayList<>();
 
+        List<Address> addressList = customer.getAddresses();
+        List<AddressDTO> addressDTOList = new ArrayList<>();
+        Set<Phone> phoneList = customer.getPhoneNumbers();
+        List<PhoneDTO> phoneDTOList = new ArrayList<>();
+
+        if (!addressList.isEmpty()) {
+            convertAddressToDTOList(addressList, addressDTOList);
+        }
+        if (!phoneList.isEmpty()) {
+            convertPhoneToDTOList(phoneList, phoneDTOList);
+        }
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setId(customer.getId());
+        customerDTO.setName(customer.getName());
+        customerDTO.setEmail(customer.getEmail());
+        customerDTO.setPhoneDTOS(phoneDTOList);
+        customerDTO.setAddresses(addressDTOList);
+        return customerDTO;
+    }
+
+    private static void convertPhoneToDTOList(Set<Phone> phoneList, List<PhoneDTO> phoneDTOList) {
+        phoneList.forEach(e -> {
+            PhoneDTO phoneDTO = new PhoneDTO();
+            phoneDTO.setPhoneNumber(e.getPhoneNumber());
+            phoneDTOList.add(phoneDTO);
+        });
+    }
+
+    private static void convertAddressToDTOList(List<Address> addressList, List<AddressDTO> addressDTOList) {
         addressList.forEach(e -> {
             AddressDTO addressDTO = new AddressDTO();
             addressDTO.setStreet(e.getStreet());
@@ -26,39 +59,9 @@ public class CustomerMapper {
             addressDTO.setCountry(e.getCountry());
             addressDTOList.add(addressDTO);
         });
-
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setId(costumer.getId());
-        customerDTO.setName(costumer.getName());
-        customerDTO.setEmail(costumer.getEmail());
-        customerDTO.setPhoneNumber1(costumer.getPhoneNumber1());
-        customerDTO.setPhoneNumber2(costumer.getPhoneNumber2());
-        customerDTO.setAddresses(addressDTOList);
-        return customerDTO;
     }
 
-    public static List<CustomerDTO> getCustomers(List<Costumer> costumerList) {
-        List<CustomerDTO> customerDTOList = new ArrayList<>();
-        List<AddressDTO> addressDTOList = new ArrayList<>();
-        costumerList.forEach(e -> {
-            CustomerDTO customerDTO = new CustomerDTO();
-            List<Address> addresses = e.getAddresses();
-            addresses.forEach(f -> {
-                AddressDTO addressDTO = new AddressDTO();
-                addressDTO.setCountry(f.getCountry());
-                addressDTO.setZipCode(f.getZipCode());
-                addressDTO.setCity(f.getCity());
-                addressDTO.setStreet(f.getStreet());
-                addressDTOList.add(addressDTO);
-            });
-            customerDTO.setAddresses(addressDTOList);
-            customerDTO.setName(e.getName());
-            customerDTO.setPhoneNumber2(e.getPhoneNumber2());
-            customerDTO.setPhoneNumber1(e.getPhoneNumber1());
-            customerDTO.setEmail(e.getEmail());
-            customerDTOList.add(customerDTO);
-
-        });
-        return customerDTOList;
+    public static List<CustomerDTO> getCustomers(List<Customer> customerList) {
+        return customerList.stream().map(CustomerMapper::getCustomer).collect(Collectors.toList());
     }
 }

@@ -27,4 +27,10 @@ public class Product extends BaseEntity<Integer> {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(mappedBy = "product")
     private FileUpload fileUpload;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Category category;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Brand brand;
 }
