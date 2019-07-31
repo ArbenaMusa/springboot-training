@@ -5,6 +5,7 @@ import com.ucx.training.shop.security.JwtConstants;
 import io.jsonwebtoken.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.DatatypeConverter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Base64;
@@ -48,23 +49,29 @@ public class JwtUtil {
     }
     public static Boolean checkExpiration(String token, User user)
     {
-        Jws<Claims> jwsR = null;
-        LocalDateTime now = LocalDateTime.now();
 
-        try
-        {
-            jwsR = Jwts.parser().setSigningKey(SECRET_ACCESS).parseClaimsJws(token);
-            //System.out.println( "pite = " + jwsR.getBody().get( "value" ) );
+
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_ACCESS))
+                    .parseClaimsJws(token).getBody();
+            Date exp = claims.getExpiration();
+
+            System.out.print("Timeee " + exp);
+
+            Date now = new Date();
+            if (now.compareTo(exp) > 0) {
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (ExpiredJwtException ex) {
+            user.setAccessToken(getAccessToken(user.getEmail()));
+
         }
-        catch ( ExpiredJwtException ex )
-        {
-            user.setAccessToken(user.getEmail());
-            //System.out.println( "kafe = " + jwsR.getBody().get( "value" ) );
-        }
-        LocalDateTime expirationTime = LocalDateTime.ofInstant(jwsR.getBody().getExpiration().toInstant(), ZoneId.systemDefault());
-        System.out.println(expirationTime);
-        System.out.println(now);
-        System.out.println(now.compareTo(expirationTime));
-        return now.compareTo(expirationTime) > 0;
+        return false;
+
+
     }
 }
