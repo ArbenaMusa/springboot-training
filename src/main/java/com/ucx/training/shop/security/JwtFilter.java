@@ -38,6 +38,4 @@ public class JwtFilter extends GenericFilter {
 
         filterChain.doFilter(servletRequest, servletResponse);
     }
-
-
 }

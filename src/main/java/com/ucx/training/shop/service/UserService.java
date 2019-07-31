@@ -1,10 +1,15 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.dto.CredentialDTO;
 import com.ucx.training.shop.entity.User;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.UserRepository;
+import com.ucx.training.shop.util.JwtUtil;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -26,5 +31,31 @@ public class UserService extends BaseService<User, Integer> {
         return userRepository.findByEmail(email);
     }
 
+    public User authenticateUser(String email, String password) throws NotFoundException
+    {
+        //TODO: findCustomerByEmail(email)
+        User foundUser = findByEmail(email);
+        CredentialDTO credentialDTO = new CredentialDTO(foundUser.getEmail(), foundUser.getPassword());
 
+        //TODO: hash(password).equals(foundUser.getPassword())
+        if (!password.equals(credentialDTO.getPassword())) {
+            throw new RuntimeException("Invalid login, please check your email and password");
+        }
+        return setUserToken(email, foundUser.getId());
+    }
+    public User setUserToken(String email, Integer id) throws NotFoundException
+    {
+        User newUser = new User();
+        newUser.setAccessToken(JwtUtil.getAccessToken(email));
+        newUser.setRefreshToken(JwtUtil.getRefreshToken(email));
+        update(newUser, id);
+        return findById(id);
+    }
+    public Map<String,String> getTokenMap(User user)
+    {
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("accessToken", user.getAccessToken());
+        responseMap.put("refreshToken", user.getRefreshToken());
+        return responseMap;
+    }
 }
