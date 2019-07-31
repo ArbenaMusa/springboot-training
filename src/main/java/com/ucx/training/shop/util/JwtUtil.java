@@ -1,12 +1,16 @@
 package com.ucx.training.shop.util;
 
+import com.ucx.training.shop.entity.User;
 import com.ucx.training.shop.security.JwtConstants;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Base64;
 import java.util.Date;
+
+import static com.ucx.training.shop.security.JwtConstants.SECRET_ACCESS;
 
 public class JwtUtil {
 
@@ -16,7 +20,7 @@ public class JwtUtil {
                 .claim("roles", "user")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JwtConstants.EXPIRATION_TIME_ACCESS))
-                .signWith(SignatureAlgorithm.HS512, JwtConstants.SECRET_ACCESS)
+                .signWith(SignatureAlgorithm.HS512, SECRET_ACCESS)
                 .compact();
     }
 
@@ -37,9 +41,30 @@ public class JwtUtil {
     public static Claims parse(String token) {
         Claims claims = Jwts
                 .parser()
-                .setSigningKey(JwtConstants.SECRET_ACCESS)
+                .setSigningKey(SECRET_ACCESS)
                 .parseClaimsJws(token)
                 .getBody();
         return claims;
+    }
+    public static Boolean checkExpiration(String token, User user)
+    {
+        Jws<Claims> jwsR = null;
+        LocalDateTime now = LocalDateTime.now();
+
+        try
+        {
+            jwsR = Jwts.parser().setSigningKey(SECRET_ACCESS).parseClaimsJws(token);
+            //System.out.println( "pite = " + jwsR.getBody().get( "value" ) );
+        }
+        catch ( ExpiredJwtException ex )
+        {
+            user.setAccessToken(user.getEmail());
+            //System.out.println( "kafe = " + jwsR.getBody().get( "value" ) );
+        }
+        LocalDateTime expirationTime = LocalDateTime.ofInstant(jwsR.getBody().getExpiration().toInstant(), ZoneId.systemDefault());
+        System.out.println(expirationTime);
+        System.out.println(now);
+        System.out.println(now.compareTo(expirationTime));
+        return now.compareTo(expirationTime) > 0;
     }
 }

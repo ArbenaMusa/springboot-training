@@ -41,7 +41,7 @@ public class UserService extends BaseService<User, Integer> {
         if (!password.equals(credentialDTO.getPassword())) {
             throw new RuntimeException("Invalid login, please check your email and password");
         }
-        return setUserToken(email, foundUser.getId());
+        return foundUser;
     }
     public User setUserToken(String email, Integer id) throws NotFoundException
     {
