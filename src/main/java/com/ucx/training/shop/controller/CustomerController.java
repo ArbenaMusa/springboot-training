@@ -62,10 +62,10 @@ public class CustomerController {
     }
 
     @GetMapping("/email")
-    public CustomerDTO getByEmail(@RequestParam String email) throws ResponseException {
+    public DTOEntity getByEmail(@RequestParam String email) throws ResponseException {
         try {
             Customer foundCustomer = customerService.findByEmail(email);
-            return CustomerMapper.getCustomer(foundCustomer);
+            return DTOMapper.convertToDto(foundCustomer, new CustomerDTO());
         } catch (NotFoundException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
