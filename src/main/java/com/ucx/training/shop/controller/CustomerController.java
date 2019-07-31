@@ -61,6 +61,18 @@ public class CustomerController {
         return new DTOMapper().convertToDto(foundCustomer,new CustomerDTO());
     }
 
+    @GetMapping("/email")
+    public CustomerDTO getByEmail(@RequestParam String email) throws ResponseException {
+        try {
+            Customer foundCustomer = customerService.findByEmail(email);
+            return CustomerMapper.getCustomer(foundCustomer);
+        } catch (NotFoundException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @DeleteMapping("{id}")
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {

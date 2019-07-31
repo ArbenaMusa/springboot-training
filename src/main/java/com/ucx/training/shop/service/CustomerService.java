@@ -149,4 +149,15 @@ public class CustomerService extends BaseService<Customer, Integer> {
     public Tuple readByCostumerId(Integer id) {
         return customerRepository.readCostumerById(id);
     }
+
+    public Customer findByEmail(String email) throws NotFoundException {
+        if (email == null) {
+            throw new IllegalArgumentException("Email cannot be null!");
+        }
+        Customer foundCustomer = customerRepository.findByEmail(email);
+        if (foundCustomer == null) {
+            throw new NotFoundException("There isn't a customer with the given email!");
+        }
+        return foundCustomer;
+    }
 }

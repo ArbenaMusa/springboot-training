@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -18,6 +19,7 @@ import java.util.List;
 public class Role extends BaseEntity<Integer> {
 
     @Column(unique = true)
+    @NotNull
     private String name;
     private String roleDescription;
 
