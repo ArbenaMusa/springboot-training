@@ -33,11 +33,17 @@ public class JwtController {
         String password = parts[1];
 
             User user = userService.authenticateUser(email, password);
-            if (user.getAccessToken()== null) {
-                User newuser = userService.setUserToken(email, user.getId());
+            if (user.getAccessToken()== null || user.getRefreshToken() == null) {
+                User newuser = userService.setUserTokens(email, user.getId());
             }
-            if(JwtUtil.checkExpiration(user.getAccessToken(), user)) {
-                User newuser = userService.setUserToken(email, user.getId());
+            if(JwtUtil.checkExpirationRefresh(user.getRefreshToken(), user)) {
+                if(JwtUtil.checkExpirationAccess(user.getAccessToken(), user)) {
+                    userService.setUserAccessToken(email, user.getId());
+                }
+            }
+            else
+            {
+                userService.setUserNullToken(user.getId());
             }
         return userService.getTokenMap(user);
     }

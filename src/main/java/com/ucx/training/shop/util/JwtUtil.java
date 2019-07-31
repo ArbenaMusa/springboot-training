@@ -12,6 +12,7 @@ import java.util.Base64;
 import java.util.Date;
 
 import static com.ucx.training.shop.security.JwtConstants.SECRET_ACCESS;
+import static com.ucx.training.shop.security.JwtConstants.SECRET_REFRESH;
 
 public class JwtUtil {
 
@@ -47,31 +48,43 @@ public class JwtUtil {
                 .getBody();
         return claims;
     }
-    public static Boolean checkExpiration(String token, User user)
+    public static Claims parseRefresh(String token) {
+        Claims claims = Jwts
+                .parser()
+                .setSigningKey(SECRET_REFRESH)
+                .parseClaimsJws(token)
+                .getBody();
+        return claims;
+    }
+    public static Boolean checkExpirationAccess(String token, User user)
     {
-
-
         try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_ACCESS))
-                    .parseClaimsJws(token).getBody();
+            Claims claims = parse(token);
             Date exp = claims.getExpiration();
 
-            System.out.print("Timeee " + exp);
-
             Date now = new Date();
-            if (now.compareTo(exp) > 0) {
-                return true;
-            }
-            else{
-                return false;
-            }
+            if (now.compareTo(exp) > 0) return true;
+            else return false;
+
         } catch (ExpiredJwtException ex) {
             user.setAccessToken(getAccessToken(user.getEmail()));
-
         }
         return false;
+    }
+    public static Boolean checkExpirationRefresh(String token, User user)
+    {
+        try {
+            Claims claims = parseRefresh(token);
+            Date exp = claims.getExpiration();
 
+            Date now = new Date();
+            if (now.compareTo(exp) > 0) return true;
+            else return false;
 
+        } catch (ExpiredJwtException ex) {
+            user.setAccessToken(null);
+            user.setRefreshToken(null);
+        }
+        return false;
     }
 }
