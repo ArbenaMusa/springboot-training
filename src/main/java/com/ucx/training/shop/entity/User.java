@@ -19,6 +19,9 @@ public class User extends BaseEntity<Integer> {
     private String password;
     private Boolean isVerified = Boolean.FALSE;
 
+    private String accessToken;
+    private String refreshToken;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Role role;
 }
