@@ -1,17 +1,13 @@
 package com.ucx.training.shop.controller;
 
-import com.ucx.training.shop.dto.CartDTO;
-import com.ucx.training.shop.dto.InvoiceDTO;
-import com.ucx.training.shop.dto.LineItemDTO;
-import com.ucx.training.shop.dto.PurchaseDTO;
+import com.ucx.training.shop.dto.*;
 import com.ucx.training.shop.entity.Invoice;
 import com.ucx.training.shop.entity.LineItem;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.LineItemService;
 import com.ucx.training.shop.service.PurchaseService;
-import com.ucx.training.shop.util.uimapper.InvoiceMapper;
-import com.ucx.training.shop.util.uimapper.LineItemMapper;
+import com.ucx.training.shop.util.uimapper.DTOMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -49,21 +45,15 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public InvoiceDTO buy(@RequestBody PurchaseDTO purchaseDTO) throws ResponseException {
-        InvoiceDTO invoiceDTO = new InvoiceDTO();
+    public DTOEntity buy(@RequestBody PurchaseDTO purchaseDTO) throws ResponseException {
         try {
             Invoice invoice = purchaseService.buy(purchaseDTO.getCostumerId(), purchaseDTO.getInvoiceId());
-            invoiceDTO.setCreatedDateTime(invoice.getCreateDateTime());
-            invoiceDTO.setCostumerName(invoice.getCustomer().getName());
-            invoiceDTO.setInvoiceNumber(invoice.getInvoiceNumber());
-            invoiceDTO.setTotal(invoice.getTotal());
-            invoiceDTO.setLineItemList(converToDTOList(invoice.getLineItemList()));
+            return new DTOMapper().convertToDto(invoice, new InvoiceDTO());
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return invoiceDTO;
     }
 
     private LineItemDTO convertToDTO(LineItem lineItemList) {
@@ -83,11 +73,10 @@ public class PurchaseController {
     }
 
     @DeleteMapping("lineitems/{id}")
-    public LineItemDTO cancelLineItem(@PathVariable Integer id) throws ResponseException {
+    public DTOEntity cancelLineItem(@PathVariable Integer id) throws ResponseException {
         try {
             LineItem lineItem = purchaseService.cancelLineItem(id);
-            LineItemDTO lineItemDTO = LineItemMapper.getLineItem(lineItem, lineItem.getProduct());
-            return lineItemDTO;
+            return new DTOMapper().convertToDto(lineItem, new LineItemDTO());
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -96,11 +85,10 @@ public class PurchaseController {
     }
 
     @DeleteMapping("{id}")
-    public InvoiceDTO cancelPurchase(@PathVariable Integer id) throws ResponseException {
+    public DTOEntity cancelPurchase(@PathVariable Integer id) throws ResponseException {
         try {
             Invoice invoice = purchaseService.cancelPurchase(id);
-            InvoiceDTO invoiceDTO = InvoiceMapper.getInvoice(invoice);
-            return invoiceDTO;
+            return new DTOMapper().convertToDto(invoice, new InvoiceDTO());
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -109,10 +97,10 @@ public class PurchaseController {
     }
 
     @PatchMapping("lineitems/{lineItemId}")
-    public LineItemDTO changeQuantity(@RequestBody LineItem lineItem, @PathVariable Integer lineItemId) throws NotFoundException, ResponseException {
+    public DTOEntity changeQuantity(@RequestBody LineItem lineItem, @PathVariable Integer lineItemId) throws NotFoundException, ResponseException {
         try {
             LineItem updatedLineItem = purchaseService.changeQuantity(lineItem, lineItemId);
-            return new LineItemDTO(updatedLineItem.getProduct().getName(), updatedLineItem.getQuantity(), updatedLineItem.getInvoice().getId());
+            return new DTOMapper().convertToDto(lineItem, new LineItemDTO());
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

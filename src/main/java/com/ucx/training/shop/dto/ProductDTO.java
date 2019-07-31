@@ -9,10 +9,10 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDTO {
+public class ProductDTO implements DTOEntity{
     private String name;
     private BigDecimal unitPrice;
     private String fileName;
-    private String brand;
-    private String category;
+    private CategoryDTO category;
+    private BrandDTO brand;
 }

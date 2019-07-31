@@ -5,11 +5,11 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CustomerDTO {
+public class CustomerDTO implements DTOEntity{
     private Integer id;
     private String name;
     private String email;
-    private List<PhoneDTO> phoneDTOS;
+    private List<PhoneDTO> phoneNumbers;
     private List<AddressDTO> addresses;
 
 }
