@@ -22,7 +22,7 @@ public class Customer extends BaseEntity<Integer> {
     private String name;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Size(min = 1, message = "You must have at least 1 address")
+    //@Size(min = 1, message = "You must have at least 1 address")
     private List<Address> addresses;
 
     private String email;
