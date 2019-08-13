@@ -33,11 +33,11 @@ public class CustomerService extends BaseService<Customer, Integer> {
 
     @Override
     public Customer save(Customer customer) {
-        if (customer.getAddresses() == null) {
+       /* if (customer.getAddresses() == null) {
             throw new IllegalArgumentException("You must have at least 1 address");
-        }
-        customer.getAddresses().forEach(e -> e.setCustomer(customer));
-        customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));
+        }*/
+        /*customer.getAddresses().forEach(e -> e.setCustomer(customer));
+        customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));*/
         //TODO: Default Role for Customer
         final Integer CUSTOMER_ROLE_ID = 1;
         final Role ROLE = roleService.findById(CUSTOMER_ROLE_ID);
