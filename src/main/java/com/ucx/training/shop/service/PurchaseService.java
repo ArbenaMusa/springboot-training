@@ -1,8 +1,8 @@
 package com.ucx.training.shop.service;
 
 import com.ucx.training.shop.entity.Customer;
-import com.ucx.training.shop.entity.Invoice;
-import com.ucx.training.shop.entity.LineItem;
+import com.ucx.training.shop.entity.Order;
+import com.ucx.training.shop.entity.CartItem;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.type.RecordStatus;
@@ -19,15 +19,15 @@ import java.util.List;
 @Transactional
 public class PurchaseService {
 
-    private LineItemService lineItemService;
-    private InvoiceService invoiceService;
+    private CartItemService cartItemService;
+    private OrderService orderService;
     private ProductService productService;
     private CustomerService customerService;
     private EmailService emailService;
 
-    public PurchaseService(LineItemService lineItemService, InvoiceService invoiceService, ProductService productService, CustomerService customerService, EmailService emailService) {
-        this.lineItemService = lineItemService;
-        this.invoiceService = invoiceService;
+    public PurchaseService(CartItemService cartItemService, OrderService orderService, ProductService productService, CustomerService customerService, EmailService emailService) {
+        this.cartItemService = cartItemService;
+        this.orderService = orderService;
         this.productService = productService;
         this.customerService = customerService;
         this.emailService = emailService;
@@ -43,66 +43,66 @@ public class PurchaseService {
         if (foundProduct.getInStock() < quantity) throw new NotFoundException("Out of stock!");
 
         if (invoiceId == null) {
-            Invoice invoice = new Invoice();
-            Invoice createdInvoice = invoiceService.save(invoice);
-            lineItemService.create(foundProduct, quantity, createdInvoice);
-            newInvoiceId = createdInvoice.getId();
+            Order order = new Order();
+            Order createdOrder = orderService.save(order);
+            cartItemService.create(foundProduct, quantity, createdOrder);
+            newInvoiceId = createdOrder.getId();
         } else {
-            Invoice foundInvoice = invoiceService.findById(invoiceId);
-            if (foundInvoice == null) throw new NotFoundException("No such Invoice found");
-            if (foundInvoice.getRecordStatus() == RecordStatus.INACTIVE)
-                throw new IllegalArgumentException("Invoice is deleted! " + foundInvoice);
-            lineItemService.create(foundProduct, quantity, foundInvoice);
+            Order foundOrder = orderService.findById(invoiceId);
+            if (foundOrder == null) throw new NotFoundException("No such Invoice found");
+            if (foundOrder.getRecordStatus() == RecordStatus.INACTIVE)
+                throw new IllegalArgumentException("Invoice is deleted! " + foundOrder);
+            cartItemService.create(foundProduct, quantity, foundOrder);
             newInvoiceId = invoiceId;
         }
 
         return newInvoiceId;
     }
 
-    public Invoice buy(Integer costumerId, Integer invoiceId) throws NotFoundException, MessagingException, IOException {
-        Invoice foundInvoice = invoiceService.findById(invoiceId);
-        if (foundInvoice == null) throw new NotFoundException("No such Invoice found" + invoiceId);
-        if (foundInvoice.getRecordStatus() == RecordStatus.INACTIVE)
-            throw new IllegalArgumentException("Invoice is deleted: " + foundInvoice);
+    public Order buy(Integer costumerId, Integer invoiceId) throws NotFoundException, MessagingException, IOException {
+        Order foundOrder = orderService.findById(invoiceId);
+        if (foundOrder == null) throw new NotFoundException("No such Invoice found" + invoiceId);
+        if (foundOrder.getRecordStatus() == RecordStatus.INACTIVE)
+            throw new IllegalArgumentException("Invoice is deleted: " + foundOrder);
         Customer foundCustomer = customerService.findById(costumerId);
         if (foundCustomer == null) throw new NotFoundException("No such Costumer found" + costumerId);
         if (foundCustomer.getRecordStatus() == RecordStatus.INACTIVE)
             throw new IllegalArgumentException("Costumer is deleted: " + foundCustomer);
-        List<LineItem> lineItemList = lineItemService.findAllByInvoiceAndRecordStatusActive(foundInvoice);
-        Invoice generatedInvoice = invoiceService.update(lineItemList, foundCustomer, foundInvoice);
-        Invoice printedInvoice = invoiceService.print(generatedInvoice.getId());
-        reduceStock(lineItemList);
+        List<CartItem> cartItemList = cartItemService.findAllByOrderAndRecordStatusActive(foundOrder);
+        Order generatedOrder = orderService.update(cartItemList, foundCustomer, foundOrder);
+        Order printedOrder = orderService.print(generatedOrder.getId());
+        reduceStock(cartItemList);
 
-        emailService.sendMail(foundCustomer, generatedInvoice);
-        return printedInvoice;
+        emailService.sendMail(foundCustomer, generatedOrder);
+        return printedOrder;
     }
 
     //Reduces stock of Product from quantity given
-    private void reduceStock(List<LineItem> lineItemList) {
-        lineItemList.forEach(lineItem -> {
+    private void reduceStock(List<CartItem> cartItemList) {
+        cartItemList.forEach(lineItem -> {
             Product product = lineItem.getProduct();
             product.setInStock(product.getInStock() - lineItem.getQuantity());
         });
     }
 
-    public LineItem cancelLineItem(Integer lineItemId) throws NotFoundException {
+    public CartItem cancelLineItem(Integer lineItemId) throws NotFoundException {
         if (lineItemId == null) {
             throw new IllegalArgumentException("LineItem ID cannot be null!");
         }
-        LineItem foundLineItem = lineItemService.findById(lineItemId);
-        if (foundLineItem == null) {
+        CartItem foundCartItem = cartItemService.findById(lineItemId);
+        if (foundCartItem == null) {
             throw new NotFoundException("LineItem does not exist");
         }
-        foundLineItem.setRecordStatus(RecordStatus.INACTIVE);
-        return foundLineItem;
+        foundCartItem.setRecordStatus(RecordStatus.INACTIVE);
+        return foundCartItem;
     }
 
-    public Invoice cancelPurchase(Integer invoiceId) throws NotFoundException {
+    public Order cancelPurchase(Integer invoiceId) throws NotFoundException {
         if (invoiceId == null) throw new IllegalArgumentException("Invoice ID cannot be null!");
-        Invoice foundInvoice = invoiceService.findById(invoiceId);
-        if (foundInvoice == null) throw new NotFoundException("Invoice does not exist" + invoiceId);
-        if (!foundInvoice.getLineItemList().isEmpty()) {
-            foundInvoice.getLineItemList().forEach(lineItem -> {
+        Order foundOrder = orderService.findById(invoiceId);
+        if (foundOrder == null) throw new NotFoundException("Invoice does not exist" + invoiceId);
+        if (!foundOrder.getCart().isEmpty()) {
+            foundOrder.getCart().forEach(lineItem -> {
                 try {
                     cancelLineItem(lineItem.getId());
                 } catch (NotFoundException e) {
@@ -110,25 +110,25 @@ public class PurchaseService {
                 }
             });
         }
-        foundInvoice.setRecordStatus(RecordStatus.INACTIVE);
-        return foundInvoice;
+        foundOrder.setRecordStatus(RecordStatus.INACTIVE);
+        return foundOrder;
     }
 
-    public LineItem changeQuantity(LineItem lineItem, Integer lineItemId) throws NotFoundException {
+    public CartItem changeQuantity(CartItem cartItem, Integer lineItemId) throws NotFoundException {
         if (lineItemId == null) {
             throw new IllegalArgumentException("LineItem cannot be null!");
         }
-        LineItem foundLineItem = lineItemService.findById(lineItemId);
-        if (foundLineItem == null) {
+        CartItem foundCartItem = cartItemService.findById(lineItemId);
+        if (foundCartItem == null) {
             throw new NotFoundException("Line item does not exist");
         }
-        if (foundLineItem.getRecordStatus() == RecordStatus.INACTIVE) {
+        if (foundCartItem.getRecordStatus() == RecordStatus.INACTIVE) {
             throw new RuntimeException("This line item was deleted!");
         }
-        if (lineItem.getQuantity().equals(0)) {
+        if (cartItem.getQuantity().equals(0)) {
             return cancelLineItem(lineItemId);
         }
-        foundLineItem.setQuantity(lineItem.getQuantity());
-        return foundLineItem;
+        foundCartItem.setQuantity(cartItem.getQuantity());
+        return foundCartItem;
     }
 }

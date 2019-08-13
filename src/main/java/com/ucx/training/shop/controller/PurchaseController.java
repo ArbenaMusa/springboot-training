@@ -4,11 +4,11 @@ import com.ucx.training.shop.dto.CartDTO;
 import com.ucx.training.shop.dto.InvoiceDTO;
 import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.dto.PurchaseDTO;
-import com.ucx.training.shop.entity.Invoice;
-import com.ucx.training.shop.entity.LineItem;
+import com.ucx.training.shop.entity.Order;
+import com.ucx.training.shop.entity.CartItem;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
-import com.ucx.training.shop.service.LineItemService;
+import com.ucx.training.shop.service.CartItemService;
 import com.ucx.training.shop.service.PurchaseService;
 import com.ucx.training.shop.util.uimapper.InvoiceMapper;
 import com.ucx.training.shop.util.uimapper.LineItemMapper;
@@ -27,11 +27,11 @@ import java.util.stream.Collectors;
 public class PurchaseController {
 
     private PurchaseService purchaseService;
-    private LineItemService lineItemService;
+    private CartItemService cartItemService;
 
-    public PurchaseController(PurchaseService purchaseService, LineItemService lineItemService) {
+    public PurchaseController(PurchaseService purchaseService, CartItemService cartItemService) {
         this.purchaseService = purchaseService;
-        this.lineItemService = lineItemService;
+        this.cartItemService = cartItemService;
     }
 
     @PostMapping("lineitems")
@@ -52,12 +52,12 @@ public class PurchaseController {
     public InvoiceDTO buy(@RequestBody PurchaseDTO purchaseDTO) throws ResponseException {
         InvoiceDTO invoiceDTO = new InvoiceDTO();
         try {
-            Invoice invoice = purchaseService.buy(purchaseDTO.getCostumerId(), purchaseDTO.getInvoiceId());
-            invoiceDTO.setCreatedDateTime(invoice.getCreateDateTime());
-            invoiceDTO.setCostumerName(invoice.getCustomer().getName());
-            invoiceDTO.setInvoiceNumber(invoice.getInvoiceNumber());
-            invoiceDTO.setTotal(invoice.getTotal());
-            invoiceDTO.setLineItemList(converToDTOList(invoice.getLineItemList()));
+            Order order = purchaseService.buy(purchaseDTO.getCostumerId(), purchaseDTO.getInvoiceId());
+            invoiceDTO.setCreatedDateTime(order.getCreateDateTime());
+            invoiceDTO.setCostumerName(order.getCustomer().getName());
+            invoiceDTO.setInvoiceNumber(order.getInvoiceNumber());
+            invoiceDTO.setTotal(order.getTotal());
+            invoiceDTO.setLineItemList(converToDTOList(order.getCart()));
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -66,17 +66,17 @@ public class PurchaseController {
         return invoiceDTO;
     }
 
-    private LineItemDTO convertToDTO(LineItem lineItemList) {
+    private LineItemDTO convertToDTO(CartItem cartItemList) {
         LineItemDTO lineItemDTO = LineItemDTO.builder()
-                .product(lineItemList.getProduct().getName())
-                .invoiceId(lineItemList.getInvoice().getId())
-                .quantity(lineItemList.getQuantity())
+                .product(cartItemList.getProduct().getName())
+                .invoiceId(cartItemList.getOrder().getId())
+                .quantity(cartItemList.getQuantity())
                 .build();
         return lineItemDTO;
     }
 
-    private List<LineItemDTO> converToDTOList(List<LineItem> lineItemList) {
-        List<LineItemDTO> lineItemDTOS = lineItemList.stream()
+    private List<LineItemDTO> converToDTOList(List<CartItem> cartItemList) {
+        List<LineItemDTO> lineItemDTOS = cartItemList.stream()
                 .map(lineItem -> convertToDTO(lineItem))
                 .collect(Collectors.toList());
         return lineItemDTOS;
@@ -85,8 +85,8 @@ public class PurchaseController {
     @DeleteMapping("lineitems/{id}")
     public LineItemDTO cancelLineItem(@PathVariable Integer id) throws ResponseException {
         try {
-            LineItem lineItem = purchaseService.cancelLineItem(id);
-            LineItemDTO lineItemDTO = LineItemMapper.getLineItem(lineItem, lineItem.getProduct());
+            CartItem cartItem = purchaseService.cancelLineItem(id);
+            LineItemDTO lineItemDTO = LineItemMapper.getLineItem(cartItem, cartItem.getProduct());
             return lineItemDTO;
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -98,8 +98,8 @@ public class PurchaseController {
     @DeleteMapping("{id}")
     public InvoiceDTO cancelPurchase(@PathVariable Integer id) throws ResponseException {
         try {
-            Invoice invoice = purchaseService.cancelPurchase(id);
-            InvoiceDTO invoiceDTO = InvoiceMapper.getInvoice(invoice);
+            Order order = purchaseService.cancelPurchase(id);
+            InvoiceDTO invoiceDTO = InvoiceMapper.getInvoice(order);
             return invoiceDTO;
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -109,10 +109,10 @@ public class PurchaseController {
     }
 
     @PatchMapping("lineitems/{lineItemId}")
-    public LineItemDTO changeQuantity(@RequestBody LineItem lineItem, @PathVariable Integer lineItemId) throws NotFoundException, ResponseException {
+    public LineItemDTO changeQuantity(@RequestBody CartItem cartItem, @PathVariable Integer lineItemId) throws NotFoundException, ResponseException {
         try {
-            LineItem updatedLineItem = purchaseService.changeQuantity(lineItem, lineItemId);
-            return new LineItemDTO(updatedLineItem.getProduct().getName(), updatedLineItem.getQuantity(), updatedLineItem.getInvoice().getId());
+            CartItem updatedCartItem = purchaseService.changeQuantity(cartItem, lineItemId);
+            return new LineItemDTO(updatedCartItem.getProduct().getName(), updatedCartItem.getQuantity(), updatedCartItem.getOrder().getId());
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

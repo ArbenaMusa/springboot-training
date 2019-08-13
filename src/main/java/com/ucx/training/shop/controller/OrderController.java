@@ -1,0 +1,77 @@
+package com.ucx.training.shop.controller;
+
+import com.ucx.training.shop.dto.InvoiceDTO;
+import com.ucx.training.shop.dto.LineItemDTO;
+import com.ucx.training.shop.entity.Order;
+import com.ucx.training.shop.exception.NotFoundException;
+import com.ucx.training.shop.exception.ResponseException;
+import com.ucx.training.shop.service.OrderService;
+import com.ucx.training.shop.service.CartItemService;
+import com.ucx.training.shop.util.uimapper.InvoiceMapper;
+import com.ucx.training.shop.util.uimapper.LineItemMapper;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Log4j2
+@RestController
+@RequestMapping("v1/invoices")
+public class OrderController {
+
+    private CartItemService cartItemService;
+    private OrderService orderService;
+
+    public OrderController(CartItemService cartItemService, OrderService orderService) {
+        this.cartItemService = cartItemService;
+        this.orderService = orderService;
+    }
+
+    @PutMapping("{id}")
+    public InvoiceDTO update(@RequestBody Order order, @PathVariable Integer id) throws ResponseException {
+        try {
+            Order updatedOrder = orderService.update(order.getCart(), order.getCustomer(), order);
+            return InvoiceMapper.getInvoice(updatedOrder);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/lineitems/{invoiceId}")
+    public List<LineItemDTO> getLineItemsByInvoiceId(@PathVariable Integer invoiceId) throws ResponseException {
+        try {
+            List <LineItemDTO> lineItemDTOs=new ArrayList<>();
+            lineItemDTOs= LineItemMapper.getLineItems(cartItemService.findAllByInvoiceId(invoiceId));
+            return lineItemDTOs;
+        } catch (IllegalArgumentException | NotFoundException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("{id}")
+    public InvoiceDTO findById(@PathVariable Integer id) throws ResponseException {
+        try {
+            Order order = orderService.findById(id);
+            return InvoiceMapper.getInvoice(order);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping
+    public List<InvoiceDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @PathVariable Integer id, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
+        try {
+            List<Order> orderList = orderService.findAllSorted(direction, properties);
+            List<InvoiceDTO> invoiceDTOS = InvoiceMapper.getInvoices(orderList);
+            return invoiceDTOS;
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+}
