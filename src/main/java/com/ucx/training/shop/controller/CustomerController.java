@@ -96,6 +96,6 @@ public class CustomerController {
     @GetMapping("/read/{id}")
     public Map<String, Object> readById(@PathVariable Integer id) {
         Tuple tuple = customerService.readByCostumerId(id);
-        return EntityUtil.toList(tuple);
+        return EntityUtil.toMap(tuple);
     }
 }
