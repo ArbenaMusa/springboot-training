@@ -1,8 +1,8 @@
 package com.ucx.training.shop.service;
 
 import com.ucx.training.shop.entity.Customer;
-import com.ucx.training.shop.entity.Invoice;
-import com.ucx.training.shop.entity.LineItem;
+import com.ucx.training.shop.entity.Order;
+import com.ucx.training.shop.entity.CartItem;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -26,18 +26,18 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendMail(Customer customer, Invoice invoice) throws MessagingException, IOException {
+    public void sendMail(Customer customer, Order order) throws MessagingException, IOException {
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         helper.setTo(customer.getEmail());
         helper.setSubject("Invoice for your purchase!");
         helper.setText("Here is your invoice....!");
-        helper.addAttachment("Invoice.txt",createFile(customer, invoice));
+        helper.addAttachment("Invoice.txt",createFile(customer, order));
         send(msg);
     }
 
-    public File createFile(Customer customer, Invoice invoice) throws IOException {
-        List<LineItem> list = invoice.getLineItemList();
+    public File createFile(Customer customer, Order order) throws IOException {
+        List<CartItem> list = order.getCart();
         File file = new File("Invoice.txt");
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
             writer.write("Customer name: " + customer.getName() +
@@ -48,9 +48,9 @@ public class EmailService {
                             "  x" + e.getQuantity().toString() +
                             "\nPrice: " + (e.getQuantity().intValue()* e.getProduct().getUnitPrice().intValue()) + " €" ));
             writer.write("\n------------------------------------------------" +
-                    "\nPurchase date: " + invoice.getCreateDateTime() +
+                    "\nPurchase date: " + order.getCreateDateTime() +
                     "\n------------------------------------------------" +
-                    "\nTotal: " + invoice.getTotal() + " €");
+                    "\nTotal: " + order.getTotal() + " €");
         } catch (IOException e) {
             throw e;
         }

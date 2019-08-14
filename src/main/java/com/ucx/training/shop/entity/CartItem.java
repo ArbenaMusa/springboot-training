@@ -1,7 +1,6 @@
 package com.ucx.training.shop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.ucx.training.shop.dto.ProductDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,11 +13,11 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LineItem extends BaseEntity<Integer> {
+public class CartItem extends BaseEntity<Integer> {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
-    private Invoice invoice;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
