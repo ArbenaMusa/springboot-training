@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.Tuple;
 import javax.transaction.Transactional;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -39,10 +40,13 @@ public class CustomerService extends BaseService<Customer, Integer> {
         /*customer.getAddresses().forEach(e -> e.setCustomer(customer));
         customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));*/
         //TODO: Default Role for Customer
-        final Integer CUSTOMER_ROLE_ID = 1;
+        /*final Integer CUSTOMER_ROLE_ID = 1;
         final Role ROLE = roleService.findById(CUSTOMER_ROLE_ID);
-        customer.getUser().setRole(ROLE);
+        customer.getUser().setRole(ROLE);*/
         customer.getUser().setEmail(customer.getEmail());
+        String password = customer.getUser().getPassword();
+        String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
+        customer.getUser().setPassword(encodedPassword);
         return super.save(customer);
     }
 
