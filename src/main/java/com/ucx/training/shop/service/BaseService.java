@@ -10,6 +10,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -72,6 +73,10 @@ public class BaseService<T extends BaseEntity<U>,U> {
 
     public Page<T> findAllPaged(int pageNumber, int pageSize) {
         return baseRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("id")));
+    }
+
+    public Page<T> findAllPaged(Pageable pageable) {
+        return baseRepository.findAll(pageable);
     }
 
     public List<T> findAllSorted(String direction, String ... properties) {
