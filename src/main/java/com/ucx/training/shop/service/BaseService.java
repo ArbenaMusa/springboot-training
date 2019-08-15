@@ -1,7 +1,7 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.entity.BaseEntity;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.BaseRepository;
 import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.beans.BeanUtils;
@@ -19,22 +19,22 @@ import java.util.*;
 
 @Service
 @Transactional
-public class BaseService<T extends BaseEntity<U>,U> {
+public class BaseService<T extends BaseEntity<U>, U> {
     @Autowired
-    private BaseRepository<T,U> baseRepository;
+    private BaseRepository<T, U> baseRepository;
 
-    public T save(T t){
+    public T save(T t) {
         if (t == null) {
-            throw new IllegalArgumentException("Invalid argument: "+t);
+            throw new IllegalArgumentException("Invalid argument: " + t);
         }
         return baseRepository.save(t);
     }
 
-    public List<T> findAll(){
+    public List<T> findAll() {
         return baseRepository.findAll();
     }
 
-    public T update(T t, U u) throws NotFoundException{
+    public T update(T t, U u) throws NotFoundException {
         if (t == null) {
             throw new IllegalArgumentException(String.format("One of the arguments is invalid: %s", t));
         }
@@ -43,11 +43,11 @@ public class BaseService<T extends BaseEntity<U>,U> {
             throw new NotFoundException("Entity not found");
         }
 
-        BeanUtils.copyProperties(t,foundT,getNullPropertyNames(t));
+        BeanUtils.copyProperties(t, foundT, getNullPropertyNames(t));
         return foundT;
     }
 
-    public void remove(U u) throws NotFoundException{
+    public void remove(U u) throws NotFoundException {
         if (u == null) {
             throw new IllegalArgumentException("Invalid argument" + u);
         }
@@ -60,13 +60,9 @@ public class BaseService<T extends BaseEntity<U>,U> {
         t.setDeletedDateTime(LocalDateTime.now());
     }
 
-    public T findById(U u){
+    public T findById(U u) {
         if (u == null) {
             throw new IllegalArgumentException("Invalid argument: " + u);
-
-
-
-
         }
         Optional<T> optionalT = baseRepository.findById(u);
 
@@ -78,7 +74,7 @@ public class BaseService<T extends BaseEntity<U>,U> {
         return baseRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.by("id")));
     }
 
-    public List<T> findAllSorted(String direction, String ... properties) {
+    public List<T> findAllSorted(String direction, String... properties) {
 
         if (!Arrays.asList("ASC", "DESC").contains(direction.toUpperCase())) {
             throw new IllegalArgumentException("Value must be either ASC or DESC: " + direction);
