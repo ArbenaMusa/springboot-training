@@ -12,6 +12,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,9 +82,9 @@ public class ProductController {
     }
 
     @GetMapping("/paged")
-    public List<DTOEntity> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
+    public List<DTOEntity> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Page<Product> productPage = productService.findAllPaged(pageNumber, pageSize);
+            Page<Product> productPage = productService.findAllPaged(pageable);
             List<Product> products = productPage.getContent();
             return DTOMapper.converToDTOList(products,new ProductDTO());
         } catch (Exception e) {
