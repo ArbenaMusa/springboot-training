@@ -1,10 +1,9 @@
 package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.LineItemDTO;
-import com.ucx.training.shop.entity.LineItem;
-import com.ucx.training.shop.exception.NotFoundException;
+import com.ucx.training.shop.entity.CartItem;
 import com.ucx.training.shop.exception.ResponseException;
-import com.ucx.training.shop.service.LineItemService;
+import com.ucx.training.shop.service.CartItemService;
 import com.ucx.training.shop.util.uimapper.LineItemMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -15,19 +14,19 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("v1/lineitems")
-public class LineItemController {
+public class CartItemController {
 
-    private LineItemService lineItemService;
+    private CartItemService cartItemService;
 
-    public LineItemController(LineItemService lineItemService) {
-        this.lineItemService = lineItemService;
+    public CartItemController(CartItemService cartItemService) {
+        this.cartItemService = cartItemService;
     }
 
     @GetMapping
     public List<LineItemDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @PathVariable Integer id, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
-            List<LineItem> lineItems = lineItemService.findAllSorted(direction, properties);
-            List<LineItemDTO> lineItemDTOList = LineItemMapper.getLineItems(lineItems);
+            List<CartItem> cartItems = cartItemService.findAllSorted(direction, properties);
+            List<LineItemDTO> lineItemDTOList = LineItemMapper.getLineItems(cartItems);
             return lineItemDTOList;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -37,9 +36,9 @@ public class LineItemController {
     @GetMapping("/paged")
     public List<LineItemDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
         try {
-            Page<LineItem> lineItemPage = lineItemService.findAllPaged(pageNumber, pageSize);
-            List<LineItem> lineItem = lineItemPage.getContent();
-            List<LineItemDTO> lineItemDTOList = LineItemMapper.getLineItems(lineItem);
+            Page<CartItem> lineItemPage = cartItemService.findAllPaged(pageNumber, pageSize);
+            List<CartItem> cartItem = lineItemPage.getContent();
+            List<LineItemDTO> lineItemDTOList = LineItemMapper.getLineItems(cartItem);
             return lineItemDTOList;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -49,8 +48,8 @@ public class LineItemController {
     @GetMapping("{id}")
     public LineItemDTO findById(@PathVariable Integer id) throws ResponseException {
         try {
-            LineItem lineItem = lineItemService.findById(id);
-            return LineItemMapper.getLineItem(lineItem,lineItem.getProduct());
+            CartItem cartItem = cartItemService.findById(id);
+            return LineItemMapper.getLineItem(cartItem, cartItem.getProduct());
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class InvoiceDTO {
+public class InvoiceDTO implements DTOEntity {
     private LocalDateTime createdDateTime;
     private Integer invoiceNumber;
     private BigDecimal total;

@@ -1,10 +1,13 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.entity.Brand;
+import com.ucx.training.shop.entity.Category;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -17,13 +20,17 @@ public class ProductService extends BaseService<Product, Integer> {
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private CategoryService categoryService;
+    @Autowired
+    private BrandService brandService;
 
-    public List<Product> findAllByName(String name) {
+    public Product findByName(String name) {
         if (name == null) {
             throw new IllegalArgumentException("Null argument provided!");
         }
 
-        return productRepository.findAllByName(name);
+        return productRepository.findByName(name);
     }
 
     public List<Product> findAllByUnitPrice(BigDecimal unitPrice) {
@@ -34,4 +41,25 @@ public class ProductService extends BaseService<Product, Integer> {
         return productRepository.findAllByUnitPrice(unitPrice);
     }
 
+
+    public Product createProductWithCategoryAndBrand(Product product) {
+        Category category = product.getCategory();
+        Brand brand = product.getBrand();
+        if (category.getId() == null) {
+            categoryService.save(category);
+        } else {
+            Category foundCategory = categoryService.findById(category.getId());
+            Assert.isTrue(foundCategory != null, "Entity not found!");
+            product.setCategory(foundCategory);
+        }
+
+        if (brand.getId() == null) {
+            brandService.save(brand);
+        } else {
+            Brand foundBrand = brandService.findById(brand.getId());
+            Assert.isTrue(foundBrand != null, "Entity not found!");
+            product.setBrand(foundBrand);
+        }
+        return super.save(product);
+    }
 }

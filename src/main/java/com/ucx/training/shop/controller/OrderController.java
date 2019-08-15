@@ -2,11 +2,11 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.InvoiceDTO;
 import com.ucx.training.shop.dto.LineItemDTO;
-import com.ucx.training.shop.entity.Invoice;
+import com.ucx.training.shop.entity.Order;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
-import com.ucx.training.shop.service.InvoiceService;
-import com.ucx.training.shop.service.LineItemService;
+import com.ucx.training.shop.service.OrderService;
+import com.ucx.training.shop.service.CartItemService;
 import com.ucx.training.shop.util.uimapper.InvoiceMapper;
 import com.ucx.training.shop.util.uimapper.LineItemMapper;
 import lombok.extern.log4j.Log4j2;
@@ -19,21 +19,21 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("v1/invoices")
-public class InvoiceController {
+public class OrderController {
 
-    private LineItemService lineItemService;
-    private InvoiceService invoiceService;
+    private CartItemService cartItemService;
+    private OrderService orderService;
 
-    public InvoiceController(LineItemService lineItemService, InvoiceService invoiceService) {
-        this.lineItemService = lineItemService;
-        this.invoiceService = invoiceService;
+    public OrderController(CartItemService cartItemService, OrderService orderService) {
+        this.cartItemService = cartItemService;
+        this.orderService = orderService;
     }
 
     @PutMapping("{id}")
-    public InvoiceDTO update(@RequestBody Invoice invoice, @PathVariable Integer id) throws ResponseException {
+    public InvoiceDTO update(@RequestBody Order order, @PathVariable Integer id) throws ResponseException {
         try {
-            Invoice updatedInvoice = invoiceService.update(invoice.getLineItemList(), invoice.getCustomer(), invoice);
-            return InvoiceMapper.getInvoice(updatedInvoice);
+            Order updatedOrder = orderService.update(order.getCart(), order.getCustomer(), order);
+            return InvoiceMapper.getInvoice(updatedOrder);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class InvoiceController {
     public List<LineItemDTO> getLineItemsByInvoiceId(@PathVariable Integer invoiceId) throws ResponseException {
         try {
             List <LineItemDTO> lineItemDTOs=new ArrayList<>();
-            lineItemDTOs= LineItemMapper.getLineItems(lineItemService.findAllByInvoiceId(invoiceId));
+            lineItemDTOs= LineItemMapper.getLineItems(cartItemService.findAllByInvoiceId(invoiceId));
             return lineItemDTOs;
         } catch (IllegalArgumentException | NotFoundException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -57,8 +57,8 @@ public class InvoiceController {
     @GetMapping("{id}")
     public InvoiceDTO findById(@PathVariable Integer id) throws ResponseException {
         try {
-            Invoice invoice = invoiceService.findById(id);
-            return InvoiceMapper.getInvoice(invoice);
+            Order order = orderService.findById(id);
+            return InvoiceMapper.getInvoice(order);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -67,8 +67,8 @@ public class InvoiceController {
     @GetMapping
     public List<InvoiceDTO> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @PathVariable Integer id, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
-            List<Invoice> invoiceList = invoiceService.findAllSorted(direction, properties);
-            List<InvoiceDTO> invoiceDTOS = InvoiceMapper.getInvoices(invoiceList);
+            List<Order> orderList = orderService.findAllSorted(direction, properties);
+            List<InvoiceDTO> invoiceDTOS = InvoiceMapper.getInvoices(orderList);
             return invoiceDTOS;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);

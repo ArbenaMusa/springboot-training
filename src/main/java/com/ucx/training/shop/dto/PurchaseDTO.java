@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PurchaseDTO {
+public class PurchaseDTO implements DTOEntity{
     private Integer costumerId;
     private Integer invoiceId;
 }
