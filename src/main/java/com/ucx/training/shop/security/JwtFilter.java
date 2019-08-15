@@ -2,7 +2,6 @@ package com.ucx.training.shop.security;
 
 import com.ucx.training.shop.util.JwtUtil;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.*;
@@ -13,7 +12,7 @@ import java.io.IOException;
 public class JwtFilter extends GenericFilter {
 
     private static final Integer ACCESS_TOKEN_INDEX = 7;
-    private final static String TOKEN_ENDPOINT = "/shop/tokens";
+    private final static String TOKEN_ENDPOINT = "/api/auth";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {

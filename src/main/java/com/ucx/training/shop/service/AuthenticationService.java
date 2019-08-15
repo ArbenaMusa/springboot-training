@@ -33,8 +33,8 @@ public class AuthenticationService {
         Map<String, String> resultUser = new HashMap<>();
         resultUser.put("userId", foundUser.getId().toString());
         /*resultUser.put("role", foundUser.getRole().getName());*/
-        resultUser.put("accessToken", JwtUtil.getAccessToken(email));
-        resultUser.put("refreshToken", JwtUtil.getRefreshToken(email));
+        resultUser.put("accessToken", JwtUtil.getAccessToken(foundUser));
+        resultUser.put("refreshToken", JwtUtil.getRefreshToken(foundUser));
 
         return resultUser;
     }
