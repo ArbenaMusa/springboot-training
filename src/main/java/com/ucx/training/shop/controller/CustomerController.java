@@ -30,10 +30,10 @@ public class CustomerController {
     }
 
     @PostMapping
-    public DTOEntity create(@RequestBody Customer costumer) throws ResponseException {
+    public DTOEntity create(@RequestBody Customer customer) throws ResponseException {
         try {
-            Customer customer = customerService.save(costumer);
-            return new DTOMapper().convertToDto(customer,new CustomerDTO());
+            Customer createdCustomer = customerService.save(customer);
+            return new DTOMapper().convertToDto(createdCustomer,new CustomerDTO());
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

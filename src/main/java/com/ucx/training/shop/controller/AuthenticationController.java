@@ -1,13 +1,17 @@
 package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.CredentialDTO;
+import com.ucx.training.shop.dto.CustomerDTO;
+import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.User;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.AuthenticationService;
+import com.ucx.training.shop.service.CustomerService;
 import com.ucx.training.shop.service.UserService;
 import com.ucx.training.shop.util.JwtUtil;
+import com.ucx.training.shop.util.uimapper.DTOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,10 +30,12 @@ public class AuthenticationController {
 
     private UserService userService;
     private AuthenticationService authenticationService;
+    private CustomerService customerService;
 
-    public AuthenticationController(UserService userService, AuthenticationService authenticationService) {
+    public AuthenticationController(UserService userService, AuthenticationService authenticationService, CustomerService customerService) {
         this.userService = userService;
         this.authenticationService = authenticationService;
+        this.customerService = customerService;
     }
 
     @PostMapping("/login")
@@ -45,8 +51,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody Customer customer) {
-
+    public DTOEntity register(@RequestBody Customer customer) throws ResponseException {
+        try {
+            Customer createdCustomer = customerService.save(customer);
+            return new DTOMapper().convertToDto(customer,new CustomerDTO());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping
