@@ -6,6 +6,9 @@ import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CategoryService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,9 +79,9 @@ public class CategoryController {
     }
 
     @GetMapping("/paged")
-    public List<Category> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
+    public List<Category> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Page<Category> categoryPage = categoryService.findAllPaged(pageNumber, pageSize);
+            Page<Category> categoryPage = categoryService.findAllPaged(pageable);
             return categoryPage.getContent();
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);

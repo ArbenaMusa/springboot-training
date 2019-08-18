@@ -10,6 +10,8 @@ import com.ucx.training.shop.util.EntityUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,9 +85,9 @@ public class CustomerController {
     }
 
     @GetMapping("/paged")
-    public List<DTOEntity> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
+    public List<DTOEntity> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Page<Customer> costumerPage = customerService.findAllPaged(pageNumber, pageSize);
+            Page<Customer> costumerPage = customerService.findAllPaged(pageable);
             List<Customer> customers = costumerPage.getContent();
             return DTOMapper.converToDTOList(customers,new CustomerDTO());
         } catch (Exception e) {
