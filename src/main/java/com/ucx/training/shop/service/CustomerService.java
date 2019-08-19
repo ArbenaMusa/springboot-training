@@ -36,12 +36,12 @@ public class CustomerService extends BaseService<Customer, Integer> {
        /* if (customer.getAddresses() == null) {
             throw new IllegalArgumentException("You must have at least 1 address");
         }*/
-        /*customer.getAddresses().forEach(e -> e.setCustomer(customer));
-        customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));*/
+        if(customer.getAddresses() != null && !customer.getAddresses().isEmpty())customer.getAddresses().forEach(e -> e.setCustomer(customer));
+        if(customer.getPhoneNumbers() != null && !customer.getPhoneNumbers().isEmpty()) customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));
         //TODO: Default Role for Customer
         final Integer CUSTOMER_ROLE_ID = 1;
         final Role role = roleService.findById(CUSTOMER_ROLE_ID);
-        if(role != null) customer.getUser().setRole(role);
+        if(customer.getUser() != null && role != null) customer.getUser().setRole(role);
         if(customer.getUser() != null) customer.getUser().setEmail(customer.getEmail());
         return super.save(customer);
     }
