@@ -1,6 +1,7 @@
 package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.CustomerDTO;
+import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.repository.CustomerRepository;
@@ -32,21 +33,22 @@ import static org.junit.Assert.assertNotNull;
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class CustomerControllerTests {
 
-    private List<Integer> customerList;
+
     private Map<String, String> tokenMap;
     @Value("${jwt.filter.enabled}")
     private String applyJwtFilter;
 
     @Autowired
     private TestRestTemplate restTemplate;
+
     @Autowired
     private CustomerService customerService;
+
     @Autowired
     private CustomerRepository customerRepository;
 
     @Before
     public void setUp() {
-        customerList = new ArrayList<>();
         if (JwtUtil.applyJwtFilter(applyJwtFilter)){
             String emailAndPassword = "user@shop.com;user";
             String encodedEmailAndPassword = Base64.getEncoder().encodeToString(emailAndPassword.getBytes());
@@ -61,13 +63,6 @@ public class CustomerControllerTests {
 
     @After
     public void cleanUp() {
-        customerList.forEach(e -> {
-            try {
-                customerRepository.delete(customerService.findById(e));
-            } catch (Exception ex) {
-                log.error(ex.getMessage());
-            }
-        });
     }
 
 
@@ -84,10 +79,14 @@ public class CustomerControllerTests {
 
         HttpEntity<Customer> entity = new HttpEntity<>(customer, headers);
 
-        CustomerDTO savedCustomer = restTemplate.exchange("/v1/costumers", HttpMethod.POST, entity, CustomerDTO.class).getBody();
+        CustomerDTO dtoEntity = restTemplate.exchange("/v1/customers", HttpMethod.POST, entity, CustomerDTO.class).getBody();
 
-        assertNotNull(savedCustomer);
-        assertNotNull(savedCustomer.getId());
-        customerList.add(savedCustomer.getId());
+        assertNotNull(dtoEntity);
+        assertNotNull(dtoEntity.getId());
+        cleanCustomers(customerService.findById(dtoEntity.getId()));
+    }
+
+    private void cleanCustomers(Customer... customers){
+        Arrays.asList(customers).forEach(e-> customerRepository.delete(e));
     }
 }

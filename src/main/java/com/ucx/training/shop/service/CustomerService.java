@@ -40,9 +40,9 @@ public class CustomerService extends BaseService<Customer, Integer> {
         customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));*/
         //TODO: Default Role for Customer
         final Integer CUSTOMER_ROLE_ID = 1;
-        final Role ROLE = roleService.findById(CUSTOMER_ROLE_ID);
-        customer.getUser().setRole(ROLE);
-        customer.getUser().setEmail(customer.getEmail());
+        final Role role = roleService.findById(CUSTOMER_ROLE_ID);
+        if(role != null) customer.getUser().setRole(role);
+        if(customer.getUser() != null) customer.getUser().setEmail(customer.getEmail());
         return super.save(customer);
     }
 

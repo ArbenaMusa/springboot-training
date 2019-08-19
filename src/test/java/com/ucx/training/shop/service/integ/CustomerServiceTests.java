@@ -30,16 +30,12 @@ public class CustomerServiceTests {
     @Autowired
     private CustomerRepository customerRepository;
 
-    private List<Customer> customers;
-
     @Before
     public void setup(){
-        customers = new ArrayList<>();
     }
 
     @After
     public void cleanup(){
-        customers.forEach(e -> customerRepository.delete(e));
     }
 
     /**
@@ -57,6 +53,10 @@ public class CustomerServiceTests {
         assertNotNull(createdCustomer.getId());
         Customer foundCustomer = customerService.findById(createdCustomer.getId());
         assertEquals(foundCustomer.getId(), createdCustomer.getId());
-        customers.add(createdCustomer);
+        cleanCustomers(createdCustomer);
+    }
+
+    private void cleanCustomers(Customer... customers){
+        Arrays.asList(customers).forEach(e-> customerRepository.delete(e));
     }
 }
