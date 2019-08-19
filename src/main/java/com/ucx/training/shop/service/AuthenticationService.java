@@ -2,6 +2,7 @@ package com.ucx.training.shop.service;
 
 import com.ucx.training.shop.entity.User;
 import com.ucx.training.shop.exception.NotFoundException;
+import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,18 @@ public class AuthenticationService {
 
         User foundUser = userService.findByEmail(email);
 
+        if (foundUser == null) {
+            throw new RuntimeException("This user does not exist");
+        }
+
         String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
 
         if (!encodedPassword.equals(foundUser.getPassword())) {
             throw new RuntimeException("The password is incorrect!");
+        }
+
+        if (foundUser.getRecordStatus() == RecordStatus.INACTIVE) {
+            throw new RuntimeException("This user is deactivated");
         }
 
         Map<String, String> resultUser = new HashMap<>();

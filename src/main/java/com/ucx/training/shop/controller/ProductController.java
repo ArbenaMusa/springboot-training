@@ -46,7 +46,7 @@ public class ProductController {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        return new DTOMapper().convertToDto(createdProduct, new ProductDTO());
+        return DTOMapper.convertToDto(createdProduct, ProductDTO.class);
     }
 
     @PutMapping("{productId}")
@@ -75,7 +75,7 @@ public class ProductController {
     public List<DTOEntity> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<Product> products = productService.findAllSorted(direction, properties);
-            return DTOMapper.converToDTOList(products,new ProductDTO());
+            return DTOMapper.converToDTOList(products, ProductDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -86,7 +86,7 @@ public class ProductController {
         try {
             Page<Product> productPage = productService.findAllPaged(pageable);
             List<Product> products = productPage.getContent();
-            return DTOMapper.converToDTOList(products,new ProductDTO());
+            return DTOMapper.converToDTOList(products, ProductDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -96,7 +96,7 @@ public class ProductController {
     public DTOEntity findByID(@PathVariable Integer id) throws ResponseException {
         try {
             Product product = productService.findById(id);
-            return new DTOMapper().convertToDto(product,new ProductDTO());
+            return DTOMapper.convertToDto(product, ProductDTO.class);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

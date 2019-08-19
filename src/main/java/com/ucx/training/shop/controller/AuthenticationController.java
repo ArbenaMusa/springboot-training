@@ -44,7 +44,7 @@ public class AuthenticationController {
     public DTOEntity register(@RequestBody Customer customer) throws ResponseException {
         try {
             Customer createdCustomer = customerService.save(customer);
-            return DTOMapper.convertToDto(createdCustomer, new CustomerDTO());
+            return DTOMapper.convertToDto(createdCustomer, CustomerDTO.class);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

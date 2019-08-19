@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CredentialDTO implements DTOEntity{
+public class CredentialDTO extends DTOEntity{
     private String email;
     private String password;
 }

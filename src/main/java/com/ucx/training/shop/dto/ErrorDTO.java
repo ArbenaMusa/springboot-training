@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class ErrorDTO implements DTOEntity{
+public class ErrorDTO extends DTOEntity{
 
     private LocalDateTime timeStamp;
     private String errorMessage;

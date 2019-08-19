@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 
 public class DTOMapper {
 
-    public static DTOEntity convertToDto(Object obj, DTOEntity mapper) {
-        return new ModelMapper().map(obj, mapper.getClass());
+    public static DTOEntity convertToDto(Object obj, Class<? extends DTOEntity> asd) {
+        return new ModelMapper().map(obj, asd);
     }
 
-    public static List<DTOEntity> converToDTOList(List<? extends BaseEntity> objectList, DTOEntity mapper) {
+    public static List<DTOEntity> converToDTOList(List<? extends BaseEntity> objectList, Class<? extends DTOEntity> mapper) {
         return objectList.stream()
                 .map(e -> convertToDto(e, mapper))
                 .collect(Collectors.toList());
