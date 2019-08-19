@@ -34,20 +34,26 @@ public class CustomerService extends BaseService<Customer, Integer> {
 
     @Override
     public Customer save(Customer customer) {
-       /* if (customer.getAddresses() == null) {
+        if (customer.getAddresses() == null) {
             throw new IllegalArgumentException("You must have at least 1 address");
-        }*/
-        /*customer.getAddresses().forEach(e -> e.setCustomer(customer));
-        customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));*/
+        }
+        if (customer.getAddresses() != null && !customer.getAddresses().isEmpty()) {
+            customer.getAddresses().forEach(e -> e.setCustomer(customer));
+        }
+        if (customer.getPhoneNumbers() != null && !customer.getPhoneNumbers().isEmpty()) {
+            customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));
+        }
         //TODO: Default Role for Customer
         final Integer CUSTOMER_ROLE_ID = 1;
         final Role role = roleService.findById(CUSTOMER_ROLE_ID);
-        if(role != null) customer.getUser().setRole(role);
-        if(customer.getUser() != null) customer.getUser().setEmail(customer.getEmail());
-        customer.getUser().setEmail(customer.getEmail());
-        String password = customer.getUser().getPassword();
-        String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
-        customer.getUser().setPassword(encodedPassword);
+
+        if (customer.getUser() != null) {
+            if(role != null) customer.getUser().setRole(role);
+            if(customer.getEmail() != null) customer.getUser().setEmail(customer.getEmail());
+            String password = customer.getUser().getPassword();
+            String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
+            customer.getUser().setPassword(encodedPassword);
+        }
         return super.save(customer);
     }
 
