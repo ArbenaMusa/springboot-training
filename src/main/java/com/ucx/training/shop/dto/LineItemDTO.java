@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class LineItemDTO implements DTOEntity{
+public class LineItemDTO extends DTOEntity{
     private String product;
     private Integer quantity;
     private Integer invoiceId;

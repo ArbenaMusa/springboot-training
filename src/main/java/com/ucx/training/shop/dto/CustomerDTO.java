@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CustomerDTO implements DTOEntity{
+public class CustomerDTO extends DTOEntity{
     private Integer id;
     private String name;
     private String email;

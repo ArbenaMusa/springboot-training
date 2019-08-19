@@ -32,10 +32,10 @@ public class CustomerController {
     }
 
     @PostMapping
-    public CustomerDTO create(@RequestBody Customer costumer) throws ResponseException {
+    public DTOEntity create(@RequestBody Customer customer) throws ResponseException {
         try {
-            Customer customer = customerService.save(costumer);
-            return (CustomerDTO) new DTOMapper().convertToDto(customer,new CustomerDTO());
+            Customer createdCustomer = customerService.save(customer);
+            return DTOMapper.convertToDto(createdCustomer,CustomerDTO.class);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class CustomerController {
     @GetMapping("{costumerId}")
     public DTOEntity getById(@PathVariable Integer costumerId) {
         Customer foundCustomer = customerService.findById(costumerId);
-        return new DTOMapper().convertToDto(foundCustomer,new CustomerDTO());
+        return DTOMapper.convertToDto(foundCustomer,CustomerDTO.class);
     }
 
     @DeleteMapping("{id}")
@@ -78,7 +78,7 @@ public class CustomerController {
     public List<DTOEntity> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
             List<Customer> customers = customerService.findAllSorted(direction, properties);
-            return DTOMapper.converToDTOList(customers,new CustomerDTO());
+            return DTOMapper.converToDTOList(customers,CustomerDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -89,7 +89,7 @@ public class CustomerController {
         try {
             Page<Customer> costumerPage = customerService.findAllPaged(pageable);
             List<Customer> customers = costumerPage.getContent();
-            return DTOMapper.converToDTOList(customers,new CustomerDTO());
+            return DTOMapper.converToDTOList(customers,CustomerDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

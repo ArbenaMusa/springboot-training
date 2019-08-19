@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductDTO implements DTOEntity{
+public class ProductDTO extends DTOEntity{
     private String name;
     private BigDecimal unitPrice;
     private String fileName;
