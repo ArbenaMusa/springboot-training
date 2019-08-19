@@ -5,6 +5,8 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.UserService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,9 +41,9 @@ public class UserController {
     }
 
     @GetMapping("/paged")
-    public List<User> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
+    public List<User> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Page<User> userPage = userService.findAllPaged(pageNumber, pageSize);
+            Page<User> userPage = userService.findAllPaged(pageable);
             return userPage.getContent();
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);

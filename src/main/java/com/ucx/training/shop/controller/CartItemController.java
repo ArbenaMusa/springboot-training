@@ -7,6 +7,9 @@ import com.ucx.training.shop.service.CartItemService;
 import com.ucx.training.shop.util.uimapper.LineItemMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,9 +37,9 @@ public class CartItemController {
     }
 
     @GetMapping("/paged")
-    public List<LineItemDTO> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) throws ResponseException {
+    public List<LineItemDTO> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Page<CartItem> lineItemPage = cartItemService.findAllPaged(pageNumber, pageSize);
+            Page<CartItem> lineItemPage = cartItemService.findAllPaged(pageable);
             List<CartItem> cartItem = lineItemPage.getContent();
             List<LineItemDTO> lineItemDTOList = LineItemMapper.getLineItems(cartItem);
             return lineItemDTOList;

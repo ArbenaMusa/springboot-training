@@ -5,6 +5,9 @@ import com.ucx.training.shop.entity.BaseEntity;
 import com.ucx.training.shop.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,8 +40,8 @@ public class BaseController <T extends BaseEntity<U>,U>{
     public T findById(@PathVariable U id) { return baseService.findById(id);}
 
     @GetMapping("/paged")
-    public List<T> findAllPaged(@RequestParam int pageNumber, @RequestParam int pageSize) {
-        Page<T> costumerPage = baseService.findAllPaged(pageNumber, pageSize);
+    public List<T> findAllPaged(@PageableDefault Pageable pageable) {
+        Page<T> costumerPage = baseService.findAllPaged(pageable);
         return costumerPage.getContent();
     }
 }
