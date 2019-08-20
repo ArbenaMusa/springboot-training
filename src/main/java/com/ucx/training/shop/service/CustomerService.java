@@ -34,9 +34,6 @@ public class CustomerService extends BaseService<Customer, Integer> {
 
     @Override
     public Customer save(Customer customer) {
-        if (customer.getAddresses() == null) {
-            throw new IllegalArgumentException("You must have at least 1 address");
-        }
         if (customer.getAddresses() != null && !customer.getAddresses().isEmpty()) {
             customer.getAddresses().forEach(e -> e.setCustomer(customer));
         }

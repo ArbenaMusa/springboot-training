@@ -57,7 +57,7 @@ public class CustomerControllerTests {
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
             HttpEntity<Map<String, String>> entity = new HttpEntity<>(credentialsMap, headers);
-            tokenMap = restTemplate.exchange("/tokens", HttpMethod.POST, entity, HashMap.class).getBody();
+            tokenMap = restTemplate.exchange("/v1/auth/login", HttpMethod.POST, entity, HashMap.class).getBody();
         }
     }
 
