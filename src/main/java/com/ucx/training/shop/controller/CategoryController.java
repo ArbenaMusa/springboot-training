@@ -79,10 +79,9 @@ public class CategoryController {
     }
 
     @GetMapping("/paged")
-    public List<Category> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
+    public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Page<Category> categoryPage = categoryService.findAllPaged(pageable);
-            return categoryPage.getContent();
+            return categoryService.findAllPaged(pageable);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

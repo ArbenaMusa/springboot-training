@@ -79,10 +79,9 @@ public class BrandController {
     }
 
     @GetMapping("/paged")
-    public List<Brand> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
+    public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Page<Brand> brandPage = brandService.findAllPaged(pageable);
-            return brandPage.getContent();
+            return brandService.findAllPaged(pageable);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

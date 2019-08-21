@@ -85,11 +85,9 @@ public class CustomerController {
     }
 
     @GetMapping("/paged")
-    public List<DTOEntity> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
+    public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Page<Customer> costumerPage = customerService.findAllPaged(pageable);
-            List<Customer> customers = costumerPage.getContent();
-            return DTOMapper.converToDTOList(customers,CustomerDTO.class);
+            return customerService.findAllPaged(pageable);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

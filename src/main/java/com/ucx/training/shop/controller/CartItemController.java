@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 @Log4j2
 @RestController
 @RequestMapping("v1/lineitems")
@@ -37,12 +39,9 @@ public class CartItemController {
     }
 
     @GetMapping("/paged")
-    public List<LineItemDTO> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
+    public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Page<CartItem> lineItemPage = cartItemService.findAllPaged(pageable);
-            List<CartItem> cartItem = lineItemPage.getContent();
-            List<LineItemDTO> lineItemDTOList = LineItemMapper.getLineItems(cartItem);
-            return lineItemDTOList;
+            return cartItemService.findAllPaged(pageable);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

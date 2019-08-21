@@ -10,11 +10,14 @@ import com.ucx.training.shop.service.CartItemService;
 import com.ucx.training.shop.util.uimapper.InvoiceMapper;
 import com.ucx.training.shop.util.uimapper.LineItemMapper;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RestController
@@ -74,4 +77,14 @@ public class OrderController {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/paged")
+    public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
+        try {
+            return orderService.findAllPaged(pageable);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

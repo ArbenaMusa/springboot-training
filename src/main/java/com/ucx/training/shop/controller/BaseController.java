@@ -2,15 +2,18 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.entity.BaseEntity;
+import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class BaseController <T extends BaseEntity<U>,U>{
     @Autowired
@@ -40,8 +43,11 @@ public class BaseController <T extends BaseEntity<U>,U>{
     public T findById(@PathVariable U id) { return baseService.findById(id);}
 
     @GetMapping("/paged")
-    public List<T> findAllPaged(@PageableDefault Pageable pageable) {
-        Page<T> costumerPage = baseService.findAllPaged(pageable);
-        return costumerPage.getContent();
+    public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
+        try {
+            return baseService.findAllPaged(pageable);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

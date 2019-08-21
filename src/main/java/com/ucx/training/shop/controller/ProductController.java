@@ -87,32 +87,7 @@ public class ProductController {
     @GetMapping("/paged")
     public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Map<String, Object> resultMap = new HashMap<>();
-            Page<Product> productPage = productService.findAllPaged(pageable);
-            List<Product> products = productPage.getContent();
-
-            List<DTOEntity> content = DTOMapper.converToDTOList(products, ProductDTO.class);
-            resultMap.put("content", content);
-
-            Integer pageNumber = productPage.getNumber();
-            resultMap.put("pageNumber", pageNumber);
-
-            Integer pageSize = productPage.getSize();
-            resultMap.put("pageSize", pageSize);
-
-            Integer totalPages = productPage.getTotalPages();
-            resultMap.put("totalPages", totalPages);
-
-            Boolean isFirstPage = productPage.isFirst();
-            resultMap.put("firstPage", isFirstPage);
-
-            Boolean isLastPage = productPage.isLast();
-            resultMap.put("lastPage", isLastPage);
-
-            Sort contentSort = productPage.getSort();
-            resultMap.put("sort", contentSort.toString());
-
-            return resultMap;
+           return productService.findAllPaged(pageable);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

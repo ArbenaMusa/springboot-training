@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("v1/users")
@@ -41,10 +42,9 @@ public class UserController {
     }
 
     @GetMapping("/paged")
-    public List<User> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
+    public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Page<User> userPage = userService.findAllPaged(pageable);
-            return userPage.getContent();
+            return userService.findAllPaged(pageable);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

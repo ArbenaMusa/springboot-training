@@ -1,9 +1,14 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.dto.DTOEntity;
+import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.BaseEntity;
+import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
+import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.repository.BaseRepository;
 import com.ucx.training.shop.type.RecordStatus;
+import com.ucx.training.shop.util.uimapper.DTOMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -11,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -70,8 +78,38 @@ public class BaseService<T extends BaseEntity<U>, U> {
 
     }
 
-    public Page<T> findAllPaged(Pageable pageable) {
-        return baseRepository.findAll(pageable);
+
+    public Map<String, Object> findAllPaged(Pageable pageable) throws ResponseException {
+        try {
+            Map<String, Object> resultMap = new HashMap<>();
+            Page<T> rowPage = baseRepository.findAll(pageable);
+            List<T> rows = rowPage.getContent();
+
+            List<DTOEntity> content = DTOMapper.converToDTOList(rows, ProductDTO.class);
+            resultMap.put("content", content);
+
+            Integer pageNumber = rowPage.getNumber();
+            resultMap.put("pageNumber", pageNumber);
+
+            Integer pageSize = rowPage.getSize();
+            resultMap.put("pageSize", pageSize);
+
+            Integer totalPages = rowPage.getTotalPages();
+            resultMap.put("totalPages", totalPages);
+
+            Boolean isFirstPage = rowPage.isFirst();
+            resultMap.put("firstPage", isFirstPage);
+
+            Boolean isLastPage = rowPage.isLast();
+            resultMap.put("lastPage", isLastPage);
+
+            Sort contentSort = rowPage.getSort();
+            resultMap.put("sort", contentSort.toString());
+
+            return resultMap;
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     public List<T> findAllSorted(String direction, String... properties) {
