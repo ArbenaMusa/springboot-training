@@ -23,7 +23,6 @@ public class JwtFilter extends GenericFilter {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
-
         if (header == null || !header.startsWith(JwtConstants.TOKEN_PREFIX)) {
             throw new ServletException("Missing or invalid authorization header");
         }

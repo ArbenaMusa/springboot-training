@@ -63,7 +63,7 @@ public class CustomerController {
         return DTOMapper.convertToDto(foundCustomer,CustomerDTO.class);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
             customerService.remove(id);

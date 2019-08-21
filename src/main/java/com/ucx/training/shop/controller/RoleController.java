@@ -2,15 +2,13 @@ package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.entity.Role;
 import com.ucx.training.shop.service.RoleService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("v1/roles")
 public class RoleController {
-
     private RoleService roleService;
 
     public RoleController(RoleService roleService) {
@@ -20,5 +18,10 @@ public class RoleController {
     @PostMapping
     public Role create(@RequestBody Role role) {
         return roleService.save(role);
+    }
+
+    @GetMapping
+    public List<Role>  getAllRoles() {
+        return roleService.findAll();
     }
 }

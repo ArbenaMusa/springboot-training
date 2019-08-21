@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Log4j2
 @RestController
@@ -85,34 +82,11 @@ public class ProductController {
     }
 
     @GetMapping("/paged")
-    public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
+    public List<DTOEntity> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            Map<String, Object> resultMap = new HashMap<>();
             Page<Product> productPage = productService.findAllPaged(pageable);
             List<Product> products = productPage.getContent();
-
-            List<DTOEntity> content = DTOMapper.converToDTOList(products, ProductDTO.class);
-            resultMap.put("content", content);
-
-            Integer pageNumber = productPage.getNumber();
-            resultMap.put("pageNumber", pageNumber);
-
-            Integer pageSize = productPage.getSize();
-            resultMap.put("pageSize", pageSize);
-
-            Integer totalPages = productPage.getTotalPages();
-            resultMap.put("totalPages", totalPages);
-
-            Boolean isFirstPage = productPage.isFirst();
-            resultMap.put("firstPage", isFirstPage);
-
-            Boolean isLastPage = productPage.isLast();
-            resultMap.put("lastPage", isLastPage);
-
-            Sort contentSort = productPage.getSort();
-            resultMap.put("sort", contentSort.toString());
-
-            return resultMap;
+            return DTOMapper.converToDTOList(products, ProductDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

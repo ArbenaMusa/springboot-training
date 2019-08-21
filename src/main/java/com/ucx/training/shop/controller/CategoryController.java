@@ -87,4 +87,9 @@ public class CategoryController {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/allActive")
+    public List<Category> findAllActive() {
+        return categoryService.findAllActive();
+    }
 }
