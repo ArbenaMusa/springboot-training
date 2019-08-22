@@ -105,10 +105,7 @@ public class PurchaseService {
                 throw new IllegalArgumentException("The given quantity is bigger than the available stock");
             }
             CartItem cartItem = new CartItem();
-            cartItem.setProduct(foundProduct);
-            cartItem.setQuantity(item.getQuantity());
-            cartItem.setOrder(createdOrder);
-            cartItemService.save(cartItem);
+            cartItemService.create(foundProduct, item.getQuantity(), createdOrder);
             cartItems.add(cartItem);
         }
         createdOrder.setCart(cartItems);
