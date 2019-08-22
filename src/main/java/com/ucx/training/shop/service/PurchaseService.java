@@ -1,8 +1,10 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.dto.CartDTO;
+import com.ucx.training.shop.dto.PurchaseDTO;
+import com.ucx.training.shop.entity.CartItem;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Order;
-import com.ucx.training.shop.entity.CartItem;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.type.RecordStatus;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
@@ -63,7 +66,7 @@ public class PurchaseService {
         Order foundOrder = orderService.findById(invoiceId);
         if (foundOrder == null) throw new NotFoundException("No such Invoice found" + invoiceId);
         if (foundOrder.getRecordStatus() == RecordStatus.INACTIVE)
-            throw new IllegalArgumentException("Invoice is deleted: " + foundOrder);
+            throw new IllegalArgumentException("Order is deleted: " + foundOrder);
         Customer foundCustomer = customerService.findById(costumerId);
         if (foundCustomer == null) throw new NotFoundException("No such Costumer found" + costumerId);
         if (foundCustomer.getRecordStatus() == RecordStatus.INACTIVE)
@@ -75,6 +78,46 @@ public class PurchaseService {
 
         emailService.sendMail(foundCustomer, generatedOrder);
         return printedOrder;
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public Order newBuy(PurchaseDTO purchaseDTO) throws NotFoundException, MessagingException, IOException {
+        if (purchaseDTO == null) {
+            throw new IllegalArgumentException("The sent purchase is null");
+        }
+        if (purchaseDTO.getCostumerId() == null) {
+            throw new IllegalArgumentException("You must send a customer id");
+        }
+        Customer foundCustomer = customerService.findById(purchaseDTO.getCostumerId());
+        if (foundCustomer == null) {
+            throw new RuntimeException("There isn't a customer with the given id");
+        }
+        Order order = new Order();
+        order.setCustomer(foundCustomer);
+        Order createdOrder = orderService.save(order);
+        List<CartItem> cartItems = new ArrayList<>();
+        for (CartDTO item : purchaseDTO.getCart()) {
+            Product foundProduct = productService.findById(item.getProductId());
+            if (foundProduct == null) {
+                throw new RuntimeException("Given id does not exist");
+            }
+            if (foundProduct.getInStock() - item.getQuantity() < 0) {
+                throw new IllegalArgumentException("The given quantity is bigger than the available stock");
+            }
+            CartItem cartItem = new CartItem();
+            cartItemService.create(foundProduct, item.getQuantity(), createdOrder);
+            cartItems.add(cartItem);
+        }
+        createdOrder.setCart(cartItems);
+        reduceStock(cartItems);
+
+
+        /*Order generatedOrder = orderService.update(cartItemList, foundCustomer, foundOrder);
+        Order printedOrder = orderService.print(generatedOrder.getId());
+        reduceStock(cartItemList);
+
+        emailService.sendMail(foundCustomer, generatedOrder);*/
+        return createdOrder;
     }
 
     //Reduces stock of Product from quantity given

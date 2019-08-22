@@ -1,7 +1,7 @@
 package com.ucx.training.shop.service;
 
 import com.ucx.training.shop.entity.Brand;
-import com.ucx.training.shop.entity.Category;
+import com.ucx.training.shop.entity.Platform;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
@@ -42,15 +42,18 @@ public class ProductService extends BaseService<Product, Integer> {
     }
 
 
-    public Product createProductWithCategoryAndBrand(Product product) {
-        Category category = product.getCategory();
+    public Product createProductWithPlatformAndBrand(Product product) {
+        if (product == null) {
+            throw new IllegalArgumentException("Given product is null");
+        }
+        Platform platform = product.getPlatform();
         Brand brand = product.getBrand();
-        if (category.getId() == null) {
-            categoryService.save(category);
+        if (platform.getId() == null) {
+            categoryService.save(platform);
         } else {
-            Category foundCategory = categoryService.findById(category.getId());
-            Assert.isTrue(foundCategory != null, "Entity not found!");
-            product.setCategory(foundCategory);
+            Platform foundPlatform = categoryService.findById(platform.getId());
+            Assert.isTrue(foundPlatform != null, "Entity not found!");
+            product.setPlatform(foundPlatform);
         }
 
         if (brand.getId() == null) {

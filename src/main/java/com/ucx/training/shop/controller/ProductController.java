@@ -11,9 +11,7 @@ import com.ucx.training.shop.util.uimapper.DTOMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +39,7 @@ public class ProductController {
     public DTOEntity create(@RequestBody Product product) throws ResponseException {
         Product createdProduct = null;
         try {
-            createdProduct = productService.createProductWithCategoryAndBrand(product);
+            createdProduct = productService.createProductWithPlatformAndBrand(product);
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
