@@ -42,12 +42,5 @@ public class BaseController <T extends BaseEntity<U>,U>{
     @GetMapping("{id}")
     public T findById(@PathVariable U id) { return baseService.findById(id);}
 
-    @GetMapping("/paged")
-    public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
-        try {
-            return baseService.findAllPaged(pageable);
-        } catch (Exception e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
+
 }

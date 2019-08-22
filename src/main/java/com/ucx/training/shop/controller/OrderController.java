@@ -1,5 +1,6 @@
 package com.ucx.training.shop.controller;
 
+import com.ucx.training.shop.dto.BrandDTO;
 import com.ucx.training.shop.dto.InvoiceDTO;
 import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.entity.Order;
@@ -7,6 +8,7 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.OrderService;
 import com.ucx.training.shop.service.CartItemService;
+import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.InvoiceMapper;
 import com.ucx.training.shop.util.uimapper.LineItemMapper;
 import lombok.extern.log4j.Log4j2;
@@ -81,7 +83,7 @@ public class OrderController {
     @GetMapping("/paged")
     public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            return orderService.findAllPaged(pageable);
+            return PaginationUtil.getPage(orderService.findPaged(pageable), InvoiceDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

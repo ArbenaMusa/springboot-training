@@ -1,9 +1,11 @@
 package com.ucx.training.shop.controller;
 
+import com.ucx.training.shop.dto.BrandDTO;
 import com.ucx.training.shop.entity.User;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.UserService;
+import com.ucx.training.shop.util.PaginationUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -41,14 +43,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/paged")
-    public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
-        try {
-            return userService.findAllPaged(pageable);
-        } catch (Exception e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
 
     @GetMapping("{id}")
     public User findById(@PathVariable Integer id) throws ResponseException {

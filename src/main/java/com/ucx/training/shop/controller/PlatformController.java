@@ -1,9 +1,12 @@
 package com.ucx.training.shop.controller;
 
+import com.ucx.training.shop.dto.BrandDTO;
+import com.ucx.training.shop.dto.PlatformDTO;
 import com.ucx.training.shop.entity.Platform;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CategoryService;
+import com.ucx.training.shop.util.PaginationUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -79,7 +82,7 @@ public class PlatformController {
     @GetMapping("/paged")
     public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            return categoryService.findAllPaged(pageable);
+            return PaginationUtil.getPage(categoryService.findPaged(pageable), PlatformDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

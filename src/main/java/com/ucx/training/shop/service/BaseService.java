@@ -78,38 +78,11 @@ public class BaseService<T extends BaseEntity<U>, U> {
 
     }
 
-
-    public Map<String, Object> findAllPaged(Pageable pageable) throws ResponseException {
-        try {
-            Map<String, Object> resultMap = new HashMap<>();
-            Page<T> rowPage = baseRepository.findAll(pageable);
-            List<T> rows = rowPage.getContent();
-
-            List<DTOEntity> content = DTOMapper.converToDTOList(rows, ProductDTO.class);
-            resultMap.put("content", content);
-
-            Integer pageNumber = rowPage.getNumber();
-            resultMap.put("pageNumber", pageNumber);
-
-            Integer pageSize = rowPage.getSize();
-            resultMap.put("pageSize", pageSize);
-
-            Integer totalPages = rowPage.getTotalPages();
-            resultMap.put("totalPages", totalPages);
-
-            Boolean isFirstPage = rowPage.isFirst();
-            resultMap.put("firstPage", isFirstPage);
-
-            Boolean isLastPage = rowPage.isLast();
-            resultMap.put("lastPage", isLastPage);
-
-            Sort contentSort = rowPage.getSort();
-            resultMap.put("sort", contentSort.toString());
-
-            return resultMap;
-        } catch (Exception e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public Page<T> findPaged(Pageable pageable){
+        if (pageable == null) {
+            throw new IllegalArgumentException("Invalid argument: " +  pageable);
         }
+        return baseRepository.findAll(pageable);
     }
 
     public List<T> findAllSorted(String direction, String... properties) {

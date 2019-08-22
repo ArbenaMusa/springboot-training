@@ -1,5 +1,6 @@
 package com.ucx.training.shop.controller;
 
+import com.ucx.training.shop.dto.BrandDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.entity.Customer;
@@ -7,6 +8,7 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CustomerService;
 import com.ucx.training.shop.util.EntityUtil;
+import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
@@ -86,7 +88,7 @@ public class CustomerController {
     @GetMapping("/paged")
     public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            return customerService.findAllPaged(pageable);
+            return PaginationUtil.getPage(customerService.findPaged(pageable), CustomerDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
