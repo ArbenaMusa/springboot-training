@@ -1,5 +1,6 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.User;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.type.RecordStatus;
@@ -16,6 +17,7 @@ public class AuthenticationService {
 
     @Autowired
     private UserService userService;
+    private CustomerService customerService;
 
     //LOGIN
     public Map<String, String> login(String email, String password) throws NotFoundException {
@@ -24,6 +26,7 @@ public class AuthenticationService {
         }
 
         User foundUser = userService.findByEmail(email);
+        Customer foundCustomer = customerService.findByEmail(email);
 
         if (foundUser == null) {
             throw new RuntimeException("This user does not exist");
@@ -41,6 +44,7 @@ public class AuthenticationService {
 
         Map<String, String> resultUser = new HashMap<>();
         resultUser.put("userId", foundUser.getId().toString());
+        resultUser.put("customerId", foundCustomer.getId().toString());
         /*resultUser.put("role", foundUser.getRole().getName());*/
         resultUser.put("accessToken", JwtUtil.getAccessToken(foundUser));
         resultUser.put("refreshToken", JwtUtil.getRefreshToken(foundUser));

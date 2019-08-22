@@ -54,6 +54,17 @@ public class CustomerService extends BaseService<Customer, Integer> {
         return super.save(customer);
     }
 
+    public Customer findByEmail(String email) {
+        if (email == null) {
+            throw new IllegalArgumentException("The given email is null");
+        }
+        Customer foundCustomer = customerRepository.findByEmail(email);
+        if (foundCustomer == null) {
+            throw new IllegalArgumentException("There isn't a customer with the given email");
+        }
+        return foundCustomer;
+    }
+
     public List<Customer> findAllByName(String name) {
         if (name == null) {
             throw new IllegalArgumentException("Name must not be null!");
