@@ -72,40 +72,6 @@ public class CustomerService extends BaseService<Customer, Integer> {
         return customerRepository.findAllByName(name);
     }
 
-    public void updateWithAddresses(Customer t, Integer u) throws NotFoundException {
-        if (t == null) {
-            throw new IllegalArgumentException(String.format("One of the arguments is invalid: %s", t));
-        }
-        Customer foundT = findById(u);
-        if (foundT == null) {
-            throw new NotFoundException("Entity not found");
-        }
-        List<Address> previousAddressList = foundT.getAddresses();
-        List<Address> receivedAddressList = t.getAddresses();
-        if (receivedAddressList != null) {
-            previousAddressList.stream().forEach((e) -> {
-                Iterator<Address> iterator = receivedAddressList.iterator();
-                while (iterator.hasNext()) {
-                    Address i = iterator.next();
-                    try {
-                        if (e.getId().equals(i.getId())) {
-                            BeanUtils.copyProperties(i, e, BaseService.<Address>getNullPropertyNames(i));
-                            iterator.remove();
-                        }
-                    } catch (Exception m) {
-                        //exception presumably nullPointerException was suppressed
-                    }
-                }
-            });
-        }
-        receivedAddressList.forEach((e) -> {
-            e.setCustomer(foundT);
-            addressService.save(e);
-        });
-        t.setAddresses(null);
-        BeanUtils.copyProperties(t, foundT, BaseService.<Customer>getNullPropertyNames(t));
-    }
-
     public Customer updateCostumerWithAddress(Customer newCustomer, Integer costumerId) throws NotFoundException {
         Assert.isTrue(newCustomer != null, "One of the arguments is invalid!");
         Customer foundCustomer = findById(costumerId);
