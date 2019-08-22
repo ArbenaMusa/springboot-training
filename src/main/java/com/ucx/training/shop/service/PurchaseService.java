@@ -104,19 +104,14 @@ public class PurchaseService {
             if (foundProduct.getInStock() - item.getQuantity() < 0) {
                 throw new IllegalArgumentException("The given quantity is bigger than the available stock");
             }
-            CartItem cartItem = new CartItem();
-            cartItemService.create(foundProduct, item.getQuantity(), createdOrder);
-            cartItems.add(cartItem);
+            CartItem createdCartItem = cartItemService.create(foundProduct, item.getQuantity(), createdOrder);
+            cartItems.add(createdCartItem);
         }
         createdOrder.setCart(cartItems);
         reduceStock(cartItems);
 
 
-        /*Order generatedOrder = orderService.update(cartItemList, foundCustomer, foundOrder);
-        Order printedOrder = orderService.print(generatedOrder.getId());
-        reduceStock(cartItemList);
-
-        emailService.sendMail(foundCustomer, generatedOrder);*/
+        emailService.sendMail(foundCustomer, createdOrder);
         return createdOrder;
     }
 

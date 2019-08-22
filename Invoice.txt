@@ -1,9 +1,9 @@
-Customer name: Fisteku
+Customer name: test
 ------------------------------------------------
-Product name: Samsung s8
-Product price: 450.00 €  x2
-Price: 900 €
+Product name: testprodukt
+Product price: 100.00 €  x2
+Price: 200 €
 ------------------------------------------------
-Purchase date: 2019-07-26T13:52:06.619449
+Purchase date: 2019-08-22T14:40:23.107131
 ------------------------------------------------
-Total: 900.00 €
+Total: null €
