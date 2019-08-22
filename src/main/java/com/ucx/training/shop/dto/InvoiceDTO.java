@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class InvoiceDTO extends DTOEntity {
-    private LocalDateTime createdDateTime;
+    private LocalDateTime createDateTime;
     private Integer invoiceNumber;
     private BigDecimal total;
     private String costumerName;

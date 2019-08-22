@@ -27,7 +27,7 @@ public class InvoiceMapper {
                 lineItemDTOList.add(lineItemDTO);
             });
             invoiceDTO.setTotal(e.getTotal());
-            invoiceDTO.setCreatedDateTime(e.getCreateDateTime());
+            invoiceDTO.setCreateDateTime(e.getCreateDateTime());
             invoiceDTO.setInvoiceNumber(e.getInvoiceNumber());
             invoiceDTO.setCostumerName(e.getCustomer().getName());
             invoiceDTO.setLineItemList(lineItemDTOList);
@@ -54,7 +54,7 @@ public class InvoiceMapper {
         invoiceDTO.setCostumerName(order.getCustomer().getName());
         invoiceDTO.setInvoiceNumber(order.getInvoiceNumber());
         invoiceDTO.setTotal(order.getTotal());
-        invoiceDTO.setCreatedDateTime(order.getCreateDateTime());
+        invoiceDTO.setCreateDateTime(order.getCreateDateTime());
         invoiceDTO.setLineItemList(lineItemDTOList);
         return invoiceDTO;
     }
