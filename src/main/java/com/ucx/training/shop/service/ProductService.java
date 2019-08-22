@@ -21,7 +21,7 @@ public class ProductService extends BaseService<Product, Integer> {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
-    private CategoryService categoryService;
+    private PlatformService platformService;
     @Autowired
     private BrandService brandService;
 
@@ -49,9 +49,9 @@ public class ProductService extends BaseService<Product, Integer> {
         Platform platform = product.getPlatform();
         Brand brand = product.getBrand();
         if (platform.getId() == null) {
-            categoryService.save(platform);
+            platformService.save(platform);
         } else {
-            Platform foundPlatform = categoryService.findById(platform.getId());
+            Platform foundPlatform = platformService.findById(platform.getId());
             Assert.isTrue(foundPlatform != null, "Entity not found!");
             product.setPlatform(foundPlatform);
         }
@@ -64,5 +64,9 @@ public class ProductService extends BaseService<Product, Integer> {
             product.setBrand(foundBrand);
         }
         return super.save(product);
+    }
+
+    public List<Product> findAllActive() {
+        return productRepository.findAllActive();
     }
 }
