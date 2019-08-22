@@ -3,6 +3,6 @@ package com.ucx.training.shop.dto;
 import lombok.Data;
 
 @Data
-public class CategoryDTO extends DTOEntity{
+public class PlatformDTO extends DTOEntity{
     private String name;
 }

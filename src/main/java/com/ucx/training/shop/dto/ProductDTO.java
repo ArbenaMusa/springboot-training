@@ -13,6 +13,6 @@ public class ProductDTO extends DTOEntity{
     private String name;
     private BigDecimal unitPrice;
     private String fileName;
-    private CategoryDTO category;
+    private PlatformDTO platform;
     private BrandDTO brand;
 }

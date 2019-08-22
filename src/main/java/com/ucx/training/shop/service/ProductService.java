@@ -47,21 +47,13 @@ public class ProductService extends BaseService<Product, Integer> {
             throw new IllegalArgumentException("Given product is null");
         }
         Platform platform = product.getPlatform();
-        Brand brand = product.getBrand();
-        if (platform.getId() == null) {
+
+        if (platform != null && platform.getId() == null) {
             categoryService.save(platform);
         } else {
             Platform foundPlatform = categoryService.findById(platform.getId());
             Assert.isTrue(foundPlatform != null, "Entity not found!");
             product.setPlatform(foundPlatform);
-        }
-
-        if (brand.getId() == null) {
-            brandService.save(brand);
-        } else {
-            Brand foundBrand = brandService.findById(brand.getId());
-            Assert.isTrue(foundBrand != null, "Entity not found!");
-            product.setBrand(foundBrand);
         }
         return super.save(product);
     }
