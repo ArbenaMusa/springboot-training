@@ -85,10 +85,10 @@ public class PurchaseService {
         if (purchaseDTO == null) {
             throw new IllegalArgumentException("The sent purchase is null");
         }
-        if (purchaseDTO.getCostumerId() == null) {
+        if (purchaseDTO.getCustomerId() == null) {
             throw new IllegalArgumentException("You must send a customer id");
         }
-        Customer foundCustomer = customerService.findById(purchaseDTO.getCostumerId());
+        Customer foundCustomer = customerService.findById(purchaseDTO.getCustomerId());
         if (foundCustomer == null) {
             throw new RuntimeException("There isn't a customer with the given id");
         }
@@ -96,7 +96,8 @@ public class PurchaseService {
         order.setCustomer(foundCustomer);
         Order createdOrder = orderService.save(order);
         List<CartItem> cartItems = new ArrayList<>();
-        for (CartDTO item : purchaseDTO.getCart()) {
+        List<CartDTO> requestList = purchaseDTO.getCart();
+        for (CartDTO item : requestList) {
             Product foundProduct = productService.findById(item.getProductId());
             if (foundProduct == null) {
                 throw new RuntimeException("Given id does not exist");

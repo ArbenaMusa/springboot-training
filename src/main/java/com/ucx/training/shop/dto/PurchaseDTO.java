@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PurchaseDTO extends DTOEntity{
-    private Integer costumerId;
+    private Integer customerId;
     private Integer orderId;
     private List<CartDTO> cart;
 }
