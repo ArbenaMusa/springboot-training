@@ -28,7 +28,7 @@ public class CartItemService extends BaseService<CartItem, Integer> {
             throw new IllegalArgumentException("Quantity cannot be less than 1");
         }
         if (order == null) {
-            throw new IllegalArgumentException("Invoice should have already been created");
+            throw new IllegalArgumentException("Order should have already been created");
         }
 
         CartItem cartItem = new CartItem();

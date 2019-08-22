@@ -10,6 +10,6 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Category extends BaseEntity<Integer> {
+public class Platform extends BaseEntity<Integer> {
     private String name;
 }

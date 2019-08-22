@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class PurchaseDTO extends DTOEntity{
     private Integer costumerId;
     private Integer invoiceId;
+    private List<CartDTO> cart;
 }
