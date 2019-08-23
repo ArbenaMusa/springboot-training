@@ -1,9 +1,9 @@
 Customer name: test
 ------------------------------------------------
 Product name: testprodukt
-Product price: 100.00 €  x2
-Price: 200 €
+Product price: 100.00 €  x1
+Price: 100 €
 ------------------------------------------------
-Purchase date: 2019-08-22T14:40:23.107131
+Purchase date: 2019-08-22T16:36:24.961207800
 ------------------------------------------------
 Total: null €

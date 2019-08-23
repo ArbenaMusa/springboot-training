@@ -17,6 +17,7 @@ public class AuthenticationService {
 
     @Autowired
     private UserService userService;
+    @Autowired
     private CustomerService customerService;
 
     //LOGIN
