@@ -97,4 +97,9 @@ public class CustomerController {
         Tuple tuple = customerService.readByCostumerId(id);
         return EntityUtil.toMap(tuple);
     }
+
+    @GetMapping("/allActive")
+    public List<Customer> findAllActive() {
+        return customerService.findAllActive();
+    }
 }

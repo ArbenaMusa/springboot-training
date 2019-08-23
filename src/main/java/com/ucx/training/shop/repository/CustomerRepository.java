@@ -10,6 +10,8 @@ import java.util.List;
 
 @Repository
 public interface CustomerRepository extends BaseRepository<Customer,Integer> {
+    @Query(value = "SELECT * from customer where record_status = 'ACTIVE' ", nativeQuery = true)
+    public List<Customer>  findAllActive();
     List<Customer> findAllByName(String name);
 
     Customer findByEmail(String email);
