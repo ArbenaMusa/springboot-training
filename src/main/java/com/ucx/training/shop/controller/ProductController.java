@@ -128,6 +128,7 @@ public class ProductController {
             Product product = objectMapper.readValue(data, Product.class);
             log.info("HEREEEEE");
             Product createdProduct = productService.createProductWithImage(product, file);
+            log.info(createdProduct);
             return createdProduct;
         } catch (Exception e) {
             e.printStackTrace();

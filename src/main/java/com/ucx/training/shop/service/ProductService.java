@@ -119,6 +119,6 @@ public class ProductService extends BaseService<Product, Integer> {
         Product createdProduct = createProductWithPlatformAndBrand(product);
         FileUpload uploadedFile = uploadFile(file);
         FileUpload fileWithProduct = saveFile(uploadedFile, createdProduct.getId());
-        return null;
+        return createdProduct;
     }
 }
