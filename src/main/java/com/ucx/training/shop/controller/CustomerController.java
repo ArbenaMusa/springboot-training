@@ -49,8 +49,10 @@ public class CustomerController {
             customerService.updateCostumerWithAddress(customer, id);
             responseMap.put("id", id);
         } catch (NotFoundException | IllegalArgumentException e) {
+            e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         return responseMap;
