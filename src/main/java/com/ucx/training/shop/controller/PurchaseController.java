@@ -7,13 +7,10 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.CartItemService;
 import com.ucx.training.shop.service.PurchaseService;
-import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
 import com.ucx.training.shop.util.uimapper.InvoiceMapper;
 import com.ucx.training.shop.util.uimapper.LineItemMapper;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +36,7 @@ public class PurchaseController {
     public Map<String, Integer> addToCart(@RequestBody CartDTO cartDTO) throws ResponseException {
         Map<String, Integer> resultMap = new HashMap<>();
         try {
-            Integer invoiceId = purchaseService.addToCart(cartDTO.getProductId(), cartDTO.getQuantity(), cartDTO.getInvoiceId());
+            Integer invoiceId = purchaseService.addToCart(cartDTO.getProductId(), cartDTO.getQuantity(), cartDTO.getOrderId());
             resultMap.put("invoiceId", invoiceId);
         } catch (IllegalArgumentException | NotFoundException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);

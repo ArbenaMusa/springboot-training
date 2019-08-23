@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class CartDTO extends DTOEntity{
     private Integer productId;
     private Integer quantity;
-    private Integer invoiceId;
+    private Integer orderId;
 }

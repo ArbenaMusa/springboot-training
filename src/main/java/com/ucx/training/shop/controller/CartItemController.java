@@ -1,6 +1,7 @@
 package com.ucx.training.shop.controller;
 
 import com.ucx.training.shop.dto.BrandDTO;
+import com.ucx.training.shop.dto.CartDTO;
 import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.entity.CartItem;
 import com.ucx.training.shop.exception.ResponseException;
@@ -43,7 +44,7 @@ public class CartItemController {
     @GetMapping("/paged")
     public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            return PaginationUtil.getPage(cartItemService.findPaged(pageable), LineItemDTO.class);
+            return PaginationUtil.getPage(cartItemService.findPaged(pageable), CartDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
