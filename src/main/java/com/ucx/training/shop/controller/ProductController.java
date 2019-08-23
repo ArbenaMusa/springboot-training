@@ -1,5 +1,6 @@
 package com.ucx.training.shop.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Product;
@@ -9,11 +10,14 @@ import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,9 +36,12 @@ public class ProductController {
     @Value("${file.upload}")
     private String uploadDirectoryName;
     private ProductService productService;
+    private ModelMapper modelMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ModelMapper modelMapper) {
         this.productService = productService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping
@@ -115,16 +122,13 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/withimage")
-    public void uploadProductWithImage(@RequestBody Product product, @RequestParam("files") MultipartFile file) throws IOException, NotFoundException, ResponseException {
+    @PostMapping(value = "/withimage")
+    public Product uploadProductWithImage(@RequestParam("data") String data, @RequestParam(value = "files", required = false) MultipartFile file) throws IOException, NotFoundException, ResponseException {
         try {
+            Product product = objectMapper.readValue(data, Product.class);
+            log.info("HEREEEEE");
             Product createdProduct = productService.createProductWithImage(product, file);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return createdProduct;
         } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
