@@ -16,9 +16,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +111,22 @@ public class ProductController {
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/withimage")
+    public void uploadProductWithImage(@RequestBody Product product, @RequestParam("files") MultipartFile file) throws IOException, NotFoundException, ResponseException {
+        try {
+            Product createdProduct = productService.createProductWithImage(product, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
