@@ -1,9 +1,12 @@
-Customer name: test
+Customer name: Andi Hoxha
 ------------------------------------------------
-Product name: testprodukt
-Product price: 100.00 €  x1
-Price: 100 €
+Product name: Assassins Creed
+Product price: 39.00 €  x1
+Price: 39 €
+Product name: Mortal Kombat
+Product price: 39.00 €  x1
+Price: 39 €
 ------------------------------------------------
-Purchase date: 2019-08-22T16:36:24.961207800
+Purchase date: 2019-08-25T21:34:58.028111900
 ------------------------------------------------
-Total: null €
+Total: 78 €
