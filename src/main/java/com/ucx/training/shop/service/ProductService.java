@@ -65,15 +65,19 @@ public class ProductService extends BaseService<Product, Integer> {
             throw new IllegalArgumentException("File cannot be null");
         }
         String directoryPathAsString = System.getProperty("user.dir") + uploadDirName;
+        String clientSideDirectory = "D:/shop-angular/src/assets/img/";
         Path directoryPath = Paths.get(directoryPathAsString);
         if (!Files.exists(directoryPath)) {
             Files.createDirectory(directoryPath);
         }
         String filePathAsString = directoryPathAsString + file.getOriginalFilename();
+        String clientSideFilePathAsString = clientSideDirectory + file.getOriginalFilename();
         Path filePath = Paths.get(filePathAsString);
+        Path clientSideFilePath = Paths.get(clientSideFilePathAsString);
 
         byte[] bytes = file.getBytes();
         Files.write(filePath, bytes, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
+        Files.write(clientSideFilePath, bytes, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
 
         return FileUpload.builder()
                 .fileName(file.getOriginalFilename())
@@ -119,6 +123,7 @@ public class ProductService extends BaseService<Product, Integer> {
         Product createdProduct = createProductWithPlatformAndBrand(product);
         FileUpload uploadedFile = uploadFile(file);
         FileUpload fileWithProduct = saveFile(uploadedFile, createdProduct.getId());
-        return createdProduct;
+        createdProduct.setFileUpload(fileWithProduct);
+        return super.update(createdProduct, createdProduct.getId());
     }
 }

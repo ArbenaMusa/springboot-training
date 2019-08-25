@@ -9,6 +9,7 @@ import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
+import com.ucx.training.shop.util.uimapper.ProductMapper;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,13 +124,13 @@ public class ProductController {
     }
 
     @PostMapping(value = "/withimage")
-    public Product uploadProductWithImage(@RequestParam("data") String data, @RequestParam(value = "files", required = false) MultipartFile file) throws IOException, NotFoundException, ResponseException {
+    public ProductDTO uploadProductWithImage(@RequestParam("data") String data, @RequestParam(value = "files", required = false) MultipartFile file) throws IOException, NotFoundException, ResponseException {
         try {
             Product product = objectMapper.readValue(data, Product.class);
             log.info("HEREEEEE");
             Product createdProduct = productService.createProductWithImage(product, file);
             log.info(createdProduct);
-            return createdProduct;
+            return ProductMapper.getProdDTO(createdProduct);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
