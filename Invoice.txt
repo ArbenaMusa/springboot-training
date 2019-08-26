@@ -1,9 +1,9 @@
-Customer name: Jehona Konushefci
+Customer name: Fati Marmullaku
 ------------------------------------------------
 Product name: Assassins Creed
 Product price: 39.00 €  x1
 Price: 39 €
 ------------------------------------------------
-Purchase date: 2019-08-26T19:33:14.099369400
+Purchase date: 2019-08-26T19:58:02.136910400
 ------------------------------------------------
 Total: 39 €

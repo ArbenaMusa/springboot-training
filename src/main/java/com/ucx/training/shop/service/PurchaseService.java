@@ -25,13 +25,15 @@ public class PurchaseService {
     private ProductService productService;
     private CustomerService customerService;
     private EmailService emailService;
+    private AddressService addressService;
 
-    public PurchaseService(CartItemService cartItemService, OrderService orderService, ProductService productService, CustomerService customerService, EmailService emailService) {
+    public PurchaseService(CartItemService cartItemService, OrderService orderService, ProductService productService, CustomerService customerService, EmailService emailService, AddressService addressService) {
         this.cartItemService = cartItemService;
         this.orderService = orderService;
         this.productService = productService;
         this.customerService = customerService;
         this.emailService = emailService;
+        this.addressService = addressService;
     }
 
     public Integer addToCart(Integer productId, Integer quantity, Integer invoiceId) throws NotFoundException {
@@ -97,7 +99,17 @@ public class PurchaseService {
         }
         if (purchaseDTO.getAddress() != null) {
             Address address = AddressMapper.mapToAddress(purchaseDTO.getAddress());
-            order.setAddress(address);
+            if (address.getId() != null) {
+                Address foundAddress = addressService.findById(address.getId());
+                if (foundAddress == null) {
+                    throw new RuntimeException("The given id for the address is invalid");
+                } else {
+                    order.setAddress(foundAddress);
+                }
+            } else {
+                order.setAddress(address);
+            }
+
         }
         Order createdOrder = orderService.save(order);
         List<CartItem> cartItems = new ArrayList<>();
