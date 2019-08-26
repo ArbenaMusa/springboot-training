@@ -2,12 +2,10 @@ package com.ucx.training.shop.service;
 
 import com.ucx.training.shop.dto.CartDTO;
 import com.ucx.training.shop.dto.PurchaseDTO;
-import com.ucx.training.shop.entity.CartItem;
-import com.ucx.training.shop.entity.Customer;
-import com.ucx.training.shop.entity.Order;
-import com.ucx.training.shop.entity.Product;
+import com.ucx.training.shop.entity.*;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.type.RecordStatus;
+import com.ucx.training.shop.util.uimapper.AddressMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -96,6 +94,10 @@ public class PurchaseService {
         order.setCustomer(foundCustomer);
         if (purchaseDTO.getTotal() != null) {
             order.setTotal(purchaseDTO.getTotal());
+        }
+        if (purchaseDTO.getAddress() != null) {
+            Address address = AddressMapper.mapToAddress(purchaseDTO.getAddress());
+            order.setAddress(address);
         }
         Order createdOrder = orderService.save(order);
         List<CartItem> cartItems = new ArrayList<>();

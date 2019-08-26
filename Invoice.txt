@@ -1,12 +1,9 @@
-Customer name: Andi Hoxha
+Customer name: Jehona Konushefci
 ------------------------------------------------
 Product name: Assassins Creed
 Product price: 39.00 €  x1
 Price: 39 €
-Product name: Mortal Kombat
-Product price: 39.00 €  x1
-Price: 39 €
 ------------------------------------------------
-Purchase date: 2019-08-25T21:34:58.028111900
+Purchase date: 2019-08-26T19:33:14.099369400
 ------------------------------------------------
-Total: 78 €
+Total: 39 €
