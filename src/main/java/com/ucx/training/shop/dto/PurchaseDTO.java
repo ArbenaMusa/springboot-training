@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -11,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PurchaseDTO extends DTOEntity{
     private Integer customerId;
-    private Integer orderId;
     private List<CartDTO> cart;
+    private BigDecimal total;
     private AddressDTO address;
 }

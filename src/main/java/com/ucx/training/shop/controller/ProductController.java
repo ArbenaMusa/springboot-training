@@ -1,6 +1,6 @@
 package com.ucx.training.shop.controller;
 
-import com.ucx.training.shop.dto.BrandDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Product;
@@ -11,7 +11,9 @@ import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
+import com.ucx.training.shop.util.uimapper.ProductMapper;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +21,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,9 +38,12 @@ public class ProductController {
     @Value("${file.upload}")
     private String uploadDirectoryName;
     private ProductService productService;
+    private ModelMapper modelMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ModelMapper modelMapper) {
         this.productService = productService;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping
@@ -74,8 +81,6 @@ public class ProductController {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
-
 
     @GetMapping
     public List<DTOEntity> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
@@ -118,6 +123,20 @@ public class ProductController {
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping(value = "/withimage")
+    public ProductDTO uploadProductWithImage(@RequestParam("data") String data, @RequestParam(value = "files", required = false) MultipartFile file) throws IOException, NotFoundException, ResponseException {
+        try {
+            Product product = objectMapper.readValue(data, Product.class);
+            log.info("HEREEEEE");
+            Product createdProduct = productService.createProductWithImage(product, file);
+            log.info(createdProduct);
+            return ProductMapper.getProdDTO(createdProduct);
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

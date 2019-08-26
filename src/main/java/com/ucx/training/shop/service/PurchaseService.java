@@ -94,6 +94,9 @@ public class PurchaseService {
         }
         Order order = new Order();
         order.setCustomer(foundCustomer);
+        if (purchaseDTO.getTotal() != null) {
+            order.setTotal(purchaseDTO.getTotal());
+        }
         Order createdOrder = orderService.save(order);
         List<CartItem> cartItems = new ArrayList<>();
         List<CartDTO> requestList = purchaseDTO.getCart();
