@@ -1,12 +1,9 @@
 package com.ucx.training.shop.controller;
 
-import com.ucx.training.shop.dto.BrandDTO;
-import com.ucx.training.shop.dto.PlatformDTO;
 import com.ucx.training.shop.entity.Platform;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
-import com.ucx.training.shop.service.CategoryService;
-import com.ucx.training.shop.util.PaginationUtil;
+import com.ucx.training.shop.service.PlatformService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -19,19 +16,19 @@ import java.util.Map;
 
 @Log4j2
 @RestController
-@RequestMapping("v1/categories")
+@RequestMapping("v1/platforms")
 public class PlatformController {
 
-    private CategoryService categoryService;
+    private PlatformService platformService;
 
-    public PlatformController(CategoryService categoryService) {
-        this.categoryService = categoryService;
+    public PlatformController(PlatformService platformService) {
+        this.platformService = platformService;
     }
 
     @PostMapping
     public Platform create(@RequestBody Platform platform) throws ResponseException {
         try {
-            Platform savedPlatform = categoryService.save(platform);
+            Platform savedPlatform = platformService.save(platform);
             return savedPlatform;
         } catch (IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -44,7 +41,7 @@ public class PlatformController {
     public Map<String, Integer> update(@RequestBody Platform platform, @PathVariable Integer id) throws ResponseException {
         Map<String, Integer> responseMap = new HashMap<>();
         try {
-            categoryService.update(platform, id);
+            platformService.update(platform, id);
             responseMap.put("id", id);
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -54,15 +51,15 @@ public class PlatformController {
         return responseMap;
     }
 
-    @GetMapping("{categoryId}")
-    public Platform getById(@PathVariable Integer categoryId) {
-        return categoryService.findById(categoryId);
+    @GetMapping("{platformId}")
+    public Platform getById(@PathVariable Integer platformId) {
+        return platformService.findById(platformId);
     }
 
     @DeleteMapping("{id}")
     public void remove(@PathVariable Integer id) throws ResponseException {
         try {
-            categoryService.remove(id);
+            platformService.remove(id);
         } catch (NotFoundException | IllegalArgumentException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -73,7 +70,7 @@ public class PlatformController {
     @GetMapping
     public List<Platform> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
-            return categoryService.findAllSorted(direction, properties);
+            return platformService.findAllSorted(direction, properties);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -82,7 +79,8 @@ public class PlatformController {
     @GetMapping("/paged")
     public Map<String, Object> findAllPaged(@PageableDefault Pageable pageable) throws ResponseException {
         try {
-            return PaginationUtil.getPage(categoryService.findPaged(pageable), PlatformDTO.class);
+//            return platformService.findAllPaged(pageable);
+            return null;
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

@@ -95,10 +95,15 @@ public class CustomerController {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+//
+//    @GetMapping("/read/{id}")
+//    public Map<String, Object> readById(@PathVariable Integer id) {
+//        Tuple tuple = customerService.readByCostumerId(id);
+//        return EntityUtil.toMap(tuple);
+//    }
 
-    @GetMapping("/read/{id}")
-    public Map<String, Object> readById(@PathVariable Integer id) {
-        Tuple tuple = customerService.readByCostumerId(id);
-        return EntityUtil.toMap(tuple);
+    @GetMapping("/allActive")
+    public List<Customer> findAllActive() {
+        return customerService.findAllActive();
     }
 }

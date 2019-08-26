@@ -4,5 +4,5 @@ import com.ucx.training.shop.entity.Platform;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryRepository extends BaseRepository<Platform, Integer> {
+public interface PlatformRepository extends BaseRepository<Platform, Integer> {
 }

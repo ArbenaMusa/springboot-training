@@ -73,6 +73,8 @@ public class ProductController {
         }
     }
 
+
+
     @GetMapping
     public List<DTOEntity> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
@@ -115,4 +117,8 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/allActive")
+    public List<Product> findAllActive() {
+        return productService.findAllActive();
+    }
 }

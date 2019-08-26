@@ -21,7 +21,7 @@ public class ProductService extends BaseService<Product, Integer> {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
-    private CategoryService categoryService;
+    private PlatformService platformService;
     @Autowired
     private BrandService brandService;
 
@@ -47,14 +47,26 @@ public class ProductService extends BaseService<Product, Integer> {
             throw new IllegalArgumentException("Given product is null");
         }
         Platform platform = product.getPlatform();
-
-        if (platform != null && platform.getId() == null) {
-            categoryService.save(platform);
+        Brand brand = product.getBrand();
+        if (platform.getId() == null) {
+            platformService.save(platform);
         } else {
-            Platform foundPlatform = categoryService.findById(platform.getId());
+            Platform foundPlatform = platformService.findById(platform.getId());
             Assert.isTrue(foundPlatform != null, "Entity not found!");
             product.setPlatform(foundPlatform);
         }
+
+        if (brand.getId() == null) {
+            brandService.save(brand);
+        } else {
+            Brand foundBrand = brandService.findById(brand.getId());
+            Assert.isTrue(foundBrand != null, "Entity not found!");
+            product.setBrand(foundBrand);
+        }
         return super.save(product);
+    }
+
+    public List<Product> findAllActive() {
+        return productRepository.findAllActive();
     }
 }
