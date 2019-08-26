@@ -7,6 +7,7 @@ import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.ProductService;
+import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
@@ -23,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
@@ -78,7 +80,10 @@ public class ProductController {
     @GetMapping
     public List<DTOEntity> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
-            List<Product> products = productService.findAllSorted(direction, properties);
+            List<Product> products = productService.findAllSorted(direction, properties)
+                    .stream()
+                    .filter(product -> product.getRecordStatus() == RecordStatus.ACTIVE)
+                    .collect(Collectors.toList());
             return DTOMapper.converToDTOList(products, ProductDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
