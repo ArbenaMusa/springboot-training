@@ -13,4 +13,5 @@ public class PurchaseDTO extends DTOEntity{
     private Integer customerId;
     private Integer orderId;
     private List<CartDTO> cart;
+    private AddressDTO address;
 }

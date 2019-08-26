@@ -32,4 +32,7 @@ public class Order extends BaseEntity<Integer> {
     private List<CartItem> cart;
     private BigDecimal total;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Address address;
+
 }
