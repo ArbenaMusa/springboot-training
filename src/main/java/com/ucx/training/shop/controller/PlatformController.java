@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Log4j2
 @RestController
-@RequestMapping("v1/categories")
+@RequestMapping("v1/platforms")
 public class PlatformController {
 
     private PlatformService platformService;

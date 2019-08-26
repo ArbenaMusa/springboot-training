@@ -159,8 +159,13 @@ public class CustomerService extends BaseService<Customer, Integer> {
         }
     }
 
-    public Tuple readByCostumerId(Integer id) {
-        return customerRepository.readCostumerById(id);
+//    public Tuple readByCostumerId(Integer id) {
+//        return customerRepository.readCostumerById(id);
+//    }
+
+    public List<Customer> findAllCustomers()
+    {
+        return customerRepository.findAll();
     }
 
     public List<Customer> findAllActive() {
