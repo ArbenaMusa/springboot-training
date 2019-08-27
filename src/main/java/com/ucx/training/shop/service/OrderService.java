@@ -1,12 +1,17 @@
 package com.ucx.training.shop.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Order;
 import com.ucx.training.shop.entity.CartItem;
 import com.ucx.training.shop.repository.OrderRepository;
+import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,6 +22,8 @@ public class OrderService extends BaseService<Order, Integer> {
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    EntityManager entityManager;
 
     public Order update(List<CartItem> cartItemList, Customer customer, Order order) {
         if (cartItemList == null || cartItemList.isEmpty()) {
@@ -54,6 +61,29 @@ public class OrderService extends BaseService<Order, Integer> {
     }
 
 
-
+    public List<JsonNode> readOrderHistory(Pageable pageable) {
+        StringBuilder query = new StringBuilder();
+        query.append("Select row_to_json (data) as result from\n" +
+                "    (select customer.name as \"customerName\", customer.id as \"customerId\",torder.id as \"orderId\",torder.create_date_time as \"orderTime\", torder.total as \"total\"\n" +
+                "          ,(\n" +
+                "            select array_to_json(array_agg(row_to_json(d))) as itemsPurchased\n" +
+                "            from\n" +
+                "                (\n" +
+                "    select cart_item.product_id,product.name,cart_item.quantity from cart_item\n" +
+                "    inner join product on cart_item.product_id=product.id and cart_item.order_id=torder.id\n" +
+                " and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n"+
+                "                ) d\n" +
+                "        )\n" +
+                "     from \"order\" torder inner join customer on torder.customer_id=customer.id \n" +
+                "where torder.record_status like 'ACTIVE' and customer.record_status like 'ACTIVE'" +
+                ") data limit ?1 offset ?2");
+        List<JsonNode> list = entityManager.createNativeQuery(query.toString())
+                .unwrap(NativeQuery.class)
+                .addScalar("result", new JsonNodeBinaryType())
+                .setParameter(1,pageable.getPageSize())
+                .setParameter(2,pageable.getOffset())
+                .getResultList();
+        return list;
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.ucx.training.shop.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ucx.training.shop.dto.BrandDTO;
 import com.ucx.training.shop.dto.InvoiceDTO;
 import com.ucx.training.shop.dto.LineItemDTO;
@@ -15,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -89,4 +91,12 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/history/paged")
+    public ResponseEntity<List<JsonNode>> getOrderHistory(@PageableDefault Pageable pageable) throws ResponseException {
+        try {
+            return ResponseEntity.ok().body(orderService.readOrderHistory(pageable));
+        } catch (Exception exception) {
+            throw new ResponseException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
 }
