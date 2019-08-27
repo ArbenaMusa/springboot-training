@@ -7,12 +7,10 @@ import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.FileUploadRepository;
 import com.ucx.training.shop.repository.ProductRepository;
-import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.FileUploadUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
@@ -35,14 +33,14 @@ public class ProductService extends BaseService<Product, Integer> {
     @Value("${file.upload}")
     private String uploadDirName;
     private FileUploadRepository fileRepository;
-    private BaseService<FileUpload, Integer> baseService;
+    private FileUploadService fileUploadService;
 
-    public ProductService(ProductRepository productRepository, PlatformService platformService, BrandService brandService, FileUploadRepository fileRepository, BaseService<FileUpload, Integer> baseService) {
+    public ProductService(ProductRepository productRepository, PlatformService platformService, BrandService brandService, FileUploadRepository fileRepository, FileUploadService fileUploadService) {
         this.productRepository = productRepository;
         this.platformService = platformService;
         this.brandService = brandService;
         this.fileRepository = fileRepository;
-        this.baseService = baseService;
+        this.fileUploadService = fileUploadService;
     }
 
     public Product findByName(String name) {
@@ -95,17 +93,25 @@ public class ProductService extends BaseService<Product, Integer> {
         if (foundProduct == null) {
             throw new NotFoundException("Product could not be found" + productId);
         }
-        FileUpload foundFileUpload = fileRepository.findByProductAndRecordStatus(foundProduct, RecordStatus.ACTIVE);
+        FileUpload foundFileUpload = fileUploadService.findByProductAndRecordStatusActive(foundProduct);
         if (foundFileUpload == null) {
             uploadedFile.setProduct(foundProduct);
-            return baseService.save(uploadedFile);
+            return fileUploadService.save(uploadedFile);
         }
-        return baseService.update(uploadedFile, foundFileUpload.getId());
+        return fileUploadService.update(uploadedFile, foundFileUpload.getId());
     }
 
-    public Product createProductWithPlatformAndBrand(Product product) {
+    public Product createProductWithPlatformAndBrand(Product product) throws NotFoundException {
         if (product == null) {
             throw new IllegalArgumentException("Given product is null");
+        }
+        if (product.getId() != null) {
+            Product foundProduct = super.findById(product.getId());
+            if (foundProduct == null) {
+                throw new RuntimeException("The given id for the product is invalid");
+            } else {
+                return super.update(product, foundProduct.getId());
+            }
         }
         Platform platform = product.getPlatform();
         Brand brand = product.getBrand();
@@ -137,6 +143,6 @@ public class ProductService extends BaseService<Product, Integer> {
         FileUpload uploadedFile = uploadFile(file);
         FileUpload fileWithProduct = saveFile(uploadedFile, createdProduct.getId());
         createdProduct.setFileUpload(fileWithProduct);
-        return super.update(createdProduct, createdProduct.getId());
+        return createdProduct;
     }
 }
