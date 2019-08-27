@@ -6,6 +6,7 @@ import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
+import com.ucx.training.shop.service.AddressService;
 import com.ucx.training.shop.service.CustomerService;
 import com.ucx.training.shop.util.EntityUtil;
 import com.ucx.training.shop.util.PaginationUtil;
@@ -27,9 +28,11 @@ import java.util.Map;
 public class CustomerController {
 
     private CustomerService customerService;
+    private AddressService addressService;
 
-    private CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, AddressService addressService) {
         this.customerService = customerService;
+        this.addressService = addressService;
     }
 
     @PostMapping
@@ -42,6 +45,14 @@ public class CustomerController {
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("{id}/last-address")
+    public Map<String, Integer> getLastAddress(@PathVariable Integer id) {
+        Map<String, Integer> resultMap = new HashMap<>();
+        Integer addressId = addressService.findAllAddressesByCustomerId(id);
+        resultMap.put("id", addressId);
+        return resultMap;
     }
 
     @PutMapping("{id}")

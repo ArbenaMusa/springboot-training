@@ -1,9 +1,9 @@
 Customer name: Fati Marmullaku
 ------------------------------------------------
-Product name: Mortal Kombat
-Product price: 49.00 €  x2
-Price: 98 €
+Product name: Assassin Creed
+Product price: 35.00 €  x1
+Price: 35 €
 ------------------------------------------------
-Purchase date: 2019-08-27T12:58:11.188392100
+Purchase date: 2019-08-27T16:15:59.847632700
 ------------------------------------------------
-Total: 98 €
+Total: 35 €
