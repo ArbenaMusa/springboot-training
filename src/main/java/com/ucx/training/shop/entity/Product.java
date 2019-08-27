@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -23,6 +24,8 @@ public class Product extends BaseEntity<Integer> {
     private String name;
     private BigDecimal unitPrice;
     private Integer inStock;
+    @Column(length = 1000)
+    private String productDescription;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(mappedBy = "product")
