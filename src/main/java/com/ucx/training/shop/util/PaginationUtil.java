@@ -4,6 +4,7 @@ import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.BaseEntity;
 import com.ucx.training.shop.exception.ResponseException;
+import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,13 +14,17 @@ import org.springframework.http.HttpStatus;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PaginationUtil {
 
-    public static  <T extends BaseEntity> Map<String, Object> getPage(Page<T> page,Class dtoClass) throws ResponseException {
+    public static  <T extends BaseEntity> Map<String, Object> getPage(Page<? extends BaseEntity> page,Class dtoClass) throws ResponseException {
         try {
             Map<String, Object> resultMap = new HashMap<>();
-            List<T> rows = page.getContent();
+            List<? extends BaseEntity> rows = page.getContent()
+                    .stream()
+                    .filter(o -> ((BaseEntity) o).getRecordStatus() == RecordStatus.ACTIVE)
+                    .collect(Collectors.toList());
 
             List<DTOEntity> content = DTOMapper.converToDTOList(rows, dtoClass);
             resultMap.put("content", content);
