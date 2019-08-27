@@ -109,7 +109,7 @@ public class ProductService extends BaseService<Product, Integer> {
         }
         Platform platform = product.getPlatform();
         Brand brand = product.getBrand();
-        if (platform.getId() == null) {
+        /*if (platform != null && platform.getId() == null) {
             platformService.save(platform);
         } else {
             Platform foundPlatform = platformService.findById(platform.getId());
@@ -123,7 +123,7 @@ public class ProductService extends BaseService<Product, Integer> {
             Brand foundBrand = brandService.findById(brand.getId());
             Assert.isTrue(foundBrand != null, "Entity not found!");
             product.setBrand(foundBrand);
-        }
+        }*/
         return super.save(product);
     }
 
