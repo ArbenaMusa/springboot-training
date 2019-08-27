@@ -115,6 +115,13 @@ public class ProductController {
         }
     }
 
+
+    @GetMapping("/name/{name}")
+    public Integer findByName(@PathVariable String name)
+    {
+        return this.productService.findByName(name).getId();
+    }
+
     @GetMapping("/allActive")
     public List<Product> findAllActive() {
         return productService.findAllActive();
