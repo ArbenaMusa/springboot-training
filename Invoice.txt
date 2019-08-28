@@ -1,9 +1,9 @@
-Customer name: Fati Marmullaku
+Customer name: Andi Hoxha
 ------------------------------------------------
 Product name: Assassin Creed
 Product price: 35.00 €  x1
 Price: 35 €
 ------------------------------------------------
-Purchase date: 2019-08-27T16:15:59.847632700
+Purchase date: 2019-08-28T09:09:47.949275700
 ------------------------------------------------
 Total: 35 €

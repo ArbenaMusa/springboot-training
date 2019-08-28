@@ -18,10 +18,6 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
             throw new IllegalArgumentException("The given product is null");
         }
 
-        FileUpload foundFileUpload = fileUploadRepository.findByProductAndRecordStatus(product, RecordStatus.ACTIVE);
-        if (foundFileUpload == null) {
-            throw new RuntimeException("There isn't a file upload with the given product and record status active");
-        }
-        return foundFileUpload;
+        return fileUploadRepository.findByProductAndRecordStatus(product, RecordStatus.ACTIVE);
     }
 }
