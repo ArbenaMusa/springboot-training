@@ -82,6 +82,8 @@ public class ProductController {
         }
     }
 
+
+
     @GetMapping
     public List<DTOEntity> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
@@ -127,16 +129,10 @@ public class ProductController {
         }
     }
 
-    @PostMapping(value = "/withimage")
-    public ProductDTO uploadProductWithImage(@RequestParam("data") String data, @RequestParam(value = "files", required = false) MultipartFile file) throws ResponseException {
-        try {
-            Product product = objectMapper.readValue(data, Product.class);
-            Product createdProduct = productService.createProductWithImage(product, file);
-            return ProductMapper.getProdDTO(createdProduct);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    @GetMapping("/name/{name}")
+    public Integer findByName(@PathVariable String name)
+    {
+        return this.productService.findByName(name).getId();
     }
 
     @GetMapping("/allActive")
