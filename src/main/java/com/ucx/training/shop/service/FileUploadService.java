@@ -19,9 +19,9 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
         }
 
         FileUpload foundFileUpload = fileUploadRepository.findByProductAndRecordStatus(product, RecordStatus.ACTIVE);
-        if (foundFileUpload == null) {
-            throw new RuntimeException("There isn't a file upload with the given product and record status active");
-        }
+//        if (foundFileUpload == null) {
+//            throw new RuntimeException("There isn't a file upload with the given product and record status active");
+//        }
         return foundFileUpload;
     }
 }

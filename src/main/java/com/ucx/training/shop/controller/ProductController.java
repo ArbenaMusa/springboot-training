@@ -128,12 +128,10 @@ public class ProductController {
     }
 
     @PostMapping(value = "/withimage")
-    public ProductDTO uploadProductWithImage(@RequestParam("data") String data, @RequestParam(value = "files", required = false) MultipartFile file) throws IOException, NotFoundException, ResponseException {
+    public ProductDTO uploadProductWithImage(@RequestParam("data") String data, @RequestParam(value = "files", required = false) MultipartFile file) throws ResponseException {
         try {
             Product product = objectMapper.readValue(data, Product.class);
-            log.info("HEREEEEE");
             Product createdProduct = productService.createProductWithImage(product, file);
-            log.info(createdProduct);
             return ProductMapper.getProdDTO(createdProduct);
         } catch (Exception e) {
             e.printStackTrace();

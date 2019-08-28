@@ -32,6 +32,8 @@ public class ProductService extends BaseService<Product, Integer> {
     private BrandService brandService;
     @Value("${file.upload}")
     private String uploadDirName;
+    @Value("${file.upload.client}")
+    private String uploadDirectory;
     private FileUploadRepository fileRepository;
     private FileUploadService fileUploadService;
 
@@ -64,13 +66,12 @@ public class ProductService extends BaseService<Product, Integer> {
             throw new IllegalArgumentException("File cannot be null");
         }
         String directoryPathAsString = System.getProperty("user.dir") + uploadDirName;
-        String clientSideDirectory = "D:/shop-angular/src/assets/img/";
         Path directoryPath = Paths.get(directoryPathAsString);
         if (!Files.exists(directoryPath)) {
             Files.createDirectory(directoryPath);
         }
         String filePathAsString = directoryPathAsString + file.getOriginalFilename();
-        String clientSideFilePathAsString = clientSideDirectory + file.getOriginalFilename();
+        String clientSideFilePathAsString = uploadDirectory + file.getOriginalFilename();
         Path filePath = Paths.get(filePathAsString);
         Path clientSideFilePath = Paths.get(clientSideFilePathAsString);
 
