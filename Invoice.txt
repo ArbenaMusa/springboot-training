@@ -1,9 +1,12 @@
-Customer name: Andi Hoxha
+Customer name: pashtrik gashi
 ------------------------------------------------
-Product name: Assassin Creed
-Product price: 35.00 €  x1
-Price: 35 €
+Product name:  MORTAL KOMBAT 11
+Product price: 43.47 â‚¬  x3
+Price: 129 â‚¬
+Product name:  Battlefield 4
+Product price: 65.27 â‚¬  x2
+Price: 130 â‚¬
 ------------------------------------------------
-Purchase date: 2019-08-28T09:09:47.949275700
+Purchase date: 2019-08-28T15:41:33.416017500
 ------------------------------------------------
-Total: 35 €
+Total: 260.95 â‚¬
