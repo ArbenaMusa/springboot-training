@@ -82,6 +82,8 @@ public class ProductController {
         }
     }
 
+
+
     @GetMapping
     public List<DTOEntity> findAllSorted(@RequestParam(required = false, defaultValue = "ASC") String direction, @RequestParam(defaultValue = "id") String... properties) throws ResponseException {
         try {
@@ -139,6 +141,13 @@ public class ProductController {
             e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+
+    @GetMapping("/name/{name}")
+    public Integer findByName(@PathVariable String name)
+    {
+        return this.productService.findByName(name).getId();
     }
 
     @GetMapping("/allActive")
