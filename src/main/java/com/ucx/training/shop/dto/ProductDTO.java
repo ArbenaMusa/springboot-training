@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDTO extends DTOEntity{
-    private Integer id;
     private String name;
     private BigDecimal unitPrice;
     private String productDescription;

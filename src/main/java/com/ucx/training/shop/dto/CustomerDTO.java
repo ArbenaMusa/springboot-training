@@ -6,7 +6,6 @@ import java.util.List;
 
 @Data
 public class CustomerDTO extends DTOEntity{
-    private Integer id;
     private String name;
     private String email;
     private List<PhoneDTO> phoneNumbers;

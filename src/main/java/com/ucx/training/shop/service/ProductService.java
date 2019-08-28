@@ -11,6 +11,7 @@ import com.ucx.training.shop.util.FileUploadUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
@@ -107,32 +108,52 @@ public class ProductService extends BaseService<Product, Integer> {
         if (product == null) {
             throw new IllegalArgumentException("Given product is null");
         }
+        Platform platform = product.getPlatform();
+        Brand brand = product.getBrand();
         if (product.getId() != null) {
-            Product foundProduct = super.findById(product.getId());
+            Product foundProduct = findById(product.getId());
             if (foundProduct == null) {
                 throw new RuntimeException("The given id for the product is invalid");
             } else {
+                platformValidation(product, platform);
+                brandValidation(product, brand);
                 return super.update(product, foundProduct.getId());
             }
         }
-        Platform platform = product.getPlatform();
-        Brand brand = product.getBrand();
-        /*if (platform != null && platform.getId() == null) {
-            platformService.save(platform);
-        } else {
-            Platform foundPlatform = platformService.findById(platform.getId());
-            Assert.isTrue(foundPlatform != null, "Entity not found!");
-            product.setPlatform(foundPlatform);
-        }
+        platformValidation(product, platform);
 
-        if (brand.getId() == null) {
-            brandService.save(brand);
-        } else {
-            Brand foundBrand = brandService.findById(brand.getId());
-            Assert.isTrue(foundBrand != null, "Entity not found!");
-            product.setBrand(foundBrand);
-        }*/
+        brandValidation(product, brand);
         return super.save(product);
+    }
+
+    private void brandValidation(Product product, Brand brand) {
+        if (brand != null) {
+            if (brand.getId() != null) {
+                Brand foundBrand = brandService.findById(brand.getId());
+                if (foundBrand == null) {
+                    throw new RuntimeException("There isn't a Brand with the given id");
+                } else {
+                    product.setBrand(foundBrand);
+                }
+            } else {
+                brandService.save(brand);
+            }
+        }
+    }
+
+    private void platformValidation(Product product, Platform platform) {
+        if (platform != null) {
+            if (platform.getId() == null) {
+                throw new RuntimeException("You cannot add a new Platform, you must assign an already existing one");
+            } else {
+                Platform foundPlatform = platformService.findById(platform.getId());
+                if (foundPlatform == null) {
+                    throw new RuntimeException("There isn't a Platform with the given id");
+                } else {
+                    product.setPlatform(foundPlatform);
+                }
+            }
+        }
     }
 
     public List<Product> findAllActive() {
