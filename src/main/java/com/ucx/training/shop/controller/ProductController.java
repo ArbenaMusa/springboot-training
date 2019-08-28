@@ -52,8 +52,10 @@ public class ProductController {
         try {
             createdProduct = productService.createProductWithPlatformAndBrand(product);
         } catch (IllegalArgumentException e) {
+            e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
