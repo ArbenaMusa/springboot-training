@@ -28,6 +28,9 @@ public class FileUploadUtil {
             case "png":
                 mediaType = MediaType.IMAGE_PNG;
                 break;
+            case "jpg":
+                mediaType = MediaType.IMAGE_JPEG;
+                break;
             default:
                 break;
         }
