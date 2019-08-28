@@ -21,7 +21,7 @@ create table IF NOT EXISTS public.platform
 	PRIMARY KEY (id)
 );
 
-create table IF NOT EXISTS public.platform
+create table IF NOT EXISTS public.brand
 (
 	id integer not null default nextval('public.brand_id_seq'::regclass),
 	create_date_time timestamp,
