@@ -129,21 +129,6 @@ public class ProductController {
         }
     }
 
-    @PostMapping(value = "/withimage")
-    public ProductDTO uploadProductWithImage(@RequestParam("data") String data, @RequestParam(value = "files", required = false) MultipartFile file) throws IOException, NotFoundException, ResponseException {
-        try {
-            Product product = objectMapper.readValue(data, Product.class);
-            log.info("HEREEEEE");
-            Product createdProduct = productService.createProductWithImage(product, file);
-            log.info(createdProduct);
-            return ProductMapper.getProdDTO(createdProduct);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-
     @GetMapping("/name/{name}")
     public Integer findByName(@PathVariable String name)
     {
