@@ -25,8 +25,6 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
 
     @Value("${file.upload}")
     private String uploadDirName;
-    @Value("${file.upload.client}")
-    private String clientDirName;
     private FileUploadRepository fileRepository;
     private ProductService productService;
 
@@ -47,13 +45,10 @@ public class FileUploadService extends BaseService<FileUpload, Integer> {
             Files.createDirectory(directoryPath);
         }
         String filePathAsString = directoryPathAsString + file.getOriginalFilename();
-        String clientSideFilePathAsString = clientDirName + file.getOriginalFilename();
         Path filePath = Paths.get(filePathAsString);
-        Path clientSideFilePath = Paths.get(clientSideFilePathAsString);
 
         byte[] bytes = file.getBytes();
         Files.write(filePath, bytes, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
-        Files.write(clientSideFilePath, bytes, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
 
         return FileUpload.builder()
                 .fileName(file.getOriginalFilename())
