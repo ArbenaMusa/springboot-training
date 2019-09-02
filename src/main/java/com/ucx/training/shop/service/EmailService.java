@@ -3,6 +3,7 @@ package com.ucx.training.shop.service;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Order;
 import com.ucx.training.shop.entity.CartItem;
+import com.ucx.training.shop.util.LicenseUtil;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -46,7 +47,8 @@ public class EmailService {
                     writer.write("\nProduct name: " + e.getProduct().getName() +
                             "\nProduct price: " + e.getProduct().getUnitPrice() + " €" +
                             "  x" + e.getQuantity().toString() +
-                            "\nPrice: " + (e.getQuantity().intValue()* e.getProduct().getUnitPrice().intValue()) + " €" ));
+                            "\nPrice: " + (e.getQuantity().intValue()* e.getProduct().getUnitPrice().intValue()) + " €"  +
+                            "\nLicense Codes: " + LicenseUtil.generateLicence(e.getQuantity()) + " "));
             writer.write("\n------------------------------------------------" +
                     "\nPurchase date: " + order.getCreateDateTime() +
                     "\n------------------------------------------------" +

@@ -1,15 +1,14 @@
 Customer name: pashtrik gashi
 ------------------------------------------------
+Product name:  Moratl Kombat 11
+Product price: 44.60 €  x1
+Price: 44 €
+License Codes: [PKS90S05RT1BY94N] 
 Product name: Nanatsu no Taizai
-Product price: 76.98 â‚¬  x1
-Price: 76 â‚¬
-Product name: Battlefield
-Product price: 25.60 â‚¬  x1
-Price: 25 â‚¬
-Product name: Assassin's Creed
-Product price: 15.50 â‚¬  x1
-Price: 15 â‚¬
+Product price: 76.98 €  x1
+Price: 76 €
+License Codes: [M2W85CJOR65UPWIV] 
 ------------------------------------------------
-Purchase date: 2019-08-29T15:44:29.258407600
+Purchase date: 2019-09-02T16:14:35.438896700
 ------------------------------------------------
-Total: 118.08000000000001 â‚¬
+Total: 121.58000000000001 €
