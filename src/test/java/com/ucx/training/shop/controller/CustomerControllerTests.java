@@ -10,6 +10,7 @@ import com.ucx.training.shop.util.JwtUtil;
 import lombok.extern.log4j.Log4j2;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,7 @@ public class CustomerControllerTests {
 
 
     @Test
+    @Ignore
     public void testSave() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));

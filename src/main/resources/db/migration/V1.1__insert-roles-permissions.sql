@@ -15,29 +15,29 @@ CREATE SEQUENCE IF NOT EXISTS public.role_permission_id_seq
 
 CREATE table IF NOT EXISTS public.role
 (
-    id                integer not null default nextval('public.role_id_seq'::regclass),
-    POST_date_time    timestamp,
-    DELETEd_date_time timestamp,
-    description       varchar(1000),
-    record_status     varchar(255),
-    PUT_date_time     timestamp,
-    version           bigint,
-    name              varchar(255) unique,
-    role_description  varchar(255),
+    id               integer not null default nextval('public.role_id_seq'::regclass),
+    create_date_time timestamp,
+    deleted_date_time timestamp,
+    description      varchar(1000),
+    record_status    varchar(255),
+    update_date_time timestamp,
+    version          bigint,
+    name             varchar(255) unique,
+    role_description varchar(255),
     PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public.permission
 (
-    id                integer NOT NULL DEFAULT nextval('permission_id_seq'::regclass),
-    POST_date_time    timestamp without time zone,
-    DELETEd_date_time timestamp without time zone,
-    description       character varying(1000),
-    record_status     character varying(255),
-    PUT_date_time     timestamp without time zone,
-    version           bigint,
-    action            character varying(255),
-    module            character varying(255),
+    id               integer NOT NULL DEFAULT nextval('permission_id_seq'::regclass),
+    create_date_time timestamp without time zone,
+    deleted_date_time timestamp without time zone,
+    description      character varying(1000),
+    record_status    character varying(255),
+    update_date_time timestamp without time zone,
+    version          bigint,
+    action           character varying(255),
+    module           character varying(255),
     PRIMARY KEY (id)
 );
 
@@ -51,11 +51,11 @@ COMMIT;
 CREATE TABLE IF NOT EXISTS public.permission_role
 (
     id                integer NOT NULL DEFAULT nextval('public.role_permission_id_seq'::regclass),
-    POST_date_time    timestamp without time zone,
-    DELETEd_date_time timestamp without time zone,
+    create_date_time    timestamp without time zone,
+    deleted_date_time timestamp without time zone,
     description       character varying(1000),
     record_status     character varying(255),
-    PUT_date_time     timestamp without time zone,
+    update_date_time     timestamp without time zone,
     version           bigint,
     role_id           integer NOT NULL,
     permission_id     integer NOT NULL,
