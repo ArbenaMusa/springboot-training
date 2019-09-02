@@ -25,6 +25,7 @@ public class Customer extends BaseEntity<Integer> {
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Address> addresses;
 
+    @Column(unique = true)
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customer")
