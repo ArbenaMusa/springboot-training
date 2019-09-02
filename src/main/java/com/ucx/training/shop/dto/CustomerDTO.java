@@ -9,7 +9,7 @@ public class CustomerDTO extends DTOEntity{
     private Integer id;
     private String name;
     private String email;
-    private List<PhoneDTO> phoneNumbers;
+    private String phoneNumber;
     private List<AddressDTO> addresses;
 
 }

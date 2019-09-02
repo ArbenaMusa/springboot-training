@@ -37,9 +37,6 @@ public class CustomerService extends BaseService<Customer, Integer> {
         if (customer.getAddresses() != null && !customer.getAddresses().isEmpty()) {
             customer.getAddresses().forEach(e -> e.setCustomer(customer));
         }
-        if (customer.getPhoneNumbers() != null && !customer.getPhoneNumbers().isEmpty()) {
-            customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));
-        }
         //TODO: Default Role for Customer
         final Integer CUSTOMER_ROLE_ID = 1;
         final Role role = roleService.findById(CUSTOMER_ROLE_ID);
@@ -80,9 +77,6 @@ public class CustomerService extends BaseService<Customer, Integer> {
 
         if (newCustomer.getAddresses() != null && !newCustomer.getAddresses().isEmpty()) {
             updateAddresses(foundCustomer, newCustomer.getAddresses());
-        }
-        if (newCustomer.getPhoneNumbers() != null && !newCustomer.getPhoneNumbers().isEmpty()) {
-            updatePhones(foundCustomer, newCustomer.getPhoneNumbers());
         }
 
         newCustomer.setAddresses(null);
