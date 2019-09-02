@@ -1,9 +1,9 @@
-Customer name: Andi Hoxha
+Customer name: jehona konushefci
 ------------------------------------------------
-Product name: Assassin Creed
-Product price: 35.00 €  x1
-Price: 35 €
+Product name: Mortal Kombat 11
+Product price: 89.99 €  x2
+Price: 178 €
 ------------------------------------------------
-Purchase date: 2019-08-28T09:09:47.949275700
+Purchase date: 2019-08-29T11:04:32.008216900
 ------------------------------------------------
-Total: 35 €
+Total: 179.98 €

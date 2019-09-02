@@ -23,12 +23,12 @@ public class Customer extends BaseEntity<Integer> {
     private String name;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Address> addresses;
+    private Address address;
 
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customer")
-    private Set<Phone> phoneNumbers;
+    private Phone phoneNumber;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

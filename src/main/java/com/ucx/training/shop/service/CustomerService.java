@@ -34,11 +34,11 @@ public class CustomerService extends BaseService<Customer, Integer> {
 
     @Override
     public Customer save(Customer customer) {
-        if (customer.getAddresses() != null && !customer.getAddresses().isEmpty()) {
-            customer.getAddresses().forEach(e -> e.setCustomer(customer));
+        if (customer.getAddress() != null) {
+            customer.getAddress().setCustomer(customer);
         }
-        if (customer.getPhoneNumbers() != null && !customer.getPhoneNumbers().isEmpty()) {
-            customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));
+        if (customer.getPhoneNumber() != null && customer.getPhoneNumber().getPhoneNumber().trim() != "") {
+            customer.getPhoneNumber().setCustomer(customer);
         }
         //TODO: Default Role for Customer
         final Integer CUSTOMER_ROLE_ID = 1;
@@ -76,52 +76,47 @@ public class CustomerService extends BaseService<Customer, Integer> {
         Assert.isTrue(newCustomer != null, "One of the arguments is invalid!");
         Customer foundCustomer = findById(costumerId);
         Assert.isTrue(foundCustomer != null, "Entity not found!");
-        //if (foundCostumer == null) throw new NotFoundException("Entity not found");
 
-        if (newCustomer.getAddresses() != null && !newCustomer.getAddresses().isEmpty()) {
-            updateAddresses(foundCustomer, newCustomer.getAddresses());
+        if (newCustomer.getAddress() != null) {
+            updateAddresses(foundCustomer, newCustomer.getAddress());
         }
-        if (newCustomer.getPhoneNumbers() != null && !newCustomer.getPhoneNumbers().isEmpty()) {
-            updatePhones(foundCustomer, newCustomer.getPhoneNumbers());
+        if (newCustomer.getPhoneNumber() != null && newCustomer.getPhoneNumber().getPhoneNumber().trim() != "") {
+            updatePhones(foundCustomer, newCustomer.getPhoneNumber());
         }
 
-        newCustomer.setAddresses(null);
+        newCustomer.setAddress(null);
         return update(newCustomer, costumerId);
     }
 
-    private void updateAddresses(Customer foundCustomer, List<Address> addresses) throws NotFoundException {
-        for (Address address : addresses) {
-            if (address.getId() == null) {
-                address.setCustomer(foundCustomer);
-                addressService.save(address);
-            } else {
-                Address foundAddress = addressService.findById(address.getId());
-                if (foundAddress == null) {
-                    throw new NotFoundException("Address with the given id does not exist!");
-                }
-                if (!foundAddress.getCustomer().equals(foundCustomer)) {
-                    throw new RuntimeException("This address does not belong to this customer");
-                }
-                addressService.update(address, foundAddress.getId());
+    private void updateAddresses(Customer foundCustomer, Address address) throws NotFoundException {
+        if (address.getId() == null) {
+            address.setCustomer(foundCustomer);
+            addressService.save(address);
+        } else {
+            Address foundAddress = addressService.findById(address.getId());
+            if (foundAddress == null) {
+                throw new NotFoundException("Address with the given id does not exist!");
             }
+            if (!foundAddress.getCustomer().equals(foundCustomer)) {
+                throw new RuntimeException("This address does not belong to this customer");
+            }
+            addressService.update(address, foundAddress.getId());
         }
     }
 
-    private void updatePhones(Customer foundCustomer, Set<Phone> phones) throws NotFoundException {
-        for (Phone phone : phones) {
-            if (phone.getId() == null) {
-                phone.setCustomer(foundCustomer);
-                phoneService.save(phone);
-            } else {
-                Phone foundPhone = phoneService.findById(phone.getId());
-                if (foundPhone == null) {
-                    throw new NotFoundException("Address with the given id does not exist!");
-                }
-                if (!foundPhone.getCustomer().equals(foundCustomer)) {
-                    throw new RuntimeException("This address does not belong to this customer");
-                }
-                phoneService.update(phone, foundPhone.getId());
+    private void updatePhones(Customer foundCustomer, Phone phone) throws NotFoundException {
+        if (phone.getId() == null) {
+            phone.setCustomer(foundCustomer);
+            phoneService.save(phone);
+        } else {
+            Phone foundPhone = phoneService.findById(phone.getId());
+            if (foundPhone == null) {
+                throw new NotFoundException("Address with the given id does not exist!");
             }
+            if (!foundPhone.getCustomer().equals(foundCustomer)) {
+                throw new RuntimeException("This address does not belong to this customer");
+            }
+            phoneService.update(phone, foundPhone.getId());
         }
     }
 
