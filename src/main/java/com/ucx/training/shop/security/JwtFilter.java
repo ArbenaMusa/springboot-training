@@ -17,6 +17,8 @@ public class JwtFilter extends GenericFilter {
     private final static String PLATFORMS_ENDPOINT = "/api/v1/platforms";
     private final static String BRANDS_ENDPOINT = "/api/v1/brands";
 
+    //TODO: Begin index - [api/v1/], end index -[/]
+
     // If request is of type "GET", "POST", "DELETE", "UPDATE" filter of some type.
 
     @Override
@@ -52,7 +54,7 @@ public class JwtFilter extends GenericFilter {
         //TODO: Check if token has expired.
         try {
             Claims claims = JwtUtil.parse(token);
-            claims.get("claims");
+            log.info("CLAIMSSSS: " + claims.getSubject());
             request.setAttribute("claims", claims);
         } catch (Exception e) {
             throw new ServletException(e.getMessage());
