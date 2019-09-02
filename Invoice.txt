@@ -1,9 +1,12 @@
-Customer name: Andi Hoxha
+Customer name: faton faton
 ------------------------------------------------
-Product name: Assassin Creed
-Product price: 35.00 €  x1
-Price: 35 €
+Product name: pes2015
+Product price: 65.00 â‚¬  x3
+Price: 195 â‚¬
+Product name: battlefield 5
+Product price: 23.00 â‚¬  x3
+Price: 69 â‚¬
 ------------------------------------------------
-Purchase date: 2019-08-28T09:09:47.949275700
+Purchase date: 2019-09-02T14:35:00.556845200
 ------------------------------------------------
-Total: 35 €
+Total: 264 â‚¬

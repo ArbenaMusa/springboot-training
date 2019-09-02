@@ -5,6 +5,8 @@ import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Order;
 import com.ucx.training.shop.entity.CartItem;
 import com.ucx.training.shop.repository.OrderRepository;
+import com.ucx.training.shop.type.Quartal;
+import com.ucx.training.shop.util.EntityUtil;
 import com.vladmihalcea.hibernate.type.json.JsonNodeBinaryType;
 import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,11 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -71,7 +77,7 @@ public class OrderService extends BaseService<Order, Integer> {
                 "                (\n" +
                 "    select cart_item.product_id,product.name,cart_item.quantity from cart_item\n" +
                 "    inner join product on cart_item.product_id=product.id and cart_item.order_id=torder.id\n" +
-                " and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n"+
+                " and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n" +
                 "                ) d\n" +
                 "        )\n" +
                 "     from \"order\" torder inner join customer on torder.customer_id=customer.id \n" +
@@ -80,10 +86,22 @@ public class OrderService extends BaseService<Order, Integer> {
         List<JsonNode> list = entityManager.createNativeQuery(query.toString())
                 .unwrap(NativeQuery.class)
                 .addScalar("result", new JsonNodeBinaryType())
-                .setParameter(1,pageable.getPageSize())
-                .setParameter(2,pageable.getOffset())
+                .setParameter(1, pageable.getPageSize())
+                .setParameter(2, pageable.getOffset())
                 .getResultList();
         return list;
     }
+
+
+    public EnumMap<Quartal, Map> getQuartalStats() {
+        EnumMap response = new EnumMap<>(Quartal.class);
+        for (Quartal quartal : Quartal.values())
+       response.put(quartal,
+               EntityUtil.toMap( orderRepository.getQuartalStats(
+                       Date.from( quartal.getStartDate().atZone( ZoneId.systemDefault()).toInstant()),
+                       Date.from( quartal.getEndDate().atZone( ZoneId.systemDefault()).toInstant()))));
+        return response;
+    }
+
 
 }
