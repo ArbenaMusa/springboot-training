@@ -22,6 +22,7 @@ import java.util.List;
 public class EmailService {
 
     private JavaMailSender javaMailSender;
+    private final String LINK_ACTIVATE = "https://store.steampowered.com/account/registerkey?key=XXXXX-XXXXX-XXXXX";
 
     public EmailService(JavaMailSender javaMailSender){
         this.javaMailSender = javaMailSender;
@@ -48,11 +49,13 @@ public class EmailService {
                             "\nProduct price: " + e.getProduct().getUnitPrice() + " €" +
                             "  x" + e.getQuantity().toString() +
                             "\nPrice: " + (e.getQuantity().intValue()* e.getProduct().getUnitPrice().intValue()) + " €"  +
-                            "\nLicense Codes: " + LicenseUtil.generateLicence(e.getQuantity()) + " "));
+                            "\nLicense Codes: " + LicenseUtil.generateLicence(e.getQuantity()) + " " ));
             writer.write("\n------------------------------------------------" +
                     "\nPurchase date: " + order.getCreateDateTime() +
                     "\n------------------------------------------------" +
-                    "\nTotal: " + order.getTotal() + " €");
+                    "\nTotal: " + order.getTotal() + " €" +
+                    "\n\nYou can activate your product here: \n" +
+                    LINK_ACTIVATE);
         } catch (IOException e) {
             throw e;
         }

@@ -1,14 +1,25 @@
 Customer name: pashtrik gashi
 ------------------------------------------------
+Product name: Battlefield
+Product price: 25.60 €  x2
+Price: 50 €
+License Codes: [CNY6W3ZLHQG6LHIK, 915PVPX9S7G4WOM2] 
+Product name: Minecraft
+Product price: 30.60 €  x2
+Price: 60 €
+License Codes: [KOYCL5HVDTYVVOO3, 0BKKYNKT2F2FLZE5] 
+Product name: adfgasdf
+Product price: 34.00 €  x2
+Price: 68 €
+License Codes: [9A5BULIKKESDRINT, 80XWQN9LUANBYNTA] 
 Product name:  Moratl Kombat 11
 Product price: 44.60 €  x1
 Price: 44 €
-License Codes: [PKS90S05RT1BY94N] 
-Product name: Nanatsu no Taizai
-Product price: 76.98 €  x1
-Price: 76 €
-License Codes: [M2W85CJOR65UPWIV] 
+License Codes: [CHIK5V73Z1JKKGSZ] 
 ------------------------------------------------
-Purchase date: 2019-09-02T16:14:35.438896700
+Purchase date: 2019-09-02T16:40:13.059067500
 ------------------------------------------------
-Total: 121.58000000000001 €
+Total: 225 €
+
+You can activate your product here: 
+https://store.steampowered.com/account/registerkey?key=XXXXX-XXXXX-XXXXX
