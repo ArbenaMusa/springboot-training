@@ -1,12 +1,9 @@
 Customer name: faton faton
 ------------------------------------------------
-Product name: pes2015
-Product price: 65.00 €  x3
-Price: 195 €
-Product name: battlefield 5
-Product price: 23.00 €  x3
-Price: 69 €
+Product name: nick
+Product price: 98.00 €  x18
+Price: 1764 €
 ------------------------------------------------
-Purchase date: 2019-09-02T14:35:00.556845200
+Purchase date: 2019-09-02T22:12:13.822989500
 ------------------------------------------------
-Total: 264 €
+Total: 1764 €

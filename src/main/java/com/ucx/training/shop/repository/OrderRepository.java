@@ -14,10 +14,11 @@ import java.util.List;
 public interface OrderRepository extends BaseRepository<Order, Integer> {
     List<Order> findAllByCustomer(Customer customer);
 
-    @Query(value ="select count(*) as Orders,sum (ORD.total) as Income,(" +
+    @Query(value ="select count(*) as Orders,coalesce (sum(ORD.total),0) as Income,coalesce ((" +
             "    select sum(CI.quantity) from cart_item CI inner join \"order\" orrd on" +
             "    orrd.id=CI.order_id where orrd.create_date_time BETWEEN ?1 AND ?2 " +
-            "    ) as TotalProducts from \"order\" ORD" +
+            "    ),0) as TotalProducts from \"order\" ORD" +
             " where ORD.create_date_time BETWEEN ?1 AND ?2" ,nativeQuery = true)
     Tuple getQuartalStats(Date startDate, Date endDate);
+
 }
