@@ -13,14 +13,14 @@ CREATE SEQUENCE IF NOT EXISTS public.role_permission_id_seq
     MINVALUE 1
     START 1;
 
-create table IF NOT EXISTS public.role
+CREATE table IF NOT EXISTS public.role
 (
     id                integer not null default nextval('public.role_id_seq'::regclass),
-    create_date_time  timestamp,
-    deleted_date_time timestamp,
+    POST_date_time    timestamp,
+    DELETEd_date_time timestamp,
     description       varchar(1000),
     record_status     varchar(255),
-    update_date_time  timestamp,
+    PUT_date_time     timestamp,
     version           bigint,
     name              varchar(255) unique,
     role_description  varchar(255),
@@ -30,11 +30,11 @@ create table IF NOT EXISTS public.role
 CREATE TABLE IF NOT EXISTS public.permission
 (
     id                integer NOT NULL DEFAULT nextval('permission_id_seq'::regclass),
-    create_date_time  timestamp without time zone,
-    deleted_date_time timestamp without time zone,
+    POST_date_time    timestamp without time zone,
+    DELETEd_date_time timestamp without time zone,
     description       character varying(1000),
     record_status     character varying(255),
-    update_date_time  timestamp without time zone,
+    PUT_date_time     timestamp without time zone,
     version           bigint,
     action            character varying(255),
     module            character varying(255),
@@ -51,11 +51,11 @@ COMMIT;
 CREATE TABLE IF NOT EXISTS public.permission_role
 (
     id                integer NOT NULL DEFAULT nextval('public.role_permission_id_seq'::regclass),
-    create_date_time  timestamp without time zone,
-    deleted_date_time timestamp without time zone,
+    POST_date_time    timestamp without time zone,
+    DELETEd_date_time timestamp without time zone,
     description       character varying(1000),
     record_status     character varying(255),
-    update_date_time  timestamp without time zone,
+    PUT_date_time     timestamp without time zone,
     version           bigint,
     role_id           integer NOT NULL,
     permission_id     integer NOT NULL,
@@ -66,13 +66,13 @@ CREATE TABLE IF NOT EXISTS public.permission_role
 -- BEGIN INSERT OF ADMIN CRUD PERMISSIONS
 BEGIN;
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'admin');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'admin');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'admin');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'admin');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'admin');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'admin');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'admin');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'admin');
 COMMIT;
 
 BEGIN;
@@ -90,13 +90,13 @@ COMMIT;
 -- BEGIN INSERT OF ROLE CRUD PERMISSIONS
 BEGIN;
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'role');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'roles');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'role');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'roles');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'role');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'roles');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'role');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'roles');
 COMMIT;
 
 BEGIN;
@@ -114,13 +114,13 @@ COMMIT;
 -- BEGIN INSERT OF PERMISSION CRUD PERMISSIONS
 BEGIN;
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'permission');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'permissions');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'permission');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'permissions');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'permission');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'permissions');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'permission');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'permissions');
 COMMIT;
 
 BEGIN;
@@ -138,13 +138,13 @@ COMMIT;
 -- BEGIN INSERT OF PROFILE CRUD PERMISSIONS
 BEGIN;
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'profile');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'auth');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'profile');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'auth');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'profile');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'auth');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'profile');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'auth');
 COMMIT;
 
 BEGIN;
@@ -168,16 +168,16 @@ VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', n
 COMMIT;
 -- END INSERT OF PROFILE CRUD PERMISSIONS
 
--- BEGIN INSERT OF ADDRESS CRUD PERMISSIONS
+-- BEGIN INSERT OF PRODUCT CRUD PERMISSIONS
 BEGIN;
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'address');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'product');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'address');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'product');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'address');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'product');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'address');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'product');
 COMMIT;
 
 BEGIN;
@@ -193,26 +193,20 @@ COMMIT;
 
 BEGIN;
 INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 17);
-INSERT INTO permission_role
 VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 18);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 19);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 20);
 COMMIT;
--- END INSERT OF ADDRESS CRUD PERMISSIONS
+-- END INSERT OF PRODUCT CRUD PERMISSIONS
 
--- BEGIN INSERT OF PHONE CRUD PERMISSIONS
+-- BEGIN INSERT OF PLATFORM CRUD PERMISSIONS
 BEGIN;
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'phone');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'platform');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'phone');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'platform');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'phone');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'platform');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'phone');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'platform');
 COMMIT;
 
 BEGIN;
@@ -228,26 +222,20 @@ COMMIT;
 
 BEGIN;
 INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 21);
-INSERT INTO permission_role
 VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 22);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 23);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 24);
 COMMIT;
--- END INSERT OF PHONE CRUD PERMISSIONS
+--END INSERT OF PLATFORM CRUD PERMISSIONS
 
--- BEGIN INSERT OF PRODUCT CRUD PERMISSIONS
+--BEGIN INSERT OF BRAND CRUD PERMISSIONS
 BEGIN;
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'product');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'brand');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'product');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'brand');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'product');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'brand');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'product');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'brand');
 COMMIT;
 
 BEGIN;
@@ -265,18 +253,18 @@ BEGIN;
 INSERT INTO permission_role
 VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 26);
 COMMIT;
--- END INSERT OF PRODUCT CRUD PERMISSIONS
+--END INSERT OF BRAND CRUD PERMISSIONS
 
--- BEGIN INSERT OF PLATFORM CRUD PERMISSIONS
+--BEGIN INSERT OF ORDER CRUD PERMISSIONS
 BEGIN;
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'platform');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'order');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'platform');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'order');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'platform');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'order');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'platform');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'order');
 COMMIT;
 
 BEGIN;
@@ -292,20 +280,22 @@ COMMIT;
 
 BEGIN;
 INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 29);
+INSERT INTO permission_role
 VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 30);
 COMMIT;
---END INSERT OF PLATFORM CRUD PERMISSIONS
+--END INSERT OF ORDER CRUD PERMISSIONS
 
---BEGIN INSERT OF BRAND CRUD PERMISSIONS
+--BEGIN INSERT OF CARTITEM CRUD PERMISSIONS
 BEGIN;
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'brand');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'cartitem');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'brand');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'cartitem');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'brand');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'cartitem');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'brand');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'cartitem');
 COMMIT;
 
 BEGIN;
@@ -321,68 +311,8 @@ COMMIT;
 
 BEGIN;
 INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 33);
+INSERT INTO permission_role
 VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 34);
-COMMIT;
---END INSERT OF BRAND CRUD PERMISSIONS
-
---BEGIN INSERT OF ORDER CRUD PERMISSIONS
-BEGIN;
-INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'order');
-INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'order');
-INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'order');
-INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'order');
-COMMIT;
-
-BEGIN;
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 37);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 38);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 39);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 40);
-COMMIT;
-
-BEGIN;
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 37);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 38);
-COMMIT;
---END INSERT OF ORDER CRUD PERMISSIONS
-
---BEGIN INSERT OF CARTITEM CRUD PERMISSIONS
-BEGIN;
-INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'create', 'cartitem');
-INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'read', 'cartitem');
-INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'update', 'cartitem');
-INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'delete', 'cartitem');
-COMMIT;
-
-BEGIN;
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 41);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 42);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 43);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 44);
-COMMIT;
-
-BEGIN;
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 41);
-INSERT INTO permission_role
-VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 42);
 COMMIT;
 --END INSERT OF CARTITEM CRUD PERMISSIONS
