@@ -85,7 +85,7 @@ public class CustomerService extends BaseService<Customer, Integer> {
 
     private void updateAddresses(Customer foundCustomer, List<Address> addresses) throws NotFoundException {
         for (Address address : addresses) {
-            if (address.getId() == null) {
+            if (address.getId() == null || address.getId() == -1) {
                 address.setCustomer(foundCustomer);
                 addressService.save(address);
             } else {
