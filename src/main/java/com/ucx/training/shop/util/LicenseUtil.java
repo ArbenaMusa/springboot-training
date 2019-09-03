@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LicenseUtil {
-
     private static final String CHAR_SEQUENCE_LOWER = "abcdefghijklmnopqrstuvwxyz";
     private static final String CHAR_SEQUENCE_UPPER = CHAR_SEQUENCE_LOWER.toUpperCase();
     private static final String NUMBER_SEQUENCE = "0123456789";
@@ -24,7 +23,7 @@ public class LicenseUtil {
 
         List<String> licences = new ArrayList<>();
 
-        for(int quantityCounter = 0; quantityCounter < quantity; quantityCounter++) {
+        for (int quantityCounter = 0; quantityCounter < quantity; quantityCounter++) {
             StringBuilder sb = new StringBuilder();
 
             for (int licenseLength = 0; licenseLength < LICENCE_LENGTH; licenseLength++) {
