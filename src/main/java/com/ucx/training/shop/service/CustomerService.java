@@ -3,6 +3,7 @@ package com.ucx.training.shop.service;
 import com.ucx.training.shop.entity.*;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.CustomerRepository;
+import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -135,6 +136,6 @@ public class CustomerService extends BaseService<Customer, Integer> {
     }
 
     public List<Customer> findAllActive() {
-        return customerRepository.findAllActive();
+        return customerRepository.findAllByRecordStatus(RecordStatus.ACTIVE);
     }
 }
