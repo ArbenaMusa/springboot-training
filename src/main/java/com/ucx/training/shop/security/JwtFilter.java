@@ -73,8 +73,14 @@ public class JwtFilter extends GenericFilter {
         }
 
         String urlPrefix = "api/v1/";
-        final String MODULE = requestURI.substring(requestURI.lastIndexOf(urlPrefix) + urlPrefix.length(),
-                requestURI.lastIndexOf("/"));
+        String fromModuleIndex = requestURI.substring(requestURI.lastIndexOf(urlPrefix) + urlPrefix.length());
+        int lastIndexOfSlash = fromModuleIndex.indexOf("/");
+        final String MODULE;
+        if (lastIndexOfSlash != -1) {
+            MODULE = fromModuleIndex.substring(0, lastIndexOfSlash);
+        } else {
+            MODULE = fromModuleIndex;
+        }
         log.info("MODULE SUBSTRING: " + MODULE);
 
         List<Map<String, Object>> resultList = userService.getPermissionsOfUser(roleId);
