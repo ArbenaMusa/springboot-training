@@ -106,7 +106,7 @@ public class OrderService extends BaseService<Order, Integer> {
             // We obtain top sold products for the given quartal.
             // Data is obtained as a list of tuples therefore we convert tuples to maps
             // and store them in a list i.e. <topSoldProducts> variable
-            productRepository.getTopSoldProducts(10,
+            productRepository.getTopSoldProducts(2,
                     Date.from(quartal.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
                     Date.from(quartal.getEndDate().atZone(ZoneId.systemDefault()).toInstant())).
                     stream().
@@ -121,6 +121,7 @@ public class OrderService extends BaseService<Order, Integer> {
             //topProductsSold list is cleared for the next iteration
             topSoldProducts.clear();
         }
+        //response is returned
         return response;
     }
 
