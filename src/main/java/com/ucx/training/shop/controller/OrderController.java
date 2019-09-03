@@ -103,7 +103,7 @@ public class OrderController {
     }
 
     @GetMapping("/stats")
-    EnumMap<Quartal, Map> getQuartalStats(){
+    Map<String, Object> getQuartalStats(){
         return orderService.getQuartalStats();
     }
 }

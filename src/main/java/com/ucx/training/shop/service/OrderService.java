@@ -94,8 +94,8 @@ public class OrderService extends BaseService<Order, Integer> {
     }
 
 
-    public EnumMap<Quartal, Map> getQuartalStats() {
-        EnumMap<Quartal, Map> response = new EnumMap<>(Quartal.class);
+    public Map<String, Object> getQuartalStats() {
+        Map<String, Object> response = new HashMap<>();
         List<Map<String, Object>> topSoldProducts = new ArrayList<>();
         //this is where we loop for every Quartal
         for (Quartal quartal : Quartal.values()) {
@@ -103,24 +103,21 @@ public class OrderService extends BaseService<Order, Integer> {
             Map<String, Object> map = EntityUtil.toMap(orderRepository.getQuartalStats(
                     Date.from(quartal.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
                     Date.from(quartal.getEndDate().atZone(ZoneId.systemDefault()).toInstant())));
-            // We obtain top sold products for the given quartal.
-            // Data is obtained as a list of tuples therefore we convert tuples to maps
-            // and store them in a list i.e. <topSoldProducts> variable
-            productRepository.getTopSoldProducts(10,
-                    Date.from(quartal.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
-                    Date.from(quartal.getEndDate().atZone(ZoneId.systemDefault()).toInstant())).
-                    stream().
-                    forEach(e -> {
-                        topSoldProducts.add(EntityUtil.toMap(e));
-                    });
-            //The top products sold data is taken from the topSoldProducts (List) variable
-            // and appended to the stats map
-            map.put("topSoldItems", new ArrayList<>(topSoldProducts));
             //the whole quartal data is put in an EnumMap response
-            response.put(quartal, map);
-            //topProductsSold list is cleared for the next iteration
-            topSoldProducts.clear();
+            response.put(quartal.name(), map);
         }
+        // We obtain top sold products for the whole year
+        // Data is obtained as a list of tuples therefore we convert tuples to maps
+        // and store them in a list i.e. <topSoldProducts> variable
+        productRepository.getTopSoldProducts(10,
+                Date.from(Quartal.FIRST_QUARTAL.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
+                Date.from(Quartal.FOURTH_QUARTAL.getEndDate().atZone(ZoneId.systemDefault()).toInstant())).
+                stream().
+                forEach(e -> {
+                    topSoldProducts.add(EntityUtil.toMap(e));
+                });
+        //The top products sold data is appended to the response
+        response.put("topSoldItems", topSoldProducts);
         //response is returned
         return response;
     }
