@@ -99,4 +99,13 @@ public class OrderController {
             throw new ResponseException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/history/paged/{customerId}")
+    public ResponseEntity<List<JsonNode>> getOrderHistoryByCustomer(@PageableDefault Pageable pageable, @PathVariable Integer customerId) throws ResponseException {
+        try {
+            return ResponseEntity.ok().body(orderService.readOrderHistoryByCustomer(pageable, customerId));
+        } catch (Exception exception) {
+            throw new ResponseException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
 }

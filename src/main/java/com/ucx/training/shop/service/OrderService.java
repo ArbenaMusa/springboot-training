@@ -86,4 +86,29 @@ public class OrderService extends BaseService<Order, Integer> {
         return list;
     }
 
+    public List<JsonNode> readOrderHistoryByCustomer(Pageable pageable, Integer customerId) {
+        StringBuilder query = new StringBuilder();
+        query.append("Select row_to_json (data) as result from\n" +
+                "    (select customer.name as \"customerName\", customer.id as \"customerId\",torder.id as \"orderId\",torder.create_date_time as \"orderTime\", torder.total as \"total\"\n" +
+                "          ,(\n" +
+                "            select array_to_json(array_agg(row_to_json(d))) as itemsPurchased\n" +
+                "            from\n" +
+                "                (\n" +
+                "    select cart_item.product_id,product.name,cart_item.quantity from cart_item\n" +
+                "    inner join product on cart_item.product_id=product.id and cart_item.order_id=torder.id\n" +
+                " and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n"+
+                "                ) d\n" +
+                "        )\n" +
+                "     from \"order\" torder inner join customer on torder.customer_id=customer.id \n" +
+                "where torder.record_status like 'ACTIVE' and customer.record_status like 'ACTIVE' and customer.id = " + customerId +
+                ") data limit ?1 offset ?2");
+        List<JsonNode> list = entityManager.createNativeQuery(query.toString())
+                .unwrap(NativeQuery.class)
+                .addScalar("result", new JsonNodeBinaryType())
+                .setParameter(1,pageable.getPageSize())
+                .setParameter(2,pageable.getOffset())
+                .getResultList();
+        return list;
+    }
+
 }
