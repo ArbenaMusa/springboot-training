@@ -12,7 +12,6 @@ public class ProductMapper {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setName(product.getName());
         productDTO.setUnitPrice(product.getUnitPrice());
-        productDTO.setInStock(product.getInStock());
         if (product.getFileUpload() != null) {
             productDTO.setFileName(product.getFileUpload().getFileName());
         }

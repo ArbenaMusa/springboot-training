@@ -62,10 +62,10 @@ public class ProductController {
         return DTOMapper.convertToDto(createdProduct, ProductDTO.class);
     }
 
-    @PutMapping("{productId}")
+    @PutMapping("/{productId}")
     public void update(@RequestBody Product product, @PathVariable Integer productId) throws ResponseException {
         try {
-            productService.update(product, productId);
+            productService.createProductWithPlatformAndBrand(product);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

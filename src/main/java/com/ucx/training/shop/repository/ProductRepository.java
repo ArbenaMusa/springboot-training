@@ -14,7 +14,6 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
     @Query(value = "SELECT * from product where record_status = 'ACTIVE' ", nativeQuery = true)
     public List<Product>  findAllActive();
     Product findByName(String name);
-    List<Product> findAllByInStock(Boolean inStock);
     List<Product> findAllByUnitPrice(BigDecimal unitPrice);
 
 
