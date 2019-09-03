@@ -33,7 +33,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         helper.setTo(customer.getEmail());
         helper.setSubject("Invoice for your purchase!");
-        helper.setText("Here is your invoice....!");
+        helper.setText("Thank you for your purchase! Below you can find the order receipt and the activation link: " + LINK_ACTIVATE);
         helper.addAttachment("Invoice.txt",createFile(customer, order));
         send(msg);
     }
@@ -53,9 +53,7 @@ public class EmailService {
             writer.write("\n------------------------------------------------" +
                     "\nPurchase date: " + order.getCreateDateTime() +
                     "\n------------------------------------------------" +
-                    "\nTotal: " + order.getTotal() + " €" +
-                    "\n\nYou can activate your product here: \n" +
-                    LINK_ACTIVATE);
+                    "\nTotal: " + order.getTotal() + " €");
         } catch (IOException e) {
             throw e;
         }
