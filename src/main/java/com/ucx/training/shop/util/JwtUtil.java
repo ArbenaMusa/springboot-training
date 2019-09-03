@@ -18,7 +18,8 @@ public class JwtUtil {
         log.info(user.getRole().getName());
 
         return Jwts.builder()
-                .setSubject(user.getId().toString())
+                .setSubject(user.getEmail())
+                .claim("userId", user.getId())
                 .claim("role", user.getRole().getName())
                 .claim("roleId", user.getRole().getId())
                 .setIssuedAt(new Date())
