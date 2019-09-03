@@ -25,6 +25,7 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
             "   inner join \"order\" O1 on O1.id=C1.order_id)\n" +
             "where C1.record_status like 'ACTIVE' and P1.record_status like 'ACTIVE'\n" +
             "  and  F1.record_status like 'ACTIVE'\n" +
+            " and O1.record_status like 'ACTIVE' " +
             "  and O1.create_date_time  BETWEEN ?2 AND ?3\n" +
             "group by P1.id,F1.file_name order by pcsSold Desc limit ?1\n", nativeQuery = true)
     List<Tuple> getTopSoldProducts(Integer productsNumber, Date startDate, Date endDate);
