@@ -316,3 +316,34 @@ INSERT INTO permission_role
 VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 34);
 COMMIT;
 --END INSERT OF CARTITEM CRUD PERMISSIONS
+
+--BEGIN INSERT OF CUSTOMERS CRUD PERMISSIONS
+BEGIN;
+INSERT INTO permission
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'customers');
+INSERT INTO permission
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'customers');
+INSERT INTO permission
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'customers');
+INSERT INTO permission
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'customers');
+COMMIT;
+
+BEGIN;
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 37);
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 38);
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 39);
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 40);
+COMMIT;
+
+BEGIN;
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 37);
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 38);
+COMMIT;
+--END INSERT OF CUSTOMERS CRUD PERMISSIONS

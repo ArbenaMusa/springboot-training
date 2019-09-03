@@ -82,15 +82,13 @@ public class JwtFilter extends GenericFilter {
                 .filter(e -> e.get("action").toString().equalsIgnoreCase(httpMethod) &&
                         e.get("module").toString().equalsIgnoreCase(MODULE))
                 .collect(Collectors.toList());
-        log.info("FILTERED LIST: \n" + filteredList);
-        try {
+        log.info("\nFILTERED LIST: \n" + filteredList);
+        if (!filteredList.isEmpty()) {
             request.setAttribute("claims", claims);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ServletException(e.getMessage());
+            filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            throw new RuntimeException("You do not have authorization to access the requested route");
         }
-
-        filterChain.doFilter(servletRequest, servletResponse);
     }
 
 

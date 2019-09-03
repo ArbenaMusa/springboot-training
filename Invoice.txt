@@ -1,12 +1,9 @@
-Customer name: asd asdcfdec
+Customer name: Jehona
 ------------------------------------------------
-Product name: pes
-Product price: 23.00 â‚¬  x4
-Price: 92 â‚¬
-Product name: pp
-Product price: 123.00 â‚¬  x2
-Price: 246 â‚¬
+Product name: TEST
+Product price: 103.00 €  x1
+Price: 103 €
 ------------------------------------------------
-Purchase date: 2019-09-03T08:11:48.442873900
+Purchase date: 2019-09-03T10:49:26.633887500
 ------------------------------------------------
-Total: 338 â‚¬
+Total: 103 €

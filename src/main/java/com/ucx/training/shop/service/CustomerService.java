@@ -1,18 +1,18 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.entity.*;
+import com.ucx.training.shop.entity.Address;
+import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.entity.Phone;
+import com.ucx.training.shop.entity.Role;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.CustomerRepository;
 import com.ucx.training.shop.type.RecordStatus;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 import java.util.Base64;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -42,12 +42,12 @@ public class CustomerService extends BaseService<Customer, Integer> {
             customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));
         }
         //TODO: Default Role for Customer
-        final Integer CUSTOMER_ROLE_ID = 1;
+        final Integer CUSTOMER_ROLE_ID = 2;
         final Role role = roleService.findById(CUSTOMER_ROLE_ID);
 
         if (customer.getUser() != null) {
-            if(role != null) customer.getUser().setRole(role);
-            if(customer.getEmail() != null) customer.getUser().setEmail(customer.getEmail());
+            if (role != null) customer.getUser().setRole(role);
+            if (customer.getEmail() != null) customer.getUser().setEmail(customer.getEmail());
             String password = customer.getUser().getPassword();
             String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
             customer.getUser().setPassword(encodedPassword);
@@ -130,8 +130,7 @@ public class CustomerService extends BaseService<Customer, Integer> {
 //        return customerRepository.readCostumerById(id);
 //    }
 
-    public List<Customer> findAllCustomers()
-    {
+    public List<Customer> findAllCustomers() {
         return customerRepository.findAll();
     }
 
