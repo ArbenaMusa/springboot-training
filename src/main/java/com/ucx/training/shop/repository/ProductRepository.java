@@ -19,7 +19,7 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
 
 
     @Query(value = "SELECT P.id             AS productId,\n" +
-            "       P.name           AS itemName,\n" +
+            "       P.name           AS productName,\n" +
             "       F.file_name      AS image,\n" +
             "       sum(CI.quantity) AS pcsSold,\n" +
             "       P.unit_price     AS unitPrice\n" +
