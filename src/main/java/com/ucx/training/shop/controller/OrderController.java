@@ -9,6 +9,7 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.OrderService;
 import com.ucx.training.shop.service.CartItemService;
+import com.ucx.training.shop.type.Quartal;
 import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.InvoiceMapper;
 import com.ucx.training.shop.util.uimapper.LineItemMapper;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,5 +100,10 @@ public class OrderController {
         } catch (Exception exception) {
             throw new ResponseException(exception.getMessage(),HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/stats")
+    EnumMap<Quartal, Map> getQuartalStats(){
+        return orderService.getQuartalStats();
     }
 }

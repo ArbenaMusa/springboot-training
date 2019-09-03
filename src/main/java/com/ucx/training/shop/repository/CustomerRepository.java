@@ -1,6 +1,7 @@
 package com.ucx.training.shop.repository;
 
 import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -10,8 +11,7 @@ import java.util.List;
 
 @Repository
 public interface CustomerRepository extends BaseRepository<Customer,Integer> {
-    @Query(value = "SELECT * from customer where record_status = 'ACTIVE' ", nativeQuery = true)
-    public List<Customer>  findAllActive();
+    List<Customer> findAllByRecordStatus(RecordStatus recordStatus);
 
     List<Customer> findAllByName(String name);
 

@@ -1,9 +1,12 @@
-Customer name: Andi Hoxha
+Customer name: asd asdcfdec
 ------------------------------------------------
-Product name: Assassin Creed
-Product price: 35.00 €  x1
-Price: 35 €
+Product name: pes
+Product price: 23.00 â‚¬  x4
+Price: 92 â‚¬
+Product name: pp
+Product price: 123.00 â‚¬  x2
+Price: 246 â‚¬
 ------------------------------------------------
-Purchase date: 2019-08-28T09:09:47.949275700
+Purchase date: 2019-09-03T08:11:48.442873900
 ------------------------------------------------
-Total: 35 €
+Total: 338 â‚¬
