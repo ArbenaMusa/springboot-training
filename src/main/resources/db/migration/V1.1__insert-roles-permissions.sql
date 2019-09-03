@@ -345,5 +345,7 @@ INSERT INTO permission_role
 VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 37);
 INSERT INTO permission_role
 VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 38);
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 39);
 COMMIT;
 --END INSERT OF CUSTOMERS CRUD PERMISSIONS
