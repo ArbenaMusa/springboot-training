@@ -43,7 +43,8 @@ public class JwtFilter extends GenericFilter {
             return;
         }
 
-        if (requestURI.startsWith(PRODUCTS_ENDPOINT) && httpMethod.equalsIgnoreCase("GET")) {
+        if (requestURI.startsWith(PRODUCTS_ENDPOINT) &&
+           (httpMethod.equalsIgnoreCase("GET") || httpMethod.equalsIgnoreCase("OPTIONS"))) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
