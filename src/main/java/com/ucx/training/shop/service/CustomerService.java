@@ -84,20 +84,14 @@ public class CustomerService extends BaseService<Customer, Integer> {
     }
 
     private void updateAddresses(Customer foundCustomer, List<Address> addresses) throws NotFoundException {
-        for (Address address : addresses) {
-            if (address.getId() == null || address.getId() == -1) {
-                address.setCustomer(foundCustomer);
-                addressService.save(address);
-            } else {
-                Address foundAddress = addressService.findById(address.getId());
-                if (foundAddress == null) {
-                    throw new NotFoundException("Address with the given id does not exist!");
-                }
-                if (!foundAddress.getCustomer().equals(foundCustomer)) {
-                    throw new RuntimeException("This address does not belong to this customer");
-                }
-                addressService.update(address, foundAddress.getId());
-            }
+        Address newAddress = addresses.get(0);
+        if (!foundCustomer.getAddresses().isEmpty()){
+            Address currentAddress = foundCustomer.getAddresses().get(0);
+            newAddress.setId(null);
+            this.addressService.update(newAddress, currentAddress.getId());
+        }else{
+            newAddress.setCustomer(foundCustomer);
+            addressService.save(newAddress);
         }
     }
 
