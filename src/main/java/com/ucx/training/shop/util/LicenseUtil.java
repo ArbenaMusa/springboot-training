@@ -8,7 +8,9 @@ public class LicenseUtil {
     private static final String CHAR_SEQUENCE_LOWER = "abcdefghijklmnopqrstuvwxyz";
     private static final String CHAR_SEQUENCE_UPPER = CHAR_SEQUENCE_LOWER.toUpperCase();
     private static final String NUMBER_SEQUENCE = "0123456789";
+    private static final char SEPERATOR = '-';
     private static final int LICENCE_LENGTH = 15;
+    private static final int BLOCK_SIZE = 5;
     private static final String DATA_STRING = CHAR_SEQUENCE_UPPER + NUMBER_SEQUENCE;
     private static final SecureRandom RANDOM_GENERATOR = new SecureRandom();
 
@@ -29,8 +31,8 @@ public class LicenseUtil {
             for (int licenseLength = 0; licenseLength < LICENCE_LENGTH; licenseLength++) {
                 int rndCharAt = RANDOM_GENERATOR.nextInt(DATA_STRING.length());
                 char rndChar = DATA_STRING.charAt(rndCharAt);
-                if (licenseLength != 0 && licenseLength % 5 == 0 && licenseLength != LICENCE_LENGTH){
-                    sb.append('-');
+                if (licenseLength != 0 && licenseLength % BLOCK_SIZE == 0 && licenseLength != LICENCE_LENGTH){
+                    sb.append(SEPERATOR);
                 }
 
                 sb.append(rndChar);
