@@ -5,6 +5,7 @@ import com.stripe.exception.*;
 import com.stripe.model.Charge;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.repository.PaymentInterface;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,18 +14,22 @@ import java.util.Map;
 @Service
 public class StripePayment implements PaymentInterface {
 
+    @Autowired
+    private CustomerService customerService;
+
     private static final String TEST_STRIPE_SECRET_KEY = "sk_test_F80HwLcBteuczUKFSiC2KEKw00TvPxtOTe";
     Map<String,String> token_id = new HashMap<>();
     public StripePayment(){
         Stripe.apiKey = TEST_STRIPE_SECRET_KEY;
     }
 
-    public Map<String,String> createCustomer(Customer customer){
+    public Map<String,String> createCustomer(int customerId){
 
+        Customer foundCustomer = customerService.findById(customerId);
         Map<String,Object> customerParams = new HashMap<>();
-        customerParams.put("description", customer.getName());
-        customerParams.put("name", customer.getName());
-        customerParams.put("email",customer.getUser().getEmail());
+        customerParams.put("description", foundCustomer.getName());
+        customerParams.put("name", foundCustomer.getName());
+        customerParams.put("email",foundCustomer.getUser().getEmail());
 
         Map<String,Object> cardParams = new HashMap<>();
         cardParams.put("source","tok_visa");
