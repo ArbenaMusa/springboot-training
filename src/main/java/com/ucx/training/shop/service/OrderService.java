@@ -13,6 +13,7 @@ import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -68,27 +69,36 @@ public class OrderService extends BaseService<Order, Integer> {
     }
 
 
-    public List<JsonNode> readOrderHistory(Pageable pageable) {
+    public List<JsonNode> readOrderHistory(Pageable pageable, String customerId, String orderId, String customerName) {
         StringBuilder query = new StringBuilder();
-        query.append("Select row_to_json (data) as result from\n" +
-                "    (select customer.name as \"customerName\", customer.id as \"customerId\",torder.id as \"orderId\",torder.create_date_time as \"orderTime\", torder.total as \"total\"\n" +
-                "          ,(\n" +
-                "            select array_to_json(array_agg(row_to_json(d))) as itemsPurchased\n" +
-                "            from\n" +
-                "                (\n" +
-                "    select cart_item.product_id,product.name,cart_item.quantity from cart_item\n" +
-                "    inner join product on cart_item.product_id=product.id and cart_item.order_id=torder.id\n" +
-                " and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n"+
-                "                ) d\n" +
-                "        )\n" +
-                "     from \"order\" torder inner join customer on torder.customer_id=customer.id \n" +
-                "where torder.record_status like 'ACTIVE' and customer.record_status like 'ACTIVE'" +
-                ") data limit ?1 offset ?2");
+        query.append("Select row_to_json (data) as result from\n")
+                .append("    (select customer.name as \"customerName\", customer.id as \"customerId\",torder.id as \"orderId\",torder.create_date_time as \"orderTime\", torder.total as \"total\"\n")
+                .append("          ,(\n")
+                .append("            select array_to_json(array_agg(row_to_json(d))) as itemsPurchased\n")
+                .append("            from\n")
+                .append("                (\n")
+                .append("    select cart_item.product_id,product.name,cart_item.quantity from cart_item\n")
+                .append("    inner join product on cart_item.product_id=product.id and cart_item.order_id=torder.id\n")
+                .append(" and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n")
+                .append("                ) d\n")
+                .append("        )\n")
+                .append("     from \"order\" torder inner join customer on torder.customer_id=customer.id \n")
+                .append("where torder.record_status like 'ACTIVE' and customer.record_status like 'ACTIVE' ");
+        if (customerId != null) {
+            query.append(" and customer.id = "+customerId+" ");
+        }
+        else if(orderId != null){
+            query.append(" and torder.id ="+orderId+" ");
+        }
+        else if(customerName != null){
+            query.append(" and customer.name like '"+customerName.toLowerCase()+"%' ");
+        }
+        query.append(") data limit ?1 offset ?2");
         List<JsonNode> list = entityManager.createNativeQuery(query.toString())
                 .unwrap(NativeQuery.class)
                 .addScalar("result", new JsonNodeBinaryType())
-                .setParameter(1,pageable.getPageSize())
-                .setParameter(2,pageable.getOffset())
+                .setParameter(1, pageable.getPageSize())
+                .setParameter(2, pageable.getOffset())
                 .getResultList();
         return list;
     }
@@ -103,7 +113,7 @@ public class OrderService extends BaseService<Order, Integer> {
                 "                (\n" +
                 "    select cart_item.product_id,product.name,cart_item.quantity from cart_item\n" +
                 "    inner join product on cart_item.product_id=product.id and cart_item.order_id=torder.id\n" +
-                " and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n"+
+                " and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n" +
                 "                ) d\n" +
                 "        )\n" +
                 "     from \"order\" torder inner join customer on torder.customer_id=customer.id \n" +
@@ -112,8 +122,8 @@ public class OrderService extends BaseService<Order, Integer> {
         List<JsonNode> list = entityManager.createNativeQuery(query.toString())
                 .unwrap(NativeQuery.class)
                 .addScalar("result", new JsonNodeBinaryType())
-                .setParameter(1,pageable.getPageSize())
-                .setParameter(2,pageable.getOffset())
+                .setParameter(1, pageable.getPageSize())
+                .setParameter(2, pageable.getOffset())
                 .getResultList();
         return list;
     }
