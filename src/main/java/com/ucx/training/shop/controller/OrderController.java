@@ -1,15 +1,13 @@
 package com.ucx.training.shop.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.ucx.training.shop.dto.BrandDTO;
 import com.ucx.training.shop.dto.InvoiceDTO;
 import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.entity.Order;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
-import com.ucx.training.shop.service.OrderService;
 import com.ucx.training.shop.service.CartItemService;
-import com.ucx.training.shop.type.Quartal;
+import com.ucx.training.shop.service.OrderService;
 import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.InvoiceMapper;
 import com.ucx.training.shop.util.uimapper.LineItemMapper;
@@ -21,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,8 +50,8 @@ public class OrderController {
     @GetMapping("/lineitems/{invoiceId}")
     public List<LineItemDTO> getLineItemsByInvoiceId(@PathVariable Integer invoiceId) throws ResponseException {
         try {
-            List <LineItemDTO> lineItemDTOs=new ArrayList<>();
-            lineItemDTOs= LineItemMapper.getLineItems(cartItemService.findAllByInvoiceId(invoiceId));
+            List<LineItemDTO> lineItemDTOs = new ArrayList<>();
+            lineItemDTOs = LineItemMapper.getLineItems(cartItemService.findAllByInvoiceId(invoiceId));
             return lineItemDTOs;
         } catch (IllegalArgumentException | NotFoundException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -98,12 +95,16 @@ public class OrderController {
         try {
             return ResponseEntity.ok().body(orderService.readOrderHistory(pageable));
         } catch (Exception exception) {
-            throw new ResponseException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+            throw new ResponseException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/stats")
-    EnumMap<Quartal, Map> getQuartalStats(){
-        return orderService.getQuartalStats();
+    @GetMapping("/history/paged/{customerId}")
+    public ResponseEntity<List<JsonNode>> getOrderHistoryByCustomer(@PageableDefault Pageable pageable, @PathVariable Integer customerId) throws ResponseException {
+        try {
+            return ResponseEntity.ok().body(orderService.readOrderHistoryByCustomer(pageable, customerId));
+        } catch (Exception exception) {
+            throw new ResponseException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
