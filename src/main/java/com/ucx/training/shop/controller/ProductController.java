@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Tuple;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -140,5 +141,10 @@ public class ProductController {
     @GetMapping("/allActive")
     public List<Product> findAllActive() {
         return productService.findAllActive();
+    }
+
+    @GetMapping("/nameSearch/{name}")
+    public List<Product> searchProductByName(@PathVariable String name){
+        return this.productService.searchProductByName(name);
     }
 }

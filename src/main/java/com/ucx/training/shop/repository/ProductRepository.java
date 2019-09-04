@@ -2,6 +2,7 @@ package com.ucx.training.shop.repository;
 
 import com.ucx.training.shop.entity.Product;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Tuple;
@@ -34,4 +35,7 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
             "ORDER BY pcsSold Desc\n" +
             "LIMIT ?1 ", nativeQuery = true)
     List<Tuple> getTopSoldProducts(Integer productsNumber, Date startDate, Date endDate);
+
+    @Query(value = "SELECT * FROM product WHERE name LIKE %:name%", nativeQuery = true)
+    List<Product> searchProductByName(@Param("name") String name);
 }

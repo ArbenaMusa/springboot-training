@@ -1,10 +1,10 @@
-Customer name: Fati Marmullaku
+Customer name: Durim Gashi
 ------------------------------------------------
-Product name: Mortal Kombat
-Product price: 103.00 €  x1
-Price: 103 €
-License Codes: [LBMT5-S1XB5-4I6H9] 
+Product name: Dragon Ball Xenoverse
+Product price: 40.00 €  x1
+Price: 40 €
+License Codes: [MXLHH-QP56E-N9WDB] 
 ------------------------------------------------
-Purchase date: 2019-09-04T10:00:11.955392700
+Purchase date: 2019-09-04T14:03:48.477249
 ------------------------------------------------
-Total: 103 €
+Total: 40 €

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
@@ -100,5 +101,9 @@ public class ProductService extends BaseService<Product, Integer> {
 
     public List<Product> findAllActive() {
         return productRepository.findAllActive();
+    }
+
+    public List<Product> searchProductByName(String name){
+        return this.productRepository.searchProductByName(name);
     }
 }
