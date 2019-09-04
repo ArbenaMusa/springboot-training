@@ -1,10 +1,10 @@
-Customer name: pashtrik gashi
+Customer name: Fati Marmullaku
 ------------------------------------------------
-Product name: Mortal Kombat 11
-Product price: 69.00 €  x5
-Price: 345 €
-License Codes: [EK9QO5F3N5PJK7Y4, NTPLX5EB7MYVDQWO, 98YD5L199CGEF5JB, V6XX3OKTNT4GDE3D, MKCXEUJXTN08W6M1] 
+Product name: Mortal Kombat
+Product price: 103.00 €  x1
+Price: 103 €
+License Codes: [LBMT5-S1XB5-4I6H9] 
 ------------------------------------------------
-Purchase date: 2019-09-03T12:20:44.234165100
+Purchase date: 2019-09-04T10:00:11.955392700
 ------------------------------------------------
-Total: 345 €
+Total: 103 €

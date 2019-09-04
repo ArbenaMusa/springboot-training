@@ -29,7 +29,7 @@ public class LicenseUtil {
             for (int licenseLength = 0; licenseLength < LICENCE_LENGTH; licenseLength++) {
                 int rndCharAt = RANDOM_GENERATOR.nextInt(DATA_STRING.length());
                 char rndChar = DATA_STRING.charAt(rndCharAt);
-                if (licenseLength == 5 || licenseLength == 10){
+                if (licenseLength != 0 && licenseLength % 5 == 0 && licenseLength != LICENCE_LENGTH){
                     sb.append('-');
                 }
 
