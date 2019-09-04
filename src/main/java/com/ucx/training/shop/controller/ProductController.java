@@ -157,7 +157,7 @@ public class ProductController {
                 foundProducts = productService.findAllByBrand(brandId);
             }
             else{
-
+                foundProducts = productService.findAllActive();
             }
             return DTOMapper.converToDTOList(foundProducts, ProductDTO.class);
         } catch (Exception e) {
