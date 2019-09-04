@@ -78,7 +78,7 @@ public class OrderService extends BaseService<Order, Integer> {
                 "                (\n" +
                 "    select cart_item.product_id,product.name,cart_item.quantity from cart_item\n" +
                 "    inner join product on cart_item.product_id=product.id and cart_item.order_id=torder.id\n" +
-                " and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n" +
+                " and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n"+
                 "                ) d\n" +
                 "        )\n" +
                 "     from \"order\" torder inner join customer on torder.customer_id=customer.id \n" +
@@ -87,15 +87,40 @@ public class OrderService extends BaseService<Order, Integer> {
         List<JsonNode> list = entityManager.createNativeQuery(query.toString())
                 .unwrap(NativeQuery.class)
                 .addScalar("result", new JsonNodeBinaryType())
-                .setParameter(1, pageable.getPageSize())
-                .setParameter(2, pageable.getOffset())
+                .setParameter(1,pageable.getPageSize())
+                .setParameter(2,pageable.getOffset())
+                .getResultList();
+        return list;
+    }
+
+    public List<JsonNode> readOrderHistoryByCustomer(Pageable pageable, Integer customerId) {
+        StringBuilder query = new StringBuilder();
+        query.append("Select row_to_json (data) as result from\n" +
+                "    (select customer.name as \"customerName\", customer.id as \"customerId\",torder.id as \"orderId\",torder.create_date_time as \"orderTime\", torder.total as \"total\"\n" +
+                "          ,(\n" +
+                "            select array_to_json(array_agg(row_to_json(d))) as itemsPurchased\n" +
+                "            from\n" +
+                "                (\n" +
+                "    select cart_item.product_id,product.name,cart_item.quantity from cart_item\n" +
+                "    inner join product on cart_item.product_id=product.id and cart_item.order_id=torder.id\n" +
+                " and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n"+
+                "                ) d\n" +
+                "        )\n" +
+                "     from \"order\" torder inner join customer on torder.customer_id=customer.id \n" +
+                "where torder.record_status like 'ACTIVE' and customer.record_status like 'ACTIVE' and customer.id = " + customerId +
+                ") data limit ?1 offset ?2");
+        List<JsonNode> list = entityManager.createNativeQuery(query.toString())
+                .unwrap(NativeQuery.class)
+                .addScalar("result", new JsonNodeBinaryType())
+                .setParameter(1,pageable.getPageSize())
+                .setParameter(2,pageable.getOffset())
                 .getResultList();
         return list;
     }
 
 
-    public EnumMap<Quartal, Map> getQuartalStats() {
-        EnumMap<Quartal, Map> response = new EnumMap<>(Quartal.class);
+    public Map<String, Object> getQuartalStats() {
+        Map<String, Object> response = new HashMap<>();
         List<Map<String, Object>> topSoldProducts = new ArrayList<>();
         //this is where we loop for every Quartal
         for (Quartal quartal : Quartal.values()) {
@@ -103,24 +128,21 @@ public class OrderService extends BaseService<Order, Integer> {
             Map<String, Object> map = EntityUtil.toMap(orderRepository.getQuartalStats(
                     Date.from(quartal.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
                     Date.from(quartal.getEndDate().atZone(ZoneId.systemDefault()).toInstant())));
-            // We obtain top sold products for the given quartal.
-            // Data is obtained as a list of tuples therefore we convert tuples to maps
-            // and store them in a list i.e. <topSoldProducts> variable
-            productRepository.getTopSoldProducts(2,
-                    Date.from(quartal.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
-                    Date.from(quartal.getEndDate().atZone(ZoneId.systemDefault()).toInstant())).
-                    stream().
-                    forEach(e -> {
-                        topSoldProducts.add(EntityUtil.toMap(e));
-                    });
-            //The top products sold data is taken from the topSoldProducts (List) variable
-            // and appended to the stats map
-            map.put("topSoldItems", new ArrayList<>(topSoldProducts));
             //the whole quartal data is put in an EnumMap response
-            response.put(quartal, map);
-            //topProductsSold list is cleared for the next iteration
-            topSoldProducts.clear();
+            response.put(quartal.name(), map);
         }
+        // We obtain top sold products for the whole year
+        // Data is obtained as a list of tuples therefore we convert tuples to maps
+        // and store them in a list i.e. <topSoldProducts> variable
+        productRepository.getTopSoldProducts(10,
+                Date.from(Quartal.FIRST_QUARTAL.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
+                Date.from(Quartal.FOURTH_QUARTAL.getEndDate().atZone(ZoneId.systemDefault()).toInstant())).
+                stream().
+                forEach(e -> {
+                    topSoldProducts.add(EntityUtil.toMap(e));
+                });
+        //The top products sold data is appended to the response
+        response.put("topSoldItems", topSoldProducts);
         //response is returned
         return response;
     }
