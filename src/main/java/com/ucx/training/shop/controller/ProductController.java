@@ -141,4 +141,27 @@ public class ProductController {
     public List<Product> findAllActive() {
         return productService.findAllActive();
     }
+
+    @GetMapping("/filter")
+    public List<DTOEntity> findAllFilters(@RequestParam(required = false, value = "platformId") Integer platformId, @RequestParam(required = false, value = "brandId") Integer brandId) throws ResponseException {
+        List<Product> foundProducts = null;
+
+        try{
+            if(platformId != null && brandId != null){
+                foundProducts = productService.findAllByPlatformAndBrand(platformId, brandId);
+            }
+            else if(platformId != null){
+                foundProducts = productService.findAllByPlatform(platformId);
+            }
+            else if(brandId != null){
+                foundProducts = productService.findAllByBrand(brandId);
+            }
+            else{
+
+            }
+            return DTOMapper.converToDTOList(foundProducts, ProductDTO.class);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

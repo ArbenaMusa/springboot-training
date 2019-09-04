@@ -1,5 +1,7 @@
 package com.ucx.training.shop.repository;
 
+import com.ucx.training.shop.entity.Brand;
+import com.ucx.training.shop.entity.Platform;
 import com.ucx.training.shop.entity.Product;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,7 +17,9 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
     public List<Product>  findAllActive();
     Product findByName(String name);
     List<Product> findAllByUnitPrice(BigDecimal unitPrice);
-
+    List<Product> findAllByBrand(Brand brand);
+    List<Product> findAllByPlatform(Platform platform);
+    List<Product> findAllByPlatformAndBrand(Platform platform, Brand brand);
 
     @Query(value = "SELECT P.id             AS productId,\n" +
             "       P.name           AS productName,\n" +
