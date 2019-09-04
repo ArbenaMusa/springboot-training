@@ -1,11 +1,13 @@
 package com.ucx.training.shop.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.ucx.training.shop.dto.BrandDTO;
 import com.ucx.training.shop.dto.InvoiceDTO;
 import com.ucx.training.shop.dto.LineItemDTO;
 import com.ucx.training.shop.entity.Order;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
+import com.ucx.training.shop.service.OrderService;
 import com.ucx.training.shop.service.CartItemService;
 import com.ucx.training.shop.service.OrderService;
 import com.ucx.training.shop.util.PaginationUtil;
@@ -97,6 +99,11 @@ public class OrderController {
         } catch (Exception exception) {
             throw new ResponseException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/stats")
+    Map<String, Object> getQuartalStats() {
+        return orderService.getQuartalStats();
     }
 
     @GetMapping("/history/paged/{customerId}")
