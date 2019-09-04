@@ -91,7 +91,7 @@ public class OrderService extends BaseService<Order, Integer> {
             query.append(" and torder.id ="+orderId+" ");
         }
         else if(customerName != null){
-            query.append(" and customer.name like '"+customerName.toLowerCase()+"%' ");
+            query.append(" and lower(customer.name) like '"+customerName.toLowerCase()+"%' ");
         }
         query.append(") data limit ?1 offset ?2");
         List<JsonNode> list = entityManager.createNativeQuery(query.toString())

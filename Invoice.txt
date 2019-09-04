@@ -1,10 +1,10 @@
-Customer name: Fati Marmullaku
+Customer name: drilon drilon
 ------------------------------------------------
-Product name: Mortal Kombat
-Product price: 103.00 €  x1
-Price: 103 €
-License Codes: [LBMT5-S1XB5-4I6H9] 
+Product name: pes
+Product price: 23.00 â‚¬  x5
+Price: 115 â‚¬
+License Codes: [FBODY-F04ZZ-3BJ5V, 22MFO-UJUQI-UR6U6, RLQJX-XXSEI-F3HH7, GXOKJ-U4Y4Y-KVITY, WZBO2-HNE8V-03QAT] 
 ------------------------------------------------
-Purchase date: 2019-09-04T10:00:11.955392700
+Purchase date: 2019-09-05T00:11:46.043780200
 ------------------------------------------------
-Total: 103 €
+Total: 115 â‚¬
