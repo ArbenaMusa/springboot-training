@@ -38,9 +38,6 @@ public class CustomerService extends BaseService<Customer, Integer> {
         if (customer.getAddresses() != null && !customer.getAddresses().isEmpty()) {
             customer.getAddresses().forEach(e -> e.setCustomer(customer));
         }
-        if (customer.getPhoneNumbers() != null && !customer.getPhoneNumbers().isEmpty()) {
-            customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));
-        }
         //TODO: Default Role for Customer
         final Integer CUSTOMER_ROLE_ID = 1;
         final Role role = roleService.findById(CUSTOMER_ROLE_ID);
@@ -82,29 +79,20 @@ public class CustomerService extends BaseService<Customer, Integer> {
         if (newCustomer.getAddresses() != null && !newCustomer.getAddresses().isEmpty()) {
             updateAddresses(foundCustomer, newCustomer.getAddresses());
         }
-        if (newCustomer.getPhoneNumbers() != null && !newCustomer.getPhoneNumbers().isEmpty()) {
-            updatePhones(foundCustomer, newCustomer.getPhoneNumbers());
-        }
 
         newCustomer.setAddresses(null);
         return update(newCustomer, costumerId);
     }
 
     private void updateAddresses(Customer foundCustomer, List<Address> addresses) throws NotFoundException {
-        for (Address address : addresses) {
-            if (address.getId() == null) {
-                address.setCustomer(foundCustomer);
-                addressService.save(address);
-            } else {
-                Address foundAddress = addressService.findById(address.getId());
-                if (foundAddress == null) {
-                    throw new NotFoundException("Address with the given id does not exist!");
-                }
-                if (!foundAddress.getCustomer().equals(foundCustomer)) {
-                    throw new RuntimeException("This address does not belong to this customer");
-                }
-                addressService.update(address, foundAddress.getId());
-            }
+        Address newAddress = addresses.get(0);
+        if (!foundCustomer.getAddresses().isEmpty()){
+            Address currentAddress = foundCustomer.getAddresses().get(0);
+            newAddress.setId(null);
+            this.addressService.update(newAddress, currentAddress.getId());
+        }else{
+            newAddress.setCustomer(foundCustomer);
+            addressService.save(newAddress);
         }
     }
 
