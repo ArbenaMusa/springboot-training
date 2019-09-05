@@ -21,6 +21,7 @@ public class JwtFilter extends GenericFilter {
     private final static String PRODUCTS_ENDPOINT = "/api/v1/products";
     private final static String PLATFORMS_ENDPOINT = "/api/v1/platforms";
     private final static String BRANDS_ENDPOINT = "/api/v1/brands";
+    private final static String STRIPE_ENDPOINT = "api/v1/payment";
 
     @Autowired
     private UserService userService;
@@ -39,6 +40,11 @@ public class JwtFilter extends GenericFilter {
         String httpMethod = request.getMethod();
 
         if (requestURI.startsWith(AUTH_ENDPOINT)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+
+        if (requestURI.startsWith(STRIPE_ENDPOINT)) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
