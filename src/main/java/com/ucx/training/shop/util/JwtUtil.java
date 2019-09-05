@@ -5,17 +5,23 @@ import com.ucx.training.shop.security.JwtConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.log4j.Log4j2;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
+@Log4j2
 public class JwtUtil {
 
     public static String getAccessToken(User user) {
 
+        log.info(user.getRole().getName());
+
         return Jwts.builder()
-                .setSubject(user.getId().toString())
-                .claim("role", "user")
+                .setSubject(user.getEmail())
+                .claim("userId", user.getId())
+                .claim("role", user.getRole().getName())
+                .claim("roleId", user.getRole().getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + JwtConstants.EXPIRATION_TIME_ACCESS))
                 .signWith(SignatureAlgorithm.HS512, JwtConstants.SECRET_ACCESS)

@@ -12,12 +12,15 @@ import com.ucx.training.shop.util.EntityUtil;
 import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
 import lombok.extern.log4j.Log4j2;
+import org.apache.catalina.connector.RequestFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.Tuple;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,8 @@ public class CustomerController {
 
     private CustomerService customerService;
     private AddressService addressService;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
 
     public CustomerController(CustomerService customerService, AddressService addressService) {
         this.customerService = customerService;
@@ -73,6 +78,7 @@ public class CustomerController {
 
     @GetMapping("{costumerId}")
     public DTOEntity getById(@PathVariable Integer costumerId) {
+        log.info( "SERVLET INFO: " + httpServletRequest.getScheme() + " " + httpServletRequest.getServerName() + " " + httpServletRequest.getServerPort());
         Customer foundCustomer = customerService.findById(costumerId);
         return DTOMapper.convertToDto(foundCustomer, CustomerDTO.class);
     }

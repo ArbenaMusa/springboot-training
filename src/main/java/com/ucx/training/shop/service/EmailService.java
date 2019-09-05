@@ -3,6 +3,7 @@ package com.ucx.training.shop.service;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Order;
 import com.ucx.training.shop.entity.CartItem;
+import com.ucx.training.shop.util.LicenseUtil;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -21,6 +22,7 @@ import java.util.List;
 public class EmailService {
 
     private JavaMailSender javaMailSender;
+    private final String LINK_ACTIVATE = "https://store.steampowered.com/account/registerkey?key=XXXXX-XXXXX-XXXXX";
 
     public EmailService(JavaMailSender javaMailSender){
         this.javaMailSender = javaMailSender;
@@ -31,7 +33,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         helper.setTo(customer.getEmail());
         helper.setSubject("Invoice for your purchase!");
-        helper.setText("Here is your invoice....!");
+        helper.setText("Thank you for your purchase! Below you can find the order receipt and the activation link: " + LINK_ACTIVATE);
         helper.addAttachment("Invoice.txt",createFile(customer, order));
         send(msg);
     }
@@ -46,7 +48,8 @@ public class EmailService {
                     writer.write("\nProduct name: " + e.getProduct().getName() +
                             "\nProduct price: " + e.getProduct().getUnitPrice() + " €" +
                             "  x" + e.getQuantity().toString() +
-                            "\nPrice: " + (e.getQuantity().intValue()* e.getProduct().getUnitPrice().intValue()) + " €" ));
+                            "\nPrice: " + (e.getQuantity().intValue()* e.getProduct().getUnitPrice().intValue()) + " €"  +
+                            "\nLicense Codes: " + LicenseUtil.generateLicence(e.getQuantity()) + " " ));
             writer.write("\n------------------------------------------------" +
                     "\nPurchase date: " + order.getCreateDateTime() +
                     "\n------------------------------------------------" +

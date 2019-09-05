@@ -9,6 +9,7 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.OrderService;
 import com.ucx.training.shop.service.CartItemService;
+import com.ucx.training.shop.service.OrderService;
 import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.InvoiceMapper;
 import com.ucx.training.shop.util.uimapper.LineItemMapper;
@@ -51,8 +52,8 @@ public class OrderController {
     @GetMapping("/lineitems/{invoiceId}")
     public List<LineItemDTO> getLineItemsByInvoiceId(@PathVariable Integer invoiceId) throws ResponseException {
         try {
-            List <LineItemDTO> lineItemDTOs=new ArrayList<>();
-            lineItemDTOs= LineItemMapper.getLineItems(cartItemService.findAllByInvoiceId(invoiceId));
+            List<LineItemDTO> lineItemDTOs = new ArrayList<>();
+            lineItemDTOs = LineItemMapper.getLineItems(cartItemService.findAllByInvoiceId(invoiceId));
             return lineItemDTOs;
         } catch (IllegalArgumentException | NotFoundException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -92,11 +93,28 @@ public class OrderController {
     }
 
     @GetMapping("/history/paged")
-    public ResponseEntity<List<JsonNode>> getOrderHistory(@PageableDefault Pageable pageable) throws ResponseException {
+    public ResponseEntity<List<JsonNode>> getOrderHistory(@PageableDefault Pageable pageable,
+                                                          @RequestParam(name = "customerId", required = false) String customerId,
+                                                          @RequestParam(name = "orderId", required = false) String orderId,
+                                                          @RequestParam(name = "customerName", required = false) String customerName) throws ResponseException {
         try {
-            return ResponseEntity.ok().body(orderService.readOrderHistory(pageable));
+            return ResponseEntity.ok().body(orderService.readOrderHistory(pageable, customerId, orderId, customerName));
         } catch (Exception exception) {
-            throw new ResponseException(exception.getMessage(),HttpStatus.BAD_REQUEST);
+            throw new ResponseException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/stats")
+    Map<String, Object> getQuartalStats() {
+        return orderService.getQuartalStats();
+    }
+
+    @GetMapping("/history/paged/{customerId}")
+    public ResponseEntity<List<JsonNode>> getOrderHistoryByCustomer(@PageableDefault Pageable pageable, @PathVariable Integer customerId) throws ResponseException {
+        try {
+            return ResponseEntity.ok().body(orderService.readOrderHistoryByCustomer(pageable, customerId));
+        } catch (Exception exception) {
+            throw new ResponseException(exception.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

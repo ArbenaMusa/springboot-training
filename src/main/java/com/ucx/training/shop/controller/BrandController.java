@@ -20,7 +20,7 @@ import java.util.Map;
 
 @Log4j2
 @RestController
-@RequestMapping("v1/brand")
+@RequestMapping("v1/brands")
 public class BrandController {
 
     private BrandService brandService;

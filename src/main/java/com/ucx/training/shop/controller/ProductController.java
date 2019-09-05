@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.Tuple;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -62,10 +63,10 @@ public class ProductController {
         return DTOMapper.convertToDto(createdProduct, ProductDTO.class);
     }
 
-    @PutMapping("{productId}")
+    @PutMapping("/{productId}")
     public void update(@RequestBody Product product, @PathVariable Integer productId) throws ResponseException {
         try {
-            productService.update(product, productId);
+            productService.createProductWithPlatformAndBrand(product);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -140,5 +141,33 @@ public class ProductController {
     @GetMapping("/allActive")
     public List<Product> findAllActive() {
         return productService.findAllActive();
+    }
+
+    @GetMapping("/filter")
+    public List<DTOEntity> findAllFilters(@RequestParam(required = false, value = "platformId") Integer platformId, @RequestParam(required = false, value = "brandId") Integer brandId) throws ResponseException {
+        List<Product> foundProducts = null;
+
+        try{
+            if(platformId != null && brandId != null){
+                foundProducts = productService.findAllByPlatformAndBrand(platformId, brandId);
+            }
+            else if(platformId != null){
+                foundProducts = productService.findAllByPlatform(platformId);
+            }
+            else if(brandId != null){
+                foundProducts = productService.findAllByBrand(brandId);
+            }
+            else{
+                foundProducts = productService.findAllActive();
+            }
+            return DTOMapper.converToDTOList(foundProducts, ProductDTO.class);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/nameSearch/{name}")
+    public List<Product> searchProductByName(@PathVariable String name){
+        return this.productService.searchProductByName(name);
     }
 }

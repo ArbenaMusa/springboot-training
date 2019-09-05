@@ -1,17 +1,18 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.entity.*;
+import com.ucx.training.shop.entity.Address;
+import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.entity.Phone;
+import com.ucx.training.shop.entity.Role;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.CustomerRepository;
-import org.springframework.beans.BeanUtils;
+import com.ucx.training.shop.type.RecordStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 import java.util.Base64;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -37,16 +38,13 @@ public class CustomerService extends BaseService<Customer, Integer> {
         if (customer.getAddresses() != null && !customer.getAddresses().isEmpty()) {
             customer.getAddresses().forEach(e -> e.setCustomer(customer));
         }
-        if (customer.getPhoneNumbers() != null && !customer.getPhoneNumbers().isEmpty()) {
-            customer.getPhoneNumbers().forEach(e -> e.setCustomer(customer));
-        }
         //TODO: Default Role for Customer
-        final Integer CUSTOMER_ROLE_ID = 1;
+        final Integer CUSTOMER_ROLE_ID = 2;
         final Role role = roleService.findById(CUSTOMER_ROLE_ID);
 
         if (customer.getUser() != null) {
-            if(role != null) customer.getUser().setRole(role);
-            if(customer.getEmail() != null) customer.getUser().setEmail(customer.getEmail());
+            if (role != null) customer.getUser().setRole(role);
+            if (customer.getEmail() != null) customer.getUser().setEmail(customer.getEmail());
             String password = customer.getUser().getPassword();
             String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
             customer.getUser().setPassword(encodedPassword);
@@ -81,29 +79,20 @@ public class CustomerService extends BaseService<Customer, Integer> {
         if (newCustomer.getAddresses() != null && !newCustomer.getAddresses().isEmpty()) {
             updateAddresses(foundCustomer, newCustomer.getAddresses());
         }
-        if (newCustomer.getPhoneNumbers() != null && !newCustomer.getPhoneNumbers().isEmpty()) {
-            updatePhones(foundCustomer, newCustomer.getPhoneNumbers());
-        }
 
         newCustomer.setAddresses(null);
         return update(newCustomer, costumerId);
     }
 
     private void updateAddresses(Customer foundCustomer, List<Address> addresses) throws NotFoundException {
-        for (Address address : addresses) {
-            if (address.getId() == null) {
-                address.setCustomer(foundCustomer);
-                addressService.save(address);
-            } else {
-                Address foundAddress = addressService.findById(address.getId());
-                if (foundAddress == null) {
-                    throw new NotFoundException("Address with the given id does not exist!");
-                }
-                if (!foundAddress.getCustomer().equals(foundCustomer)) {
-                    throw new RuntimeException("This address does not belong to this customer");
-                }
-                addressService.update(address, foundAddress.getId());
-            }
+        Address newAddress = addresses.get(0);
+        if (!foundCustomer.getAddresses().isEmpty()){
+            Address currentAddress = foundCustomer.getAddresses().get(0);
+            newAddress.setId(null);
+            this.addressService.update(newAddress, currentAddress.getId());
+        }else{
+            newAddress.setCustomer(foundCustomer);
+            addressService.save(newAddress);
         }
     }
 
@@ -129,12 +118,11 @@ public class CustomerService extends BaseService<Customer, Integer> {
 //        return customerRepository.readCostumerById(id);
 //    }
 
-    public List<Customer> findAllCustomers()
-    {
+    public List<Customer> findAllCustomers() {
         return customerRepository.findAll();
     }
 
     public List<Customer> findAllActive() {
-        return customerRepository.findAllActive();
+        return customerRepository.findAllByRecordStatus(RecordStatus.ACTIVE);
     }
 }

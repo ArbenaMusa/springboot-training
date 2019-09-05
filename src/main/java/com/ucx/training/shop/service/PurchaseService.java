@@ -43,7 +43,6 @@ public class PurchaseService {
         if (foundProduct.getRecordStatus() == RecordStatus.INACTIVE)
             throw new IllegalArgumentException("Product is deleted! " + foundProduct);
         if (quantity == null) throw new IllegalArgumentException("No quantity provided!");
-        if (foundProduct.getInStock() < quantity) throw new NotFoundException("Out of stock!");
 
         if (invoiceId == null) {
             Order order = new Order();
@@ -119,9 +118,6 @@ public class PurchaseService {
             if (foundProduct == null) {
                 throw new RuntimeException("Given id does not exist");
             }
-            if (foundProduct.getInStock() - item.getQuantity() < 0) {
-                throw new IllegalArgumentException("The given quantity is bigger than the available stock");
-            }
             CartItem createdCartItem = cartItemService.create(foundProduct, item.getQuantity(), createdOrder);
             cartItems.add(createdCartItem);
         }
@@ -137,7 +133,6 @@ public class PurchaseService {
     private void reduceStock(List<CartItem> cartItemList) {
         cartItemList.forEach(lineItem -> {
             Product product = lineItem.getProduct();
-            product.setInStock(product.getInStock() - lineItem.getQuantity());
         });
     }
 

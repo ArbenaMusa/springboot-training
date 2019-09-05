@@ -1,0 +1,14 @@
+Customer name: Durim Gashi
+------------------------------------------------
+Product name: Mortal Kombat
+Product price: 65.00 €  x1
+Price: 65 €
+License Codes: [ZOKPB-1S0XY-EKXQ3] 
+Product name: Assassins Creed
+Product price: 43.00 €  x1
+Price: 43 €
+License Codes: [OUJFA-0NLAI-O0NB1] 
+------------------------------------------------
+Purchase date: 2019-09-05T16:22:56.745892100
+------------------------------------------------
+Total: 108 €
