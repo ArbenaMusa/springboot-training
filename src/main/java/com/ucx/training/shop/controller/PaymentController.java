@@ -1,5 +1,6 @@
 package com.ucx.training.shop.controller;
 
+import com.ucx.training.shop.dto.StripeDTO;
 import com.ucx.training.shop.service.StripePayment;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +17,9 @@ public class PaymentController {
     }
 
     @PostMapping("{customerId}")
-    public String createCustomer(@PathVariable int customerId){
+    public StripeDTO createCustomer(@PathVariable int customerId){
         this.stripePayment.createCustomer(customerId);
-        return stripePayment.getTokenId();
+        return new StripeDTO(stripePayment.getTokenId());
     }
 
     @PostMapping("/charge")

@@ -90,7 +90,7 @@ public class StripePayment implements PaymentInterface {
 
         try{
             Charge charge = Charge.create(chargeParams);
-            System.out.println(charge);
+            System.out.println(charge.getPaymentMethod());
         }catch (CardException e){
             e.printStackTrace();
         }catch (RateLimitException e){
