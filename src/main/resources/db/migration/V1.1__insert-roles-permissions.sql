@@ -1,4 +1,14 @@
+CREATE SEQUENCE IF NOT EXISTS public.customer_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    START 1;
+
 CREATE SEQUENCE IF NOT EXISTS public.role_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    START 1;
+
+CREATE SEQUENCE IF NOT EXISTS public.user_id_seq
     INCREMENT 1
     MINVALUE 1
     START 1;
@@ -13,31 +23,72 @@ CREATE SEQUENCE IF NOT EXISTS public.role_permission_id_seq
     MINVALUE 1
     START 1;
 
+CREATE SEQUENCE IF NOT EXISTS public.role_id_seq
+    INCREMENT 1
+    MINVALUE 1
+    START 1;
+
 CREATE table IF NOT EXISTS public.role
 (
-    id               integer not null default nextval('public.role_id_seq'::regclass),
-    create_date_time timestamp,
+    id                integer not null default nextval('public.role_id_seq'::regclass),
+    create_date_time  timestamp,
     deleted_date_time timestamp,
-    description      varchar(1000),
-    record_status    varchar(255),
-    update_date_time timestamp,
-    version          bigint,
-    name             varchar(255) unique,
-    role_description varchar(255),
+    description       varchar(1000),
+    record_status     varchar(255),
+    update_date_time  timestamp,
+    version           bigint,
+    name              varchar(255) unique,
+    role_description  varchar(255),
+    PRIMARY KEY (id)
+);
+
+CREATE table IF NOT EXISTS public."user"
+(
+    id                integer not null default nextval('public.user_id_seq'::regclass),
+    create_date_time  timestamp,
+    deleted_date_time timestamp,
+    description       varchar(1000),
+    record_status     varchar(255),
+    update_date_time  timestamp,
+    version           bigint,
+    email             varchar(255) unique,
+    password          varchar(255),
+    isVerified        boolean,
+    role_id           integer NOT NULL,
+    FOREIGN KEY (role_id) REFERENCES public.role (id),
+
+    PRIMARY KEY (id)
+);
+
+CREATE table IF NOT EXISTS public.customer
+(
+    id                integer not null default nextval('public.customer_id_seq'::regclass),
+    create_date_time  timestamp,
+    deleted_date_time timestamp,
+    description       varchar(1000),
+    record_status     varchar(255),
+    update_date_time  timestamp,
+    version           bigint,
+    email             varchar(255) unique,
+    name              varchar(255),
+    phone_number      varchar(255),
+    user_id           integer NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES public."user" (id),
+
     PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public.permission
 (
-    id               integer NOT NULL DEFAULT nextval('permission_id_seq'::regclass),
-    create_date_time timestamp without time zone,
+    id                integer NOT NULL DEFAULT nextval('permission_id_seq'::regclass),
+    create_date_time  timestamp without time zone,
     deleted_date_time timestamp without time zone,
-    description      character varying(1000),
-    record_status    character varying(255),
-    update_date_time timestamp without time zone,
-    version          bigint,
-    action           character varying(255),
-    module           character varying(255),
+    description       character varying(1000),
+    record_status     character varying(255),
+    update_date_time  timestamp without time zone,
+    version           bigint,
+    action            character varying(255),
+    module            character varying(255),
     PRIMARY KEY (id)
 );
 
@@ -48,14 +99,21 @@ INSERT INTO role
 VALUES (nextval('role_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'CUSTOMER', 'Customer role');
 COMMIT;
 
+BEGIN;
+INSERT INTO "user"
+VALUES (nextval('user_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'admin@gmail.com', 'YWRtaW4=', false, 1);
+INSERT INTO customer
+VALUES (nextval('customer_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'admin@gmail.com', 'Admin', 044999999, 1);
+COMMIT;
+
 CREATE TABLE IF NOT EXISTS public.permission_role
 (
     id                integer NOT NULL DEFAULT nextval('public.role_permission_id_seq'::regclass),
-    create_date_time    timestamp without time zone,
+    create_date_time  timestamp without time zone,
     deleted_date_time timestamp without time zone,
     description       character varying(1000),
     record_status     character varying(255),
-    update_date_time     timestamp without time zone,
+    update_date_time  timestamp without time zone,
     version           bigint,
     role_id           integer NOT NULL,
     permission_id     integer NOT NULL,
@@ -258,13 +316,13 @@ COMMIT;
 --BEGIN INSERT OF ORDER CRUD PERMISSIONS
 BEGIN;
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'order');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'purchases');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'order');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'purchases');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'order');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'purchases');
 INSERT INTO permission
-VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'order');
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'purchases');
 COMMIT;
 
 BEGIN;
