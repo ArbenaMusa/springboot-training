@@ -103,6 +103,22 @@ public class ProductService extends BaseService<Product, Integer> {
         return productRepository.findAllActive();
     }
 
+    public List<Product> findAllByBrand(Integer brandId){
+        Brand foundBrand = brandService.findById(brandId);
+        return productRepository.findAllByBrand(foundBrand);
+    }
+
+    public List<Product> findAllByPlatform(Integer platformId){
+        Platform foundPlatform = platformService.findById(platformId);
+        return productRepository.findAllByPlatform(foundPlatform);
+    }
+
+    public List<Product> findAllByPlatformAndBrand(Integer platformId, Integer brandId){
+        Platform foundPlatform = platformService.findById(platformId);
+        Brand foundBrand = brandService.findById(brandId);
+        return productRepository.findAllByPlatformAndBrand(foundPlatform, foundBrand);
+    }
+
     public List<Product> searchProductByName(String name){
         return this.productRepository.searchProductByName(name);
     }
