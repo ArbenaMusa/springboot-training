@@ -1,10 +1,14 @@
-Customer name: drilon drilon
+Customer name: Pashtrik Gashi
 ------------------------------------------------
-Product name: pes
-Product price: 23.00 â‚¬  x5
-Price: 115 â‚¬
-License Codes: [FBODY-F04ZZ-3BJ5V, 22MFO-UJUQI-UR6U6, RLQJX-XXSEI-F3HH7, GXOKJ-U4Y4Y-KVITY, WZBO2-HNE8V-03QAT] 
+Product name: Mortal Kombat
+Product price: 103.00 €  x1
+Price: 103 €
+License Codes: [TFBI6-S7LQR-LETOT] 
+Product name: Battlefield 4
+Product price: 123.00 €  x1
+Price: 123 €
+License Codes: [NGY6C-MZ7IH-M0AXJ] 
 ------------------------------------------------
-Purchase date: 2019-09-05T00:11:46.043780200
+Purchase date: 2019-09-05T09:53:11.295707800
 ------------------------------------------------
-Total: 115 â‚¬
+Total: 226 €
