@@ -1,9 +1,14 @@
-Customer name: Jehona
+Customer name: Pashtrik Gashi
 ------------------------------------------------
-Product name: TEST
+Product name: Mortal Kombat
 Product price: 103.00 €  x1
 Price: 103 €
+License Codes: [TFBI6-S7LQR-LETOT] 
+Product name: Battlefield 4
+Product price: 123.00 €  x1
+Price: 123 €
+License Codes: [NGY6C-MZ7IH-M0AXJ] 
 ------------------------------------------------
-Purchase date: 2019-09-03T10:49:26.633887500
+Purchase date: 2019-09-05T09:53:11.295707800
 ------------------------------------------------
-Total: 103 €
+Total: 226 €
