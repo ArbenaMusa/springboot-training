@@ -6,11 +6,9 @@ import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
-import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
@@ -103,20 +101,53 @@ public class ProductService extends BaseService<Product, Integer> {
         return productRepository.findAllActive();
     }
 
-    public List<Product> findAllByBrand(Integer brandId){
+    public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, Integer brandId, String priceDirection){
         Brand foundBrand = brandService.findById(brandId);
-        return productRepository.findAllByBrand(foundBrand);
+        List<Product> foundProducts = null;
+        if(priceDirection == null){
+            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max,foundBrand);
+        }
+        else{
+            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max, foundBrand, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
+        }
+        return foundProducts;
     }
 
-    public List<Product> findAllByPlatform(Integer platformId){
+    public List<Product> findAllByPlatform(BigDecimal min, BigDecimal max, Integer platformId, String priceDirection){
         Platform foundPlatform = platformService.findById(platformId);
-        return productRepository.findAllByPlatform(foundPlatform);
+        List<Product> foundProducts = null;
+        if(priceDirection == null){
+            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(min, max, foundPlatform);
+        }
+        else {
+            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(min, max, foundPlatform, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
+        }
+        return foundProducts;
     }
 
-    public List<Product> findAllByPlatformAndBrand(Integer platformId, Integer brandId){
+    public List<Product> findAllByPlatformAndBrand(BigDecimal min, BigDecimal max, Integer platformId, Integer brandId, String priceDirection){
         Platform foundPlatform = platformService.findById(platformId);
         Brand foundBrand = brandService.findById(brandId);
-        return productRepository.findAllByPlatformAndBrand(foundPlatform, foundBrand);
+        List<Product> foundProducts = null;
+        if(priceDirection == null){
+            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandAndPlatform(min, max, foundBrand, foundPlatform);
+        }
+        else {
+            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandAndPlatform(min, max, foundBrand, foundPlatform, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
+        }
+        return foundProducts;
+    }
+
+    public List<Product> findAllProductsPrice(BigDecimal lowest, BigDecimal highest, String priceDirection)
+    {
+        List<Product> foundProducts = null;
+        if(priceDirection == null){
+            foundProducts = productRepository.findAllProductByUnitPriceBetween(lowest, highest);
+        }
+        else{
+            foundProducts = productRepository.findAllProductByUnitPriceBetween(lowest, highest, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
+        }
+        return foundProducts;
     }
 
     public List<Product> searchProductByName(String name){

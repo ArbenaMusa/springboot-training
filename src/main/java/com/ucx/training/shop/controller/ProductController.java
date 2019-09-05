@@ -13,10 +13,12 @@ import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
 import com.ucx.training.shop.util.uimapper.ProductMapper;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.mapping.Array;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,8 @@ import javax.persistence.Tuple;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -144,21 +148,24 @@ public class ProductController {
     }
 
     @GetMapping("/filter")
-    public List<DTOEntity> findAllFilters(@RequestParam(required = false, value = "platformId") Integer platformId, @RequestParam(required = false, value = "brandId") Integer brandId) throws ResponseException {
+    public List<DTOEntity> findAllFilters(@RequestParam(required = false, value = "platformId") Integer platformId, @RequestParam(required = false, value = "brandId") Integer brandId, @RequestParam(required = false, value = "priceOrder") String priceDirection, @RequestParam(required = false, value = "min") BigDecimal min, @RequestParam(required = false, value = "max") BigDecimal max) throws ResponseException {
         List<Product> foundProducts = null;
 
         try{
             if(platformId != null && brandId != null){
-                foundProducts = productService.findAllByPlatformAndBrand(platformId, brandId);
+                foundProducts = productService.findAllByPlatformAndBrand(min, max, platformId, brandId, priceDirection);
             }
             else if(platformId != null){
-                foundProducts = productService.findAllByPlatform(platformId);
+                foundProducts = productService.findAllByPlatform(min, max, platformId, priceDirection);
             }
             else if(brandId != null){
-                foundProducts = productService.findAllByBrand(brandId);
+                foundProducts = productService.findAllByBrand(min, max, brandId, priceDirection);
             }
-            else{
-                foundProducts = productService.findAllActive();
+            else if(platformId == null && brandId == null && priceDirection != null){
+                foundProducts = productService.findAllSorted(priceDirection, "unitPrice");
+            }
+            else {
+                foundProducts = productService.findAllProductsPrice(min, max, priceDirection);
             }
             return DTOMapper.converToDTOList(foundProducts, ProductDTO.class);
         } catch (Exception e) {
