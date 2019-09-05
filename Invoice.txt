@@ -1,10 +1,14 @@
-Customer name: Fati Marmullaku
+Customer name: Durim Gashi
 ------------------------------------------------
 Product name: Mortal Kombat
-Product price: 64.00 €  x1
-Price: 64 €
-License Codes: [3JEQE-NDSYZ-GLLDU] 
+Product price: 65.00 €  x1
+Price: 65 €
+License Codes: [ZOKPB-1S0XY-EKXQ3] 
+Product name: Assassins Creed
+Product price: 43.00 €  x1
+Price: 43 €
+License Codes: [OUJFA-0NLAI-O0NB1] 
 ------------------------------------------------
-Purchase date: 2019-09-05T13:19:19.698086900
+Purchase date: 2019-09-05T16:22:56.745892100
 ------------------------------------------------
-Total: 64 €
+Total: 108 €

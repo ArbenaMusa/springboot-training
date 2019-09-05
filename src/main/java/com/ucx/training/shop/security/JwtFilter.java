@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,8 @@ public class JwtFilter extends GenericFilter {
         }
 
         if (requestURI.startsWith(PRODUCTS_ENDPOINT) &&
-           (httpMethod.equalsIgnoreCase("GET"))) {
+                ((httpMethod.equalsIgnoreCase("GET"))
+                 || (httpMethod.equalsIgnoreCase("OPTIONS")))) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
