@@ -1,10 +1,10 @@
 Customer name: Fati Marmullaku
 ------------------------------------------------
 Product name: Mortal Kombat
-Product price: 64.00 €  x1
-Price: 64 €
+Product price: 64.00 ï¿½  x1
+Price: 64 ï¿½
 License Codes: [3JEQE-NDSYZ-GLLDU] 
 ------------------------------------------------
 Purchase date: 2019-09-05T13:19:19.698086900
 ------------------------------------------------
-Total: 64 €
+Total: 64 ï¿½
