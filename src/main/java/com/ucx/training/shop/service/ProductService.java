@@ -6,6 +6,8 @@ import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -150,7 +152,7 @@ public class ProductService extends BaseService<Product, Integer> {
         return foundProducts;
     }
 
-    public List<Product> searchProductByName(String name){
-        return this.productRepository.searchProductByName(name);
+    public Page<Product> findAllByNameContaining(Pageable pageable, String name){
+        return this.productRepository.findAllByNameContainingIgnoreCase(pageable, name);
     }
 }

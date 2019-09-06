@@ -3,6 +3,8 @@ package com.ucx.training.shop.repository;
 import com.ucx.training.shop.entity.Brand;
 import com.ucx.training.shop.entity.Platform;
 import com.ucx.training.shop.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -46,8 +48,8 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
             "LIMIT ?1 ", nativeQuery = true)
     List<Tuple> getTopSoldProducts(Integer productsNumber, Date startDate, Date endDate);
 
-    @Query(value = "SELECT * FROM product WHERE name ILIKE %:name%", nativeQuery = true)
+   /* @Query(value = "SELECT * FROM product WHERE name ILIKE %:name%", nativeQuery = true)
     List<Product> searchProductByName(@Param("name") String name);
-
-    List<Product> findAllByNameIsLike(String name);
+*/
+    Page<Product> findAllByNameContainingIgnoreCase(Pageable pageable, String name);
 }
