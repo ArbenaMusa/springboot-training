@@ -122,11 +122,16 @@ INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), nul
 COMMIT;
 
 BEGIN;
-INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Control', null, 24, 1, 1);
+INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Control', null, 24, 2, 1);
 INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'control', 'D:\springboot-training/upload/control.jpg', currval('public.product_id_seq'));
 COMMIT;
 
 BEGIN;
-INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Control', null, 24, 1, 1);
+INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Control', null, 24, 3, 1);
 INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'control', 'D:\springboot-training/upload/control.jpg', currval('public.product_id_seq'));
+COMMIT;
+
+BEGIN;
+INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GTA IV', null, 8, 4, 1);
+INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'gta-iv', 'D:\springboot-training/upload/gta-iv.jpg', currval('public.product_id_seq'));
 COMMIT;
