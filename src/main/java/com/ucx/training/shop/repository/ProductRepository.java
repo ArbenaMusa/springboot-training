@@ -3,6 +3,7 @@ package com.ucx.training.shop.repository;
 import com.ucx.training.shop.entity.Brand;
 import com.ucx.training.shop.entity.Platform;
 import com.ucx.training.shop.entity.Product;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,12 +16,17 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends BaseRepository<Product,Integer> {
     @Query(value = "SELECT * from product where record_status = 'ACTIVE' ", nativeQuery = true)
-    public List<Product>  findAllActive();
+    List<Product>  findAllActive();
     Product findByName(String name);
     List<Product> findAllByUnitPrice(BigDecimal unitPrice);
-    List<Product> findAllByBrand(Brand brand);
-    List<Product> findAllByPlatform(Platform platform);
-    List<Product> findAllByPlatformAndBrand(Platform platform, Brand brand);
+    List<Product> findAllProductByUnitPriceBetween(BigDecimal lowest, BigDecimal highest);
+    List<Product> findAllProductByUnitPriceBetween(BigDecimal lowest, BigDecimal highest, Sort sort);
+    List<Product> findAllProductByUnitPriceBetweenAndBrand(BigDecimal lowest, BigDecimal highest, Brand brand);
+    List<Product> findAllProductByUnitPriceBetweenAndBrand(BigDecimal lowest, BigDecimal highest, Brand brand, Sort sort);
+    List<Product> findAllProductByUnitPriceBetweenAndPlatform(BigDecimal lowest, BigDecimal highest, Platform platform);
+    List<Product> findAllProductByUnitPriceBetweenAndPlatform(BigDecimal lowest, BigDecimal highest, Platform platform, Sort sort);
+    List<Product> findAllProductByUnitPriceBetweenAndBrandAndPlatform(BigDecimal lowest, BigDecimal highest, Brand brand, Platform platform);
+    List<Product> findAllProductByUnitPriceBetweenAndBrandAndPlatform(BigDecimal lowest, BigDecimal highest, Brand brand, Platform platform, Sort sort);
 
     @Query(value = "SELECT P.id             AS productId,\n" +
             "       P.name           AS productName,\n" +
