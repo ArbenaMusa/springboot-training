@@ -122,16 +122,41 @@ INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), nul
 COMMIT;
 
 BEGIN;
-INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Control', null, 24, 2, 1);
-INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'control', 'D:\springboot-training/upload/control.jpg', currval('public.product_id_seq'));
+INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Batman Arkham Knight', null, 27, 2, 1);
+INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'batman', 'D:\springboot-training/upload/batman.jpg', currval('public.product_id_seq'));
 COMMIT;
 
 BEGIN;
-INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Control', null, 24, 3, 1);
-INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'control', 'D:\springboot-training/upload/control.jpg', currval('public.product_id_seq'));
+INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Cyberpunk 2077', null, 67, 3, 1);
+INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'cyberpunk2077', 'D:\springboot-training/upload/cyberpunk2077.jpg', currval('public.product_id_seq'));
 COMMIT;
 
 BEGIN;
 INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GTA IV', null, 8, 4, 1);
 INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'gta-iv', 'D:\springboot-training/upload/gta-iv.jpg', currval('public.product_id_seq'));
+COMMIT;
+
+BEGIN;
+INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Injustice 2', null, 53, 5, 1);
+INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'injustice', 'D:\springboot-training/upload/injustice.jpg', currval('public.product_id_seq'));
+COMMIT;
+
+BEGIN;
+INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Wolfenstein', null, 67, 6, 1);
+INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'wolfenstein', 'D:\springboot-training/upload/wolfenstein.jpg', currval('public.product_id_seq'));
+COMMIT;
+
+BEGIN;
+INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Star Wars', null, 51, 7, 1);
+INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'starwars', 'D:\springboot-training/upload/starwars.jpg', currval('public.product_id_seq'));
+COMMIT;
+
+BEGIN;
+INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'Assassins Creed Rogue', null, 8, 2, 1);
+INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'acrogue', 'D:\springboot-training/upload/acrogue.jpg', currval('public.product_id_seq'));
+COMMIT;
+
+BEGIN;
+INSERT INTO product VALUES (nextval('public.product_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'The Witcher 3', null, 30, 4, 1);
+INSERT INTO file_upload VALUES (nextval('public.file_upload_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'jpg', 'witcher', 'D:\springboot-training/upload/witcher.jpg', currval('public.product_id_seq'));
 COMMIT;
