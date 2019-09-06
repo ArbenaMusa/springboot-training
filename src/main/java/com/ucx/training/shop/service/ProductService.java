@@ -6,12 +6,11 @@ import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
-import javax.persistence.Tuple;
 import javax.transaction.Transactional;
+import java.awt.print.Pageable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -119,7 +118,7 @@ public class ProductService extends BaseService<Product, Integer> {
         return productRepository.findAllByPlatformAndBrand(foundPlatform, foundBrand);
     }
 
-    public List<Product> searchProductByName(String name){
-        return this.productRepository.searchProductByName(name);
+    public List<Product> findAllByNameContaining(String name){
+        return this.productRepository.findAllByNameContaining(name);
     }
 }

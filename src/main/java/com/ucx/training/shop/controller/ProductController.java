@@ -11,22 +11,19 @@ import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
-import com.ucx.training.shop.util.uimapper.ProductMapper;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Tuple;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -167,7 +164,7 @@ public class ProductController {
     }
 
     @GetMapping("/nameSearch/{name}")
-    public List<Product> searchProductByName(@PathVariable String name){
-        return this.productService.searchProductByName(name);
+    public List<Product> findAllByNameContaining(@PathVariable String name){
+        return productService.findAllByNameContaining(name);
     }
 }
