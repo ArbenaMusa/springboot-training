@@ -173,6 +173,16 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/getLowestPrice")
+    public Number getLowestPrices(){
+        return productService.getLowestPrice();
+    }
+
+    @GetMapping("/getHighestPrice")
+    public Number getHighestPrice(){
+        return productService.getHighestPrice();
+    }
+
     @GetMapping("/nameSearch/{name}")
     public List<Product> searchProductByName(@PathVariable String name){
         return this.productService.searchProductByName(name);

@@ -150,6 +150,14 @@ public class ProductService extends BaseService<Product, Integer> {
         return foundProducts;
     }
 
+    public Number getLowestPrice() {
+        return productRepository.getLowestPrice();
+    }
+
+    public Number getHighestPrice(){
+        return productRepository.getHighestPrice();
+    }
+
     public List<Product> searchProductByName(String name){
         return this.productRepository.searchProductByName(name);
     }
