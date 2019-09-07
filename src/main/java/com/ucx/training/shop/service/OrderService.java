@@ -107,7 +107,7 @@ public class OrderService extends BaseService<Order, Integer> {
         } else if (customerName != null) {
             query.append(" and lower(customer.name) like '" + customerName.toLowerCase() + "%' ");
         }
-        query.append(" limit ?1 offset ?2 ) data\n")
+        query.append("ORDER BY torder.id ASC limit ?1 offset ?2 ) data\n")
                 .append(" GROUP BY \"totalFilteredOrders\" ) orderhistorytable; ");
 
         List<JsonNode> list = entityManager.createNativeQuery(query.toString())
