@@ -6,6 +6,8 @@ import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -97,8 +99,8 @@ public class ProductService extends BaseService<Product, Integer> {
         }
     }
 
-    public List<Product> findAllActive() {
-        return productRepository.findAllActive();
+    public Page<Product> findAllActive(Pageable pageable) {
+        return productRepository.findAllActive(pageable);
     }
 
     public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, Integer brandId, String priceDirection){

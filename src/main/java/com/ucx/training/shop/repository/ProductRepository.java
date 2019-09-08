@@ -3,6 +3,8 @@ package com.ucx.training.shop.repository;
 import com.ucx.training.shop.entity.Brand;
 import com.ucx.training.shop.entity.Platform;
 import com.ucx.training.shop.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +18,7 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends BaseRepository<Product,Integer> {
     @Query(value = "SELECT * from product where record_status = 'ACTIVE' ", nativeQuery = true)
-    List<Product>  findAllActive();
+    Page<Product> findAllActive(Pageable pageable);
     Product findByName(String name);
     List<Product> findAllByUnitPrice(BigDecimal unitPrice);
     List<Product> findAllProductByUnitPriceBetween(BigDecimal lowest, BigDecimal highest);

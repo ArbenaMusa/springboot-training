@@ -18,15 +18,19 @@ import java.util.stream.Collectors;
 
 public class PaginationUtil {
 
-    public static  <T extends BaseEntity> Map<String, Object> getPage(Page<? extends BaseEntity> page,Class dtoClass) throws ResponseException {
+    public static <T extends BaseEntity> Map<String, Object> getPage(Page<? extends BaseEntity> page, Class dtoClass) throws ResponseException {
         try {
             Map<String, Object> resultMap = new HashMap<>();
             List<? extends BaseEntity> rows = page.getContent()
                     .stream()
                     .filter(o -> ((BaseEntity) o).getRecordStatus() == RecordStatus.ACTIVE)
                     .collect(Collectors.toList());
-
-            List<DTOEntity> content = DTOMapper.converToDTOList(rows, dtoClass);
+            List<?> content;
+            if (dtoClass != null) {
+                content = DTOMapper.converToDTOList(rows, dtoClass);
+            } else {
+                content = rows;
+            }
             resultMap.put("content", content);
 
             Integer pageNumber = page.getNumber();
