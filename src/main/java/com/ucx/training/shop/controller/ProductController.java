@@ -174,6 +174,16 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/getLowestPrice")
+    public Number getLowestPrices(){
+        return productService.getLowestPrice();
+    }
+
+    @GetMapping("/getHighestPrice")
+    public Number getHighestPrice(){
+        return productService.getHighestPrice();
+    }
+
     @GetMapping("/nameSearch/{name}")
     public Map<String, Object> findAllByNameContaining(@PageableDefault Pageable pageable, @PathVariable String name) throws  ResponseException{
         try{

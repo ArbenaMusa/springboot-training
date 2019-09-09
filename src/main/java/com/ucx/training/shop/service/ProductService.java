@@ -103,56 +103,59 @@ public class ProductService extends BaseService<Product, Integer> {
         return productRepository.findAllActive(pageable);
     }
 
-    public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, Integer brandId, String priceDirection){
+    public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, Integer brandId, String priceDirection) {
         Brand foundBrand = brandService.findById(brandId);
         List<Product> foundProducts = null;
-        if(priceDirection == null){
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max,foundBrand);
-        }
-        else{
+        if (priceDirection == null) {
+            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max, foundBrand);
+        } else {
             foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max, foundBrand, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
         }
         return foundProducts;
     }
 
-    public List<Product> findAllByPlatform(BigDecimal min, BigDecimal max, Integer platformId, String priceDirection){
+    public List<Product> findAllByPlatform(BigDecimal min, BigDecimal max, Integer platformId, String priceDirection) {
         Platform foundPlatform = platformService.findById(platformId);
         List<Product> foundProducts = null;
-        if(priceDirection == null){
+        if (priceDirection == null) {
             foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(min, max, foundPlatform);
-        }
-        else {
+        } else {
             foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(min, max, foundPlatform, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
         }
         return foundProducts;
     }
 
-    public List<Product> findAllByPlatformAndBrand(BigDecimal min, BigDecimal max, Integer platformId, Integer brandId, String priceDirection){
+    public List<Product> findAllByPlatformAndBrand(BigDecimal min, BigDecimal max, Integer platformId, Integer brandId, String priceDirection) {
         Platform foundPlatform = platformService.findById(platformId);
         Brand foundBrand = brandService.findById(brandId);
         List<Product> foundProducts = null;
-        if(priceDirection == null){
+        if (priceDirection == null) {
             foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandAndPlatform(min, max, foundBrand, foundPlatform);
-        }
-        else {
+        } else {
             foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandAndPlatform(min, max, foundBrand, foundPlatform, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
         }
         return foundProducts;
     }
 
-    public List<Product> findAllProductsPrice(BigDecimal lowest, BigDecimal highest, String priceDirection)
-    {
+    public List<Product> findAllProductsPrice(BigDecimal lowest, BigDecimal highest, String priceDirection) {
         List<Product> foundProducts = null;
-        if(priceDirection == null){
+        if (priceDirection == null) {
             foundProducts = productRepository.findAllProductByUnitPriceBetween(lowest, highest);
-        }
-        else{
+        } else {
             foundProducts = productRepository.findAllProductByUnitPriceBetween(lowest, highest, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
         }
         return foundProducts;
     }
 
-    public Page<Product> findAllByNameContaining(Pageable pageable, String name){
+    public Number getLowestPrice() {
+        return productRepository.getLowestPrice();
+    }
+
+    public Number getHighestPrice() {
+        return productRepository.getHighestPrice();
+    }
+
+    public Page<Product> findAllByNameContaining(Pageable pageable, String name) {
         return this.productRepository.findAllByNameContainingIgnoreCase(pageable, name);
     }
 }
