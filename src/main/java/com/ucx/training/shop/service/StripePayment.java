@@ -4,6 +4,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.*;
 import com.stripe.model.Charge;
 import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.PaymentInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,10 @@ public class StripePayment implements PaymentInterface {
     public Map<String,String> createCustomer(int customerId){
 
         Customer foundCustomer = customerService.findById(customerId);
+        if(foundCustomer == null){
+            throw new RuntimeException("Couldn't find any customer with this id " + customerId);
+        }
+
         Map<String,Object> customerParams = new HashMap<>();
         customerParams.put("description", foundCustomer.getName());
         customerParams.put("name", foundCustomer.getName());
@@ -45,9 +50,15 @@ public class StripePayment implements PaymentInterface {
         Map<String,Object> cardParams = new HashMap<>();
         cardParams.put("source","tok_visa");
 
+        if(foundCustomer.getStripeCustomerId() != null){
+            return token_id;
+        }
+
         try{
             com.stripe.model.Customer stripeCustomer = com.stripe.model.Customer.create(customerParams);
             token_id.put("customer_id",stripeCustomer.getId());
+            foundCustomer.setStripeCustomerId(stripeCustomer.getId());
+            customerService.update(foundCustomer,foundCustomer.getId());
             com.stripe.model.Customer foundStripeCustomer = com.stripe.model.Customer.retrieve(token_id.get("customer_id"));
             foundStripeCustomer.getSources().create(cardParams);
             System.out.println(stripeCustomer);
@@ -80,13 +91,18 @@ public class StripePayment implements PaymentInterface {
      * Amount is on cents/pennies so we should multiply the amount with 100.
      * For creating a Stripe Charge the chargeParams should have a customer Token Id, otherwise the charge won't be created.
      */
-    public void chargeCreditCard(BigDecimal amount){
+    public void chargeCreditCard(BigDecimal amount,int customerId){
+
+        String stripeCustomerToken = customerService.findById(customerId).getStripeCustomerId();
+        if(stripeCustomerToken == null){
+            throw new RuntimeException("This customer doesn't have a stripe account yet!");
+        }
 
         Map<String,Object> chargeParams = new HashMap<>();
         chargeParams.put("amount",amount.multiply(new BigDecimal("100")).intValueExact());
         chargeParams.put("currency","usd");
         chargeParams.put("description","One time charge");
-        chargeParams.put("customer", this.getTokenId());
+        chargeParams.put("customer", stripeCustomerToken);
 
         try{
             Charge charge = Charge.create(chargeParams);

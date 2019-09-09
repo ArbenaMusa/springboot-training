@@ -1,18 +1,14 @@
-Customer name: donald donald
+Customer name: Fatmir  Marmullaku
 ------------------------------------------------
-Product name: Kingdom Come: Deliverance
-Product price: 14.00 €  x2
-Price: 28 €
-License Codes: [W8TK8-XHI0K-3YH76, XWLVS-ERADM-KZIU4] 
-Product name: DIRT
-Product price: 35.00 €  x3
-Price: 105 €
-License Codes: [3HH6C-0HO1X-DEH49, EA8WT-HY3CU-42W5J, MR58Y-W1KI1-FKZOV] 
-Product name: GTA V
-Product price: 45.99 €  x3
-Price: 135 €
-License Codes: [ZCN59-1CSB4-GN1XD, 8PF07-ATVHW-1E4EB, 1180R-X2723-KJ8RV] 
+Product name: MORTAL KOMBAT
+Product price: 49.50 €  x1
+Price: 49 €
+License Codes: [CIK3M-NACKR-AVNJI] 
+Product name: Black Ops 2
+Product price: 7.50 €  x1
+Price: 7 €
+License Codes: [6R7EY-LUELK-QXFSW] 
 ------------------------------------------------
-Purchase date: 2019-09-06T21:58:42.652425400
+Purchase date: 2019-09-09T14:56:16.887388
 ------------------------------------------------
-Total: 270.97 €
+Total: 57 €

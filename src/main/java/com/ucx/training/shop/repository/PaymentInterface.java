@@ -5,5 +5,5 @@ import java.util.Map;
 
 public interface PaymentInterface {
     Map<String,String> createCustomer(int customerId);
-    void chargeCreditCard(BigDecimal amount);
+    void chargeCreditCard(BigDecimal amount,int customerId);
 }

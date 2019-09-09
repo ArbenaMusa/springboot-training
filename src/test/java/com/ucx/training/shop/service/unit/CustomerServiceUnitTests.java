@@ -4,6 +4,7 @@ import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.service.CustomerService;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -31,6 +32,7 @@ public class CustomerServiceUnitTests {
     }
 
     @Test
+    @Ignore
     public void testCreate() {
         Customer customer = new Customer();
         customer.setName("TestFilani");
