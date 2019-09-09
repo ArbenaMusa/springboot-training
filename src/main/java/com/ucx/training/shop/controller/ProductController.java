@@ -151,18 +151,17 @@ public class ProductController {
     @GetMapping("/filter")
     public List<DTOEntity> findAllFilters(@RequestParam(required = false, value = "platformId") Integer platformId,
                                           @RequestParam(required = false, value = "brandId") List<Integer> brandId,
-                                          @RequestParam(required = false, value = "priceOrder") String priceDirection,
                                           @RequestParam(required = false, value = "min") BigDecimal min,
                                           @RequestParam(required = false, value = "max") BigDecimal max) throws ResponseException {
         List<Product> foundProducts = null;
         try{
             if(platformId != null){
-                if(brandId != null) foundProducts = productService.findAllByPlatformAndBrand(min, max, platformId, brandId, priceDirection);
-                else foundProducts = productService.findAllByPlatform(min, max, platformId, priceDirection);
+                if(brandId != null) foundProducts = productService.findAllByPlatformAndBrand(min, max, platformId, brandId);
+                else foundProducts = productService.findAllByPlatform(min, max, platformId);
             }
             else{
-                if(brandId != null) foundProducts = productService.findAllByBrand(min, max, brandId, priceDirection);
-                else foundProducts = productService.findAllProductsPrice(min, max, priceDirection);
+                if(brandId != null) foundProducts = productService.findAllByBrand(min, max, brandId);
+                else foundProducts = productService.findAllProductsPrice(min, max);
             }
             return DTOMapper.converToDTOList(foundProducts, ProductDTO.class);
         } catch (Exception e) {

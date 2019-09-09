@@ -105,7 +105,7 @@ public class ProductService extends BaseService<Product, Integer> {
         return productRepository.findAllActive(pageable);
     }
 
-    public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, List<Integer> brandId, String priceDirection) {
+    public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, List<Integer> brandId) {
         List<Brand> foundBrand  = new ArrayList();
         List<Product> foundProducts = new ArrayList();
         for (Integer id: brandId) {
@@ -117,14 +117,14 @@ public class ProductService extends BaseService<Product, Integer> {
         return foundProducts;
     }
 
-    public List<Product> findAllByPlatform(BigDecimal min, BigDecimal max, Integer platformId, String priceDirection) {
+    public List<Product> findAllByPlatform(BigDecimal min, BigDecimal max, Integer platformId) {
         Platform foundPlatform = platformService.findById(platformId);
         List<Product> foundProducts = null;
             foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(min, max, foundPlatform);
         return foundProducts;
     }
 
-    public List<Product> findAllByPlatformAndBrand(BigDecimal min, BigDecimal max, Integer platformId, List<Integer> brandId, String priceDirection) {
+    public List<Product> findAllByPlatformAndBrand(BigDecimal min, BigDecimal max, Integer platformId, List<Integer> brandId) {
         Platform foundPlatform = platformService.findById(platformId);
         List<Brand> foundBrand  = new ArrayList();
         List<Product> foundProducts = new ArrayList();
@@ -137,7 +137,7 @@ public class ProductService extends BaseService<Product, Integer> {
         return foundProducts;
     }
 
-    public List<Product> findAllProductsPrice(BigDecimal lowest, BigDecimal highest, String priceDirection) {
+    public List<Product> findAllProductsPrice(BigDecimal lowest, BigDecimal highest) {
         List<Product> foundProducts = null;
             foundProducts = productRepository.findAllProductByUnitPriceBetween(lowest, highest);
         return foundProducts;
