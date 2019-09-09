@@ -69,7 +69,7 @@ public class OrderService extends BaseService<Order, Integer> {
     }
 
 
-    public List<JsonNode> readOrderHistory(Pageable pageable, Integer customerId, Integer orderId, String customerName) {
+    public List<JsonNode> readOrderHistory(Pageable pageable, String customerId, String orderId, String customerName) {
         StringBuilder query = new StringBuilder();
         query.append("SELECT row_to_json(orderhistorytable) AS result\n")
                 .append("FROM   (\n")
@@ -100,14 +100,14 @@ public class OrderService extends BaseService<Order, Integer> {
                 .append("   AND        customer.record_status LIKE 'ACTIVE'\n");
 
 
-        if (customerId != null) {
+        if (customerId != null && !customerId.trim().equals("null") && !customerId.trim().equals("")) {
             query.append(" and customer.id = " + customerId + " ");
-        } else if (orderId != null) {
+        } else if (orderId != null && !orderId.trim().equals("null") && !orderId.trim().equals("")) {
             query.append(" and torder.id =" + orderId + " ");
-        } else if (customerName != null) {
+        } else if (customerName != null && !customerName.trim().equals("null") && !customerName.trim().equals("")) {
             query.append(" and lower(customer.name) like '" + customerName.toLowerCase() + "%' ");
         }
-        query.append("ORDER BY torder.id ASC limit ?1 offset ?2 ) data\n")
+        query.append(" ORDER BY torder.id ASC limit ?1 offset ?2 ) data\n")
                 .append(" GROUP BY \"totalFilteredOrders\" ) orderhistorytable; ");
 
         List<JsonNode> list = entityManager.createNativeQuery(query.toString())
