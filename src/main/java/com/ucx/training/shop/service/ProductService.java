@@ -111,9 +111,7 @@ public class ProductService extends BaseService<Product, Integer> {
         for (Integer id: brandId) {
             foundBrand.add(brandService.findById(id));
         }
-            for (Brand brand: foundBrand) {
-                foundProducts.addAll(productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max, brand));
-            }
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsIn(min, max, foundBrand);
         return foundProducts;
     }
 
@@ -131,9 +129,7 @@ public class ProductService extends BaseService<Product, Integer> {
         for (Integer id: brandId) {
             foundBrand.add(brandService.findById(id));
         }
-            for (Brand brand: foundBrand) {
-                foundProducts.addAll(productRepository.findAllProductByUnitPriceBetweenAndBrandAndPlatform(min, max, brand, foundPlatform));
-            }
+        foundProducts.addAll(productRepository.findAllProductByUnitPriceBetweenAndBrandIsInAndPlatform(min, max, foundBrand, foundPlatform));
         return foundProducts;
     }
 

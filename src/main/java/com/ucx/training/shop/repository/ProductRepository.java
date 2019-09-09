@@ -23,9 +23,9 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
     Product findByName(String name);
     List<Product> findAllByUnitPrice(BigDecimal unitPrice);
     List<Product> findAllProductByUnitPriceBetween(BigDecimal lowest, BigDecimal highest);
-    List<Product> findAllProductByUnitPriceBetweenAndBrand(BigDecimal lowest, BigDecimal highest, Brand brand);
+    List<Product> findAllProductByUnitPriceBetweenAndBrandIsIn(BigDecimal lowest, BigDecimal highest, List<Brand> brand);
     List<Product> findAllProductByUnitPriceBetweenAndPlatform(BigDecimal lowest, BigDecimal highest, Platform platform);
-    List<Product> findAllProductByUnitPriceBetweenAndBrandAndPlatform(BigDecimal lowest, BigDecimal highest, Brand brand, Platform platform);
+    List<Product> findAllProductByUnitPriceBetweenAndBrandIsInAndPlatform(BigDecimal lowest, BigDecimal highest, List<Brand> brand, Platform platform);
     @Query(value = "SELECT MIN(unit_price) FROM product", nativeQuery = true)
     Number getLowestPrice();
     @Query(value = "SELECT MAX(unit_price) FROM product", nativeQuery = true)
