@@ -53,8 +53,5 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
             "LIMIT ?1 ", nativeQuery = true)
     List<Tuple> getTopSoldProducts(Integer productsNumber, Date startDate, Date endDate);
 
-   /* @Query(value = "SELECT * FROM product WHERE name ILIKE %:name%", nativeQuery = true)
-    List<Product> searchProductByName(@Param("name") String name);
-*/
     Page<Product> findAllByNameContainingIgnoreCase(Pageable pageable, String name);
 }
