@@ -146,20 +146,36 @@ public class ProductController {
                                           @RequestParam(required = false, value = "platformId") Integer platformId,
                                           @RequestParam(required = false, value = "brandId") List<Integer> brandId,
                                           @RequestParam(required = false, value = "min") BigDecimal min,
-                                          @RequestParam(required = false, value = "max") BigDecimal max) throws ResponseException {
+                                          @RequestParam(required = false, value = "max") BigDecimal max,
+                                          @RequestParam(required = false, value = "productName") String productName) throws ResponseException {
         Page<Product> foundProducts = null;
 
         try{
-            if(platformId != null){
-                if(brandId != null)
-                    foundProducts = productService.findAllByPlatformAndBrand(pageable, min, max, platformId, brandId);
-                else foundProducts = productService.findAllByPlatform(pageable, min, max, platformId);
+            if(productName == null){
+                if(platformId != null){
+                    if(brandId != null)
+                        foundProducts = productService.findAllByPlatformAndBrand(pageable, min, max, platformId, brandId);
+                    else foundProducts = productService.findAllByPlatform(pageable, min, max, platformId);
+                }
+                else{
+                    if(brandId != null)
+                        foundProducts = productService.findAllByBrand(pageable, min, max, brandId);
+                    else foundProducts = productService.findAllProductsPrice(pageable, min, max);
+                }
             }
             else{
-                if(brandId != null)
-                    foundProducts = productService.findAllByBrand(pageable, min, max, brandId);
-                else foundProducts = productService.findAllProductsPrice(pageable, min, max);
+                if(platformId != null){
+                    if(brandId != null)
+                        foundProducts = productService.findAllByPlatformAndBrandAndNameContaining(pageable, min, max, platformId, brandId, productName);
+                    else foundProducts = productService.findAllByPlatformAndNameContaining(pageable, min, max, platformId, productName);
+                }
+                else{
+                    if(brandId != null)
+                        foundProducts = productService.findAllByBrandAndNameContaining(pageable, min, max, brandId, productName);
+                    else foundProducts = productService.findAllProductsPriceAndNameContaining(pageable, min, max, productName);
+                }
             }
+
             return PaginationUtil.getPage(foundProducts, ProductDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
