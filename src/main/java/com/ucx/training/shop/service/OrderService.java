@@ -1,9 +1,9 @@
 package com.ucx.training.shop.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.ucx.training.shop.entity.CartItem;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Order;
-import com.ucx.training.shop.entity.CartItem;
 import com.ucx.training.shop.repository.OrderRepository;
 import com.ucx.training.shop.repository.ProductRepository;
 import com.ucx.training.shop.type.Quartal;
@@ -13,7 +13,6 @@ import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -27,11 +26,11 @@ import java.util.*;
 public class OrderService extends BaseService<Order, Integer> {
 
     @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
     ProductRepository productRepository;
     @Autowired
     EntityManager entityManager;
+    @Autowired
+    private OrderRepository orderRepository;
 
     public Order update(List<CartItem> cartItemList, Customer customer, Order order) {
         if (cartItemList == null || cartItemList.isEmpty()) {
@@ -151,26 +150,24 @@ public class OrderService extends BaseService<Order, Integer> {
 
     public Map<String, Object> getQuartalStats() {
         Map<String, Object> response = new HashMap<>();
-        List<Map<String, Object>> topSoldProducts = new ArrayList<>();
         //this is where we loop for every Quartal
         for (Quartal quartal : Quartal.values()) {
             // The income,orders,and totalProducts sold Stats for the given quartal are obtained
-            Map<String, Object> map = EntityUtil.toMap(orderRepository.getQuartalStats(
+            Tuple quartalStats = orderRepository.getQuartalStats(
                     Date.from(quartal.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
-                    Date.from(quartal.getEndDate().atZone(ZoneId.systemDefault()).toInstant())));
+                    Date.from(quartal.getEndDate().atZone(ZoneId.systemDefault()).toInstant())
+            );
+            Map<String, Object> map = EntityUtil.toMap(quartalStats);
             //the whole quartal data is put in an EnumMap response
             response.put(quartal.name(), map);
         }
         // We obtain top sold products for the whole year
         // Data is obtained as a list of tuples therefore we convert tuples to maps
         // and store them in a list i.e. <topSoldProducts> variable
-        productRepository.getTopSoldProducts(10,
+        List<Tuple> top10SoldProducts = productRepository.getTopSoldProducts(10,
                 Date.from(Quartal.FIRST_QUARTAL.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
-                Date.from(Quartal.FOURTH_QUARTAL.getEndDate().atZone(ZoneId.systemDefault()).toInstant())).
-                stream().
-                forEach(e -> {
-                    topSoldProducts.add(EntityUtil.toMap(e));
-                });
+                Date.from(Quartal.FOURTH_QUARTAL.getEndDate().atZone(ZoneId.systemDefault()).toInstant()));
+        List<Map<String, Object>> topSoldProducts = EntityUtil.ListToMap(top10SoldProducts);
         //The top products sold data is appended to the response
         response.put("topSoldItems", topSoldProducts);
         //response is returned
