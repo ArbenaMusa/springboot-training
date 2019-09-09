@@ -153,20 +153,13 @@ public class ProductController {
         List<Product> foundProducts = null;
 
         try{
-            if(platformId != null && brandId != null){
-                foundProducts = productService.findAllByPlatformAndBrand(min, max, platformId, brandId, priceDirection);
+            if(platformId != null){
+                if(brandId != null) foundProducts = productService.findAllByPlatformAndBrand(min, max, platformId, brandId, priceDirection);
+                else foundProducts = productService.findAllByPlatform(min, max, platformId, priceDirection);
             }
-            else if(platformId != null){
-                foundProducts = productService.findAllByPlatform(min, max, platformId, priceDirection);
-            }
-            else if(brandId != null){
-                foundProducts = productService.findAllByBrand(min, max, brandId, priceDirection);
-            }
-            else if(platformId == null && brandId == null && priceDirection != null){
-                foundProducts = productService.findAllSorted(priceDirection, "unitPrice");
-            }
-            else {
-                foundProducts = productService.findAllProductsPrice(min, max, priceDirection);
+            else{
+                if(brandId != null) foundProducts = productService.findAllByBrand(min, max, brandId, priceDirection);
+                else foundProducts = productService.findAllProductsPrice(min, max, priceDirection);
             }
             return DTOMapper.converToDTOList(foundProducts, ProductDTO.class);
         } catch (Exception e) {
