@@ -17,6 +17,7 @@ import org.hibernate.mapping.Array;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -143,8 +144,8 @@ public class ProductController {
     }
 
     @GetMapping("/allActive")
-    public List<Product> findAllActive() {
-        return productService.findAllActive();
+    public Map<String, Object> findAllActive(@PageableDefault Pageable pageable) throws ResponseException{
+        return PaginationUtil.getPage(productService.findAllActive(pageable),null);
     }
 
     @GetMapping("/filter")
@@ -183,8 +184,13 @@ public class ProductController {
         return productService.getHighestPrice();
     }
 
-    @GetMapping("/nameSearch/{name}")
-    public List<Product> searchProductByName(@PathVariable String name){
-        return this.productService.searchProductByName(name);
+    @GetMapping("/nameSearch/")
+    public Map<String, Object> findAllByNameContaining(@PageableDefault Pageable pageable, @RequestParam("name") String name) throws  ResponseException{
+        try{
+
+            return PaginationUtil.getPage(this.productService.findAllByNameContaining(pageable, name), ProductDTO.class);
+        }catch (Exception e){
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
