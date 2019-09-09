@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.Tuple;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,13 +23,13 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
     Product findByName(String name);
     List<Product> findAllByUnitPrice(BigDecimal unitPrice);
     List<Product> findAllProductByUnitPriceBetween(BigDecimal lowest, BigDecimal highest);
-    List<Product> findAllProductByUnitPriceBetween(BigDecimal lowest, BigDecimal highest, Sort sort);
+//    List<Product> findAllProductByUnitPriceBetween(BigDecimal lowest, BigDecimal highest, Sort sort);
     List<Product> findAllProductByUnitPriceBetweenAndBrand(BigDecimal lowest, BigDecimal highest, Brand brand);
-    List<Product> findAllProductByUnitPriceBetweenAndBrand(BigDecimal lowest, BigDecimal highest, Brand brand, Sort sort);
+//    List<Product> findAllProductByUnitPriceBetweenAndBrand(BigDecimal lowest, BigDecimal highest, Brand brand, Sort sort);
     List<Product> findAllProductByUnitPriceBetweenAndPlatform(BigDecimal lowest, BigDecimal highest, Platform platform);
-    List<Product> findAllProductByUnitPriceBetweenAndPlatform(BigDecimal lowest, BigDecimal highest, Platform platform, Sort sort);
+//    List<Product> findAllProductByUnitPriceBetweenAndPlatform(BigDecimal lowest, BigDecimal highest, Platform platform, Sort sort);
     List<Product> findAllProductByUnitPriceBetweenAndBrandAndPlatform(BigDecimal lowest, BigDecimal highest, Brand brand, Platform platform);
-    List<Product> findAllProductByUnitPriceBetweenAndBrandAndPlatform(BigDecimal lowest, BigDecimal highest, Brand brand, Platform platform, Sort sort);
+//    List<Product> findAllProductByUnitPriceBetweenAndBrandAndPlatform(BigDecimal lowest, BigDecimal highest, Brand brand, Platform platform, Sort sort);
 
     @Query(value = "SELECT MIN(unit_price) FROM product", nativeQuery = true)
     Number getLowestPrice();

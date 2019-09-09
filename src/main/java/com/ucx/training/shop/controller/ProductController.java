@@ -149,9 +149,12 @@ public class ProductController {
     }
 
     @GetMapping("/filter")
-    public List<DTOEntity> findAllFilters(@RequestParam(required = false, value = "platformId") Integer platformId, @RequestParam(required = false, value = "brandId") Integer brandId, @RequestParam(required = false, value = "priceOrder") String priceDirection, @RequestParam(required = false, value = "min") BigDecimal min, @RequestParam(required = false, value = "max") BigDecimal max) throws ResponseException {
+    public List<DTOEntity> findAllFilters(@RequestParam(required = false, value = "platformId") Integer platformId,
+                                          @RequestParam(required = false, value = "brandId") List<Integer> brandId,
+                                          @RequestParam(required = false, value = "priceOrder") String priceDirection,
+                                          @RequestParam(required = false, value = "min") BigDecimal min,
+                                          @RequestParam(required = false, value = "max") BigDecimal max) throws ResponseException {
         List<Product> foundProducts = null;
-
         try{
             if(platformId != null){
                 if(brandId != null) foundProducts = productService.findAllByPlatformAndBrand(min, max, platformId, brandId, priceDirection);

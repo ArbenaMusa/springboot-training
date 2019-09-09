@@ -1,5 +1,6 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.dto.BrandDTO;
 import com.ucx.training.shop.entity.Brand;
 import com.ucx.training.shop.entity.Platform;
 import com.ucx.training.shop.entity.Product;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -103,47 +105,41 @@ public class ProductService extends BaseService<Product, Integer> {
         return productRepository.findAllActive(pageable);
     }
 
-    public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, Integer brandId, String priceDirection) {
-        Brand foundBrand = brandService.findById(brandId);
-        List<Product> foundProducts = null;
-        if (priceDirection == null) {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max, foundBrand);
-        } else {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max, foundBrand, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
+    public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, List<Integer> brandId, String priceDirection) {
+        List<Brand> foundBrand  = new ArrayList();
+        List<Product> foundProducts = new ArrayList();
+        for (Integer id: brandId) {
+            foundBrand.add(brandService.findById(id));
         }
+            for (Brand brand: foundBrand) {
+                foundProducts.addAll(productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max, brand));
+            }
         return foundProducts;
     }
 
     public List<Product> findAllByPlatform(BigDecimal min, BigDecimal max, Integer platformId, String priceDirection) {
         Platform foundPlatform = platformService.findById(platformId);
         List<Product> foundProducts = null;
-        if (priceDirection == null) {
             foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(min, max, foundPlatform);
-        } else {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(min, max, foundPlatform, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
-        }
         return foundProducts;
     }
 
-    public List<Product> findAllByPlatformAndBrand(BigDecimal min, BigDecimal max, Integer platformId, Integer brandId, String priceDirection) {
+    public List<Product> findAllByPlatformAndBrand(BigDecimal min, BigDecimal max, Integer platformId, List<Integer> brandId, String priceDirection) {
         Platform foundPlatform = platformService.findById(platformId);
-        Brand foundBrand = brandService.findById(brandId);
-        List<Product> foundProducts = null;
-        if (priceDirection == null) {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandAndPlatform(min, max, foundBrand, foundPlatform);
-        } else {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandAndPlatform(min, max, foundBrand, foundPlatform, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
+        List<Brand> foundBrand  = new ArrayList();
+        List<Product> foundProducts = new ArrayList();
+        for (Integer id: brandId) {
+            foundBrand.add(brandService.findById(id));
         }
+            for (Brand brand: foundBrand) {
+                foundProducts.addAll(productRepository.findAllProductByUnitPriceBetweenAndBrandAndPlatform(min, max, brand, foundPlatform));
+            }
         return foundProducts;
     }
 
     public List<Product> findAllProductsPrice(BigDecimal lowest, BigDecimal highest, String priceDirection) {
         List<Product> foundProducts = null;
-        if (priceDirection == null) {
             foundProducts = productRepository.findAllProductByUnitPriceBetween(lowest, highest);
-        } else {
-            foundProducts = productRepository.findAllProductByUnitPriceBetween(lowest, highest, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
-        }
         return foundProducts;
     }
 
