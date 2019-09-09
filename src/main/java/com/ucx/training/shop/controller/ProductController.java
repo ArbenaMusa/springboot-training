@@ -184,8 +184,8 @@ public class ProductController {
         return productService.getHighestPrice();
     }
 
-    @GetMapping("/nameSearch/{name}")
-    public Map<String, Object> findAllByNameContaining(@PageableDefault Pageable pageable, @PathVariable String name) throws  ResponseException{
+    @GetMapping("/nameSearch/")
+    public Map<String, Object> findAllByNameContaining(@PageableDefault Pageable pageable, @RequestParam("name") String name) throws  ResponseException{
         try{
 
             return PaginationUtil.getPage(this.productService.findAllByNameContaining(pageable, name), ProductDTO.class);
