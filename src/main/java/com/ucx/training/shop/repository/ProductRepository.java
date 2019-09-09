@@ -18,7 +18,7 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends BaseRepository<Product,Integer> {
     @Query(value = "SELECT * from product where record_status = 'ACTIVE' ", nativeQuery = true)
-    List<Product>  findAllActive();
+    Page<Product> findAllActive(Pageable pageable);
     Product findByName(String name);
     List<Product> findAllByUnitPrice(BigDecimal unitPrice);
     List<Product> findAllProductByUnitPriceBetween(BigDecimal lowest, BigDecimal highest);

@@ -99,8 +99,8 @@ public class ProductService extends BaseService<Product, Integer> {
         }
     }
 
-    public List<Product> findAllActive() {
-        return productRepository.findAllActive();
+    public Page<Product> findAllActive(Pageable pageable) {
+        return productRepository.findAllActive(pageable);
     }
 
     public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, Integer brandId, String priceDirection){

@@ -144,8 +144,8 @@ public class ProductController {
     }
 
     @GetMapping("/allActive")
-    public List<Product> findAllActive() {
-        return productService.findAllActive();
+    public Map<String, Object> findAllActive(@PageableDefault Pageable pageable) throws ResponseException{
+        return PaginationUtil.getPage(productService.findAllActive(pageable),null);
     }
 
     @GetMapping("/filter")
