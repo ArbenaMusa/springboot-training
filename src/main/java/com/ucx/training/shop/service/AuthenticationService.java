@@ -1,6 +1,7 @@
 package com.ucx.training.shop.service;
 
 import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.entity.Role;
 import com.ucx.training.shop.entity.User;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.type.RecordStatus;
@@ -19,6 +20,7 @@ public class AuthenticationService {
     private UserService userService;
     @Autowired
     private CustomerService customerService;
+    private RoleService roleService;
 
     //LOGIN
     public Map<String, String> login(String email, String password) throws NotFoundException {
@@ -46,7 +48,6 @@ public class AuthenticationService {
         Map<String, String> resultUser = new HashMap<>();
         resultUser.put("userId", foundUser.getId().toString());
         resultUser.put("customerId", foundCustomer.getId().toString());
-        /*resultUser.put("role", foundUser.getRole().getName());*/
         resultUser.put("accessToken", JwtUtil.getAccessToken(foundUser));
         resultUser.put("refreshToken", JwtUtil.getRefreshToken(foundUser));
 
@@ -54,6 +55,22 @@ public class AuthenticationService {
     }
 
     //REGISTER
+    public Customer save(Customer customer) {
+        if (customer.getAddresses() != null && !customer.getAddresses().isEmpty()) {
+            customer.getAddresses().forEach(e -> e.setCustomer(customer));
+        }
+        final Integer CUSTOMER_ROLE_ID = 2;
+        final Role role = roleService.findById(CUSTOMER_ROLE_ID);
+
+        if (customer.getUser() != null) {
+            if (role != null) customer.getUser().setRole(role);
+            if (customer.getEmail() != null) customer.getUser().setEmail(customer.getEmail());
+            String password = customer.getUser().getPassword();
+            String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
+            customer.getUser().setPassword(encodedPassword);
+        }
+        return customerService.save(customer);
+    }
 
     //FORGOT-PASSWORD
 

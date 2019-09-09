@@ -96,28 +96,6 @@ public class CustomerService extends BaseService<Customer, Integer> {
         }
     }
 
-    private void updatePhones(Customer foundCustomer, Set<Phone> phones) throws NotFoundException {
-        for (Phone phone : phones) {
-            if (phone.getId() == null) {
-                phone.setCustomer(foundCustomer);
-                phoneService.save(phone);
-            } else {
-                Phone foundPhone = phoneService.findById(phone.getId());
-                if (foundPhone == null) {
-                    throw new NotFoundException("Address with the given id does not exist!");
-                }
-                if (!foundPhone.getCustomer().equals(foundCustomer)) {
-                    throw new RuntimeException("This address does not belong to this customer");
-                }
-                phoneService.update(phone, foundPhone.getId());
-            }
-        }
-    }
-
-//    public Tuple readByCostumerId(Integer id) {
-//        return customerRepository.readCostumerById(id);
-//    }
-
     public List<Customer> findAllCustomers() {
         return customerRepository.findAll();
     }

@@ -47,11 +47,11 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
             "  AND P.record_status = 'ACTIVE'\n" +
             "  AND F.record_status = 'ACTIVE'\n" +
             "  AND O.record_status = 'ACTIVE'\n" +
-            "  AND O.create_date_time BETWEEN ?2 AND ?3\n" +
+            "  AND O.create_date_time BETWEEN :startDate AND :endDate\n" +
             "GROUP BY P.id, F.file_name\n" +
             "ORDER BY pcsSold Desc\n" +
-            "LIMIT ?1 ", nativeQuery = true)
-    List<Tuple> getTopSoldProducts(Integer productsNumber, Date startDate, Date endDate);
+            "LIMIT :productsNumber ", nativeQuery = true)
+    List<Tuple> getTopSoldProducts(@Param("productsNumber") Integer productsNumber, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     Page<Product> findAllByNameContainingIgnoreCase(Pageable pageable, String name);
 }

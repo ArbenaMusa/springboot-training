@@ -3,6 +3,7 @@ package com.ucx.training.shop.service;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Order;
 import com.ucx.training.shop.entity.CartItem;
+import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.util.LicenseUtil;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,6 +16,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -42,22 +45,32 @@ public class EmailService {
         List<CartItem> list = order.getCart();
         File file = new File("Invoice.txt");
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
-            writer.write("Customer name: " + customer.getName() +
-                    "\n------------------------------------------------");
-            list.forEach(e ->
-                    writer.write("\nProduct name: " + e.getProduct().getName() +
-                            "\nProduct price: " + e.getProduct().getUnitPrice() + " €" +
-                            "  x" + e.getQuantity().toString() +
-                            "\nPrice: " + (e.getQuantity().intValue()* e.getProduct().getUnitPrice().intValue()) + " €"  +
-                            "\nLicense Codes: " + LicenseUtil.generateLicence(e.getQuantity()) + " " ));
-            writer.write("\n------------------------------------------------" +
-                    "\nPurchase date: " + order.getCreateDateTime() +
-                    "\n------------------------------------------------" +
-                    "\nTotal: " + order.getTotal() + " €");
+            StringBuilder message = new StringBuilder();
+            final String seperator = "\n------------------------------------------------\n";
+            message.append(String.format("Customer name: %s", customer.getName()));
+            message.append(seperator);
+            list.forEach(e -> message.append(getValues(e)));
+            message.append(seperator);
+            message.append(String.format("Purchase date: %s", order.getCreateDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+            message.append(seperator);
+            message.append(String.format("Total: %.2f €", order.getTotal()));
+            writer.write(message.toString());
         } catch (IOException e) {
             throw e;
         }
         return file;
+    }
+
+    private String getValues(CartItem e) {
+        final Product cartProduct = e.getProduct();
+        final Integer productQuantity = e.getQuantity();
+        final BigDecimal unitPrice = cartProduct.getUnitPrice();
+        return String.format("%nProduct name: %s %nProduct price: %.2f € x %d %nProduct total: %.2f€ %nLicense Codes: %s%n",
+                cartProduct.getName(),
+                unitPrice,
+                productQuantity,
+                unitPrice.multiply(BigDecimal.valueOf(productQuantity)),
+                LicenseUtil.generateLicence(productQuantity));
     }
 
     public void send(MimeMessage msg){
