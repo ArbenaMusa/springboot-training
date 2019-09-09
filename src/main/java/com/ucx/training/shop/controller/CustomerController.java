@@ -1,6 +1,5 @@
 package com.ucx.training.shop.controller;
 
-import com.ucx.training.shop.dto.BrandDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.entity.Customer;
@@ -8,18 +7,15 @@ import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
 import com.ucx.training.shop.service.AddressService;
 import com.ucx.training.shop.service.CustomerService;
-import com.ucx.training.shop.util.EntityUtil;
 import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
 import lombok.extern.log4j.Log4j2;
-import org.apache.catalina.connector.RequestFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Tuple;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
@@ -78,7 +74,7 @@ public class CustomerController {
 
     @GetMapping("{costumerId}")
     public DTOEntity getById(@PathVariable Integer costumerId) {
-        log.info( "SERVLET INFO: " + httpServletRequest.getScheme() + " " + httpServletRequest.getServerName() + " " + httpServletRequest.getServerPort());
+        log.info("SERVLET INFO: " + httpServletRequest.getScheme() + " " + httpServletRequest.getServerName() + " " + httpServletRequest.getServerPort());
         Customer foundCustomer = customerService.findById(costumerId);
         return DTOMapper.convertToDto(foundCustomer, CustomerDTO.class);
     }
@@ -112,12 +108,6 @@ public class CustomerController {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-//
-//    @GetMapping("/read/{id}")
-//    public Map<String, Object> readById(@PathVariable Integer id) {
-//        Tuple tuple = customerService.readByCostumerId(id);
-//        return EntityUtil.toMap(tuple);
-//    }
 
     @GetMapping("/allActive")
     public List<Customer> findAllActive() {

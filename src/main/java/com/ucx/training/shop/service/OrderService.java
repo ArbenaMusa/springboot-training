@@ -43,14 +43,18 @@ public class OrderService extends BaseService<Order, Integer> {
         if (order == null) {
             throw new IllegalArgumentException("Invoice must not be null");
         }
-        BigDecimal total = cartItemList
-                .stream()
-                .map(e -> e.getProduct().getUnitPrice().multiply(BigDecimal.valueOf(e.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal total = calculateTotal(cartItemList);
         order.setCart(cartItemList);
         order.setCustomer(customer);
         order.setTotal(total);
         return order;
+    }
+
+    private BigDecimal calculateTotal(List<CartItem> cartItemList) {
+        return cartItemList
+                .stream()
+                .map(e -> e.getProduct().getUnitPrice().multiply(BigDecimal.valueOf(e.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public Order print(Integer id) {

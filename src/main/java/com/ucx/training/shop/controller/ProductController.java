@@ -11,28 +11,19 @@ import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.FileUploadUtil;
 import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
-import com.ucx.training.shop.util.uimapper.ProductMapper;
 import lombok.extern.log4j.Log4j2;
-import net.bytebuddy.implementation.bind.annotation.Default;
-import org.hibernate.mapping.Array;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Tuple;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,7 +48,7 @@ public class ProductController {
     public DTOEntity create(@RequestBody Product product) throws ResponseException {
         Product createdProduct = null;
         try {
-            createdProduct = productService.createProductWithPlatformAndBrand(product);
+            createdProduct = productService.create(product);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -72,7 +63,7 @@ public class ProductController {
     @PutMapping("/{productId}")
     public void update(@RequestBody Product product, @PathVariable Integer productId) throws ResponseException {
         try {
-            productService.createProductWithPlatformAndBrand(product);
+            productService.create(product);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

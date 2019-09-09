@@ -23,8 +23,8 @@ public class PaymentController {
     }
 
     @PostMapping("/charge")
-    public void chargeCreditCard(@RequestParam("amount") BigDecimal amount) {
-        this.stripePayment.chargeCreditCard(amount);
+    public void chargeCreditCard(@RequestParam("amount") BigDecimal amount,@RequestParam("customerId") int customerId) {
+        this.stripePayment.chargeCreditCard(amount,customerId);
     }
 
     @GetMapping

@@ -51,7 +51,7 @@ public class OrderController {
     public List<LineItemDTO> getLineItemsByInvoiceId(@PathVariable Integer invoiceId) throws ResponseException {
         try {
             List<LineItemDTO> lineItemDTOs = new ArrayList<>();
-            lineItemDTOs = LineItemMapper.getLineItems(cartItemService.findAllByInvoiceId(invoiceId));
+            lineItemDTOs = LineItemMapper.getLineItems(cartItemService.findAllByOrderId(invoiceId));
             return lineItemDTOs;
         } catch (IllegalArgumentException | NotFoundException e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
