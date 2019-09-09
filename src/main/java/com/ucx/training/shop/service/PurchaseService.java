@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,14 +46,12 @@ public class PurchaseService {
 
         Order order = new Order();
         order.setCustomer(foundCustomer);
-        if (purchaseDTO.getTotal() != null) {
-            order.setTotal(purchaseDTO.getTotal());
-        }
         verifyAddress(purchaseDTO, order);
         Order createdOrder = orderService.save(order);
-
         List<CartDTO> requestList = purchaseDTO.getCart();
         List<CartItem> cart = this.fillCart(createdOrder, requestList);
+        BigDecimal total = this.calculateTotal(cart);
+        createdOrder.setTotal(total);
         createdOrder.setCart(cart);
 
         emailService.sendMail(foundCustomer, createdOrder);
@@ -70,6 +69,13 @@ public class PurchaseService {
             cartItems.add(createdCartItem);
         }
         return cartItems;
+    }
+
+    private BigDecimal calculateTotal(List<CartItem> cartItemList) {
+        return cartItemList
+                .stream()
+                .map(e -> e.getProduct().getUnitPrice().multiply(BigDecimal.valueOf(e.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private void verifyAddress(PurchaseDTO purchaseDTO, Order order) {

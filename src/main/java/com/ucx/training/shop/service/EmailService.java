@@ -37,7 +37,8 @@ public class EmailService {
         helper.setTo(customer.getEmail());
         helper.setSubject("Invoice for your purchase!");
         helper.setText("Thank you for your purchase! Below you can find the order receipt and the activation link: " + LINK_ACTIVATE);
-        helper.addAttachment("Invoice.txt",createFile(customer, order));
+        File createdInvoice = createFile(customer, order);
+        helper.addAttachment("Invoice", createdInvoice);
         send(msg);
     }
 
@@ -46,13 +47,14 @@ public class EmailService {
         File file = new File("Invoice.txt");
         try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
             StringBuilder message = new StringBuilder();
-            final String seperator = "\n------------------------------------------------\n";
+            final String SEPARATOR = "\n------------------------------------------------\n";
             message.append(String.format("Customer name: %s", customer.getName()));
-            message.append(seperator);
-            list.forEach(e -> message.append(getValues(e)));
-            message.append(seperator);
-            message.append(String.format("Purchase date: %s", order.getCreateDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-            message.append(seperator);
+            message.append(SEPARATOR);
+            list.forEach(e -> message.append(getValuesToString(e)));
+            message.append(SEPARATOR);
+            DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mma");
+            message.append(String.format("Purchase date: %s", order.getCreateDateTime().format(customFormatter)));
+            message.append(SEPARATOR);
             message.append(String.format("Total: %.2f €", order.getTotal()));
             writer.write(message.toString());
         } catch (IOException e) {
@@ -61,16 +63,21 @@ public class EmailService {
         return file;
     }
 
-    private String getValues(CartItem e) {
-        final Product cartProduct = e.getProduct();
-        final Integer productQuantity = e.getQuantity();
-        final BigDecimal unitPrice = cartProduct.getUnitPrice();
+    /**
+     * Takes a CartItem and returns a String containing all CartItem information.
+     * @param cartItem
+     * @return
+     */
+    private String getValuesToString(CartItem cartItem) {
+        final Product CART_PRODUCT = cartItem.getProduct();
+        final Integer PRODUCT_QUANTITY = cartItem.getQuantity();
+        final BigDecimal UNIT_PRICE = CART_PRODUCT.getUnitPrice();
         return String.format("%nProduct name: %s %nProduct price: %.2f € x %d %nProduct total: %.2f€ %nLicense Codes: %s%n",
-                cartProduct.getName(),
-                unitPrice,
-                productQuantity,
-                unitPrice.multiply(BigDecimal.valueOf(productQuantity)),
-                LicenseUtil.generateLicence(productQuantity));
+                CART_PRODUCT.getName(),
+                UNIT_PRICE,
+                PRODUCT_QUANTITY,
+                UNIT_PRICE.multiply(BigDecimal.valueOf(PRODUCT_QUANTITY)),
+                LicenseUtil.generateLicence(PRODUCT_QUANTITY));
     }
 
     public void send(MimeMessage msg){
