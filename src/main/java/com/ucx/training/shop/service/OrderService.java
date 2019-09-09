@@ -71,29 +71,45 @@ public class OrderService extends BaseService<Order, Integer> {
 
     public List<JsonNode> readOrderHistory(Pageable pageable, String customerId, String orderId, String customerName) {
         StringBuilder query = new StringBuilder();
-        query.append("Select row_to_json (data) as result from\n")
-                .append("    (select customer.name as \"customerName\", customer.id as \"customerId\",torder.id as \"orderId\",torder.create_date_time as \"orderTime\", torder.total as \"total\"\n")
-                .append("          ,(\n")
-                .append("            select array_to_json(array_agg(row_to_json(d))) as itemsPurchased\n")
-                .append("            from\n")
-                .append("                (\n")
-                .append("    select cart_item.product_id,product.name,cart_item.quantity from cart_item\n")
-                .append("    inner join product on cart_item.product_id=product.id and cart_item.order_id=torder.id\n")
-                .append(" and cart_item.record_status like 'ACTIVE' and product.record_status like 'ACTIVE' \n")
-                .append("                ) d\n")
-                .append("        )\n")
-                .append("     from \"order\" torder inner join customer on torder.customer_id=customer.id \n")
-                .append("where torder.record_status like 'ACTIVE' and customer.record_status like 'ACTIVE' ");
+        query.append("SELECT row_to_json(orderhistorytable) AS result\n")
+                .append("FROM   (\n")
+                .append("  SELECT   \"totalFilteredOrders\",\n")
+                .append("   (\n")
+                .append("   SELECT array_to_json(array_agg(row_to_json(data)))) AS \"filteredOrdersPage\"\n")
+                .append("   FROM     (\n")
+                .append("   SELECT     customer.NAME           AS \"customerName\" ,\n")
+                .append("   customer.id             AS \"customerId\" ,\n")
+                .append("   torder.id               AS \"orderId\" ,\n")
+                .append("   torder.create_date_time AS \"orderTime\" ,\n")
+                .append("   torder.total            AS \"total\" ,\n")
+                .append("   Count(*) OVER()         AS \"totalFilteredOrders\" ,\n")
+                .append("   (SELECT array_to_json(array_agg(row_to_json(d))) AS itemspurchased\n")
+                .append("   FROM   ( SELECT     cart_item.product_id,\n")
+                .append("   product.NAME,\n")
+                .append("   cart_item.quantity\n")
+                .append("   FROM       cart_item\n")
+                .append("   INNER JOIN product\n")
+                .append("   ON         cart_item.product_id = product.id\n")
+                .append("   AND        cart_item.order_id = torder.id\n")
+                .append("   AND        cart_item.record_status LIKE 'ACTIVE'\n")
+                .append("   AND        product.record_status LIKE 'ACTIVE' ) d )\n")
+                .append("   FROM       \"order\" torder\n")
+                .append("   INNER JOIN customer\n")
+                .append("   ON         torder.customer_id = customer.id\n")
+                .append("   WHERE      torder.record_status LIKE 'ACTIVE'\n")
+                .append("   AND        customer.record_status LIKE 'ACTIVE'\n");
+
+
         if (customerId != null) {
-            query.append(" and customer.id = "+customerId+" ");
+            query.append(" and customer.id = " + customerId + " ");
+        } else if (orderId != null) {
+            query.append(" and torder.id =" + orderId + " ");
+        } else if (customerName != null) {
+            query.append(" and lower(customer.name) like '" + customerName.toLowerCase() + "%' ");
         }
-        else if(orderId != null){
-            query.append(" and torder.id ="+orderId+" ");
-        }
-        else if(customerName != null){
-            query.append(" and lower(customer.name) like '"+customerName.toLowerCase()+"%' ");
-        }
-        query.append(") data limit ?1 offset ?2");
+        query.append("ORDER BY torder.id ASC limit ?1 offset ?2 ) data\n")
+                .append(" GROUP BY \"totalFilteredOrders\" ) orderhistorytable; ");
+
         List<JsonNode> list = entityManager.createNativeQuery(query.toString())
                 .unwrap(NativeQuery.class)
                 .addScalar("result", new JsonNodeBinaryType())

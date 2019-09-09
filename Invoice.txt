@@ -1,14 +1,18 @@
-Customer name: Durim Gashi
+Customer name: donald donald
 ------------------------------------------------
-Product name: Mortal Kombat
-Product price: 65.00 €  x1
-Price: 65 €
-License Codes: [ZOKPB-1S0XY-EKXQ3] 
-Product name: Assassins Creed
-Product price: 43.00 €  x1
-Price: 43 €
-License Codes: [OUJFA-0NLAI-O0NB1] 
+Product name: Kingdom Come: Deliverance
+Product price: 14.00 â‚¬  x2
+Price: 28 â‚¬
+License Codes: [W8TK8-XHI0K-3YH76, XWLVS-ERADM-KZIU4] 
+Product name: DIRT
+Product price: 35.00 â‚¬  x3
+Price: 105 â‚¬
+License Codes: [3HH6C-0HO1X-DEH49, EA8WT-HY3CU-42W5J, MR58Y-W1KI1-FKZOV] 
+Product name: GTA V
+Product price: 45.99 â‚¬  x3
+Price: 135 â‚¬
+License Codes: [ZCN59-1CSB4-GN1XD, 8PF07-ATVHW-1E4EB, 1180R-X2723-KJ8RV] 
 ------------------------------------------------
-Purchase date: 2019-09-05T16:22:56.745892100
+Purchase date: 2019-09-06T21:58:42.652425400
 ------------------------------------------------
-Total: 108 €
+Total: 270.97 â‚¬
