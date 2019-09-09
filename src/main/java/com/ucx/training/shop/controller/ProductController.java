@@ -13,6 +13,7 @@ import com.ucx.training.shop.util.PaginationUtil;
 import com.ucx.training.shop.util.uimapper.DTOMapper;
 import com.ucx.training.shop.util.uimapper.ProductMapper;
 import lombok.extern.log4j.Log4j2;
+import net.bytebuddy.implementation.bind.annotation.Default;
 import org.hibernate.mapping.Array;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -149,21 +150,25 @@ public class ProductController {
     }
 
     @GetMapping("/filter")
-    public List<DTOEntity> findAllFilters(@RequestParam(required = false, value = "platformId") Integer platformId,
+    public Map<String, Object> findAllFilters(@PageableDefault Pageable pageable,
+                                          @RequestParam(required = false, value = "platformId") Integer platformId,
                                           @RequestParam(required = false, value = "brandId") List<Integer> brandId,
                                           @RequestParam(required = false, value = "min") BigDecimal min,
                                           @RequestParam(required = false, value = "max") BigDecimal max) throws ResponseException {
-        List<Product> foundProducts = null;
+        Page<Product> foundProducts = null;
+
         try{
             if(platformId != null){
-                if(brandId != null) foundProducts = productService.findAllByPlatformAndBrand(min, max, platformId, brandId);
-                else foundProducts = productService.findAllByPlatform(min, max, platformId);
+                if(brandId != null)
+                    foundProducts = productService.findAllByPlatformAndBrand(pageable, min, max, platformId, brandId);
+                else foundProducts = productService.findAllByPlatform(pageable, min, max, platformId);
             }
             else{
-                if(brandId != null) foundProducts = productService.findAllByBrand(min, max, brandId);
-                else foundProducts = productService.findAllProductsPrice(min, max);
+                if(brandId != null)
+                    foundProducts = productService.findAllByBrand(pageable, min, max, brandId);
+                else foundProducts = productService.findAllProductsPrice(pageable, min, max);
             }
-            return DTOMapper.converToDTOList(foundProducts, ProductDTO.class);
+            return PaginationUtil.getPage(foundProducts, ProductDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

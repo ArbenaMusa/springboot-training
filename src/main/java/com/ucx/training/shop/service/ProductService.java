@@ -105,37 +105,37 @@ public class ProductService extends BaseService<Product, Integer> {
         return productRepository.findAllActive(pageable);
     }
 
-    public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, List<Integer> brandId) {
+    public Page<Product> findAllByBrand(Pageable pageable, BigDecimal min, BigDecimal max, List<Integer> brandId) {
         List<Brand> foundBrand  = new ArrayList();
-        List<Product> foundProducts = new ArrayList();
+        Page<Product> foundProducts = null;
         for (Integer id: brandId) {
             foundBrand.add(brandService.findById(id));
         }
-        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsIn(min, max, foundBrand);
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsIn(pageable, min, max, foundBrand);
         return foundProducts;
     }
 
-    public List<Product> findAllByPlatform(BigDecimal min, BigDecimal max, Integer platformId) {
+    public Page<Product> findAllByPlatform(Pageable pageable, BigDecimal min, BigDecimal max, Integer platformId) {
         Platform foundPlatform = platformService.findById(platformId);
-        List<Product> foundProducts = null;
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(min, max, foundPlatform);
+        Page<Product> foundProducts = null;
+            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(pageable, min, max, foundPlatform);
         return foundProducts;
     }
 
-    public List<Product> findAllByPlatformAndBrand(BigDecimal min, BigDecimal max, Integer platformId, List<Integer> brandId) {
+    public Page<Product> findAllByPlatformAndBrand(Pageable pageable, BigDecimal min, BigDecimal max, Integer platformId, List<Integer> brandId) {
         Platform foundPlatform = platformService.findById(platformId);
         List<Brand> foundBrand  = new ArrayList();
-        List<Product> foundProducts = new ArrayList();
+        Page<Product> foundProducts = null;
         for (Integer id: brandId) {
             foundBrand.add(brandService.findById(id));
         }
-        foundProducts.addAll(productRepository.findAllProductByUnitPriceBetweenAndBrandIsInAndPlatform(min, max, foundBrand, foundPlatform));
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsInAndPlatform(pageable, min, max, foundBrand, foundPlatform);
         return foundProducts;
     }
 
-    public List<Product> findAllProductsPrice(BigDecimal lowest, BigDecimal highest) {
-        List<Product> foundProducts = null;
-            foundProducts = productRepository.findAllProductByUnitPriceBetween(lowest, highest);
+    public Page<Product> findAllProductsPrice(Pageable pageable, BigDecimal lowest, BigDecimal highest) {
+        Page<Product> foundProducts = null;
+            foundProducts = productRepository.findAllProductByUnitPriceBetween(pageable, lowest, highest);
         return foundProducts;
     }
 
