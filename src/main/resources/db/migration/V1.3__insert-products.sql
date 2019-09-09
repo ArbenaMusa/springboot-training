@@ -28,6 +28,9 @@ CREATE table IF NOT EXISTS public.product
     PRIMARY KEY (id)
 );
 
+create index if not exists name_idx
+    on product (name);
+
 CREATE table IF NOT EXISTS public.file_upload
 (
     id                integer not null default nextval('public.product_id_seq'::regclass),
