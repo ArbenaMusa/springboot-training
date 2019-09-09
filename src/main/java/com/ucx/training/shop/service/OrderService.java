@@ -69,7 +69,7 @@ public class OrderService extends BaseService<Order, Integer> {
     }
 
 
-    public List<JsonNode> readOrderHistory(Pageable pageable, String customerId, String orderId, String customerName) {
+    public List<JsonNode> readOrderHistory(Pageable pageable, Integer customerId, Integer orderId, String customerName) {
         StringBuilder query = new StringBuilder();
         query.append("SELECT row_to_json(orderhistorytable) AS result\n")
                 .append("FROM   (\n")

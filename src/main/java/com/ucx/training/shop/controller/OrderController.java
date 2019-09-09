@@ -92,8 +92,8 @@ public class OrderController {
 
     @GetMapping("/history/paged")
     public ResponseEntity<List<JsonNode>> getOrderHistory(@PageableDefault Pageable pageable,
-                                                          @RequestParam(name = "customerId", required = false) String customerId,
-                                                          @RequestParam(name = "orderId", required = false) String orderId,
+                                                          @RequestParam(name = "customerId", required = false) Integer customerId,
+                                                          @RequestParam(name = "orderId", required = false) Integer orderId,
                                                           @RequestParam(name = "customerName", required = false) String customerName) throws ResponseException {
         try {
             return ResponseEntity.ok().body(orderService.readOrderHistory(pageable, customerId, orderId, customerName));
