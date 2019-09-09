@@ -38,21 +38,13 @@ public class CartItemService extends BaseService<CartItem, Integer> {
         return save(cartItem);
     }
 
-    public List<CartItem> findAllByOrderAndRecordStatusActive(Order order) {
-        if (order == null) {
-            throw new IllegalArgumentException("Null argument provided!");
-        }
-        return cartItemRepository.findAllByOrderAndRecordStatus(order, RecordStatus.ACTIVE);
-    }
-
-    public List<CartItem> findAllByInvoiceId(Integer invoiceId) throws NotFoundException {
-        if (invoiceId == null) {
+    public List<CartItem> findAllByOrderId(Integer orderId) throws NotFoundException {
+        if (orderId == null) {
             throw new IllegalArgumentException("Invoice ID cannot be null .-");
         }
-        List<CartItem> cartItemList = new ArrayList<>();
-        cartItemList = cartItemRepository.findAllByOrderIdAndRecordStatus(invoiceId, RecordStatus.ACTIVE);
-        if (cartItemList.size()==0) {
-            throw new NotFoundException("There are no lineitems with the given invoice id!" + invoiceId);
+        List<CartItem> cartItemList = cartItemRepository.findAllByOrderIdAndRecordStatus(orderId, RecordStatus.ACTIVE);
+        if (cartItemList.size() == 0) {
+            throw new NotFoundException("There are no cart items with the given invoice id!" + orderId);
         }
         return cartItemList;
     }

@@ -47,7 +47,7 @@ public class ProductService extends BaseService<Product, Integer> {
     }
 
 
-    public Product createProductWithPlatformAndBrand(Product product) throws NotFoundException {
+    public Product create(Product product) throws NotFoundException {
         if (product == null) {
             throw new IllegalArgumentException("Given product is null");
         }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,66 +37,48 @@ public class PurchaseService {
         this.addressService = addressService;
     }
 
-    public Integer addToCart(Integer productId, Integer quantity, Integer invoiceId) throws NotFoundException {
-        Integer newInvoiceId;
-        Product foundProduct = productService.findById(productId);
-        if (foundProduct == null) throw new NotFoundException("Product could not be found!");
-        if (foundProduct.getRecordStatus() == RecordStatus.INACTIVE)
-            throw new IllegalArgumentException("Product is deleted! " + foundProduct);
-        if (quantity == null) throw new IllegalArgumentException("No quantity provided!");
-
-        if (invoiceId == null) {
-            Order order = new Order();
-            Order createdOrder = orderService.save(order);
-            cartItemService.create(foundProduct, quantity, createdOrder);
-            newInvoiceId = createdOrder.getId();
-        } else {
-            Order foundOrder = orderService.findById(invoiceId);
-            if (foundOrder == null) throw new NotFoundException("No such Invoice found");
-            if (foundOrder.getRecordStatus() == RecordStatus.INACTIVE)
-                throw new IllegalArgumentException("Invoice is deleted! " + foundOrder);
-            cartItemService.create(foundProduct, quantity, foundOrder);
-            newInvoiceId = invoiceId;
-        }
-
-        return newInvoiceId;
-    }
-
-    public Order buy(Integer costumerId, Integer invoiceId) throws NotFoundException, MessagingException, IOException {
-        Order foundOrder = orderService.findById(invoiceId);
-        if (foundOrder == null) throw new NotFoundException("No such Invoice found" + invoiceId);
-        if (foundOrder.getRecordStatus() == RecordStatus.INACTIVE)
-            throw new IllegalArgumentException("Order is deleted: " + foundOrder);
-        Customer foundCustomer = customerService.findById(costumerId);
-        if (foundCustomer == null) throw new NotFoundException("No such Costumer found" + costumerId);
-        if (foundCustomer.getRecordStatus() == RecordStatus.INACTIVE)
-            throw new IllegalArgumentException("Costumer is deleted: " + foundCustomer);
-        List<CartItem> cartItemList = cartItemService.findAllByOrderAndRecordStatusActive(foundOrder);
-        Order generatedOrder = orderService.update(cartItemList, foundCustomer, foundOrder);
-        Order printedOrder = orderService.print(generatedOrder.getId());
-        reduceStock(cartItemList);
-
-        emailService.sendMail(foundCustomer, generatedOrder);
-        return printedOrder;
-    }
-
     @org.springframework.transaction.annotation.Transactional
-    public Order newBuy(PurchaseDTO purchaseDTO) throws NotFoundException, MessagingException, IOException {
-        if (purchaseDTO == null) {
-            throw new IllegalArgumentException("The sent purchase is null");
-        }
-        if (purchaseDTO.getCustomerId() == null) {
-            throw new IllegalArgumentException("You must send a customer id");
-        }
+    public Order buy(PurchaseDTO purchaseDTO) throws NotFoundException, MessagingException, IOException {
+        if (purchaseDTO == null) throw new IllegalArgumentException("The sent purchase is null");
+        if (purchaseDTO.getCustomerId() == null) throw new IllegalArgumentException("You must send a customer id");
         Customer foundCustomer = customerService.findById(purchaseDTO.getCustomerId());
-        if (foundCustomer == null) {
-            throw new RuntimeException("There isn't a customer with the given id");
-        }
+        if (foundCustomer == null) throw new RuntimeException("There isn't a customer with the given id");
+
         Order order = new Order();
         order.setCustomer(foundCustomer);
-        if (purchaseDTO.getTotal() != null) {
-            order.setTotal(purchaseDTO.getTotal());
+        verifyAddress(purchaseDTO, order);
+        Order createdOrder = orderService.save(order);
+        List<CartDTO> requestList = purchaseDTO.getCart();
+        List<CartItem> cart = this.fillCart(createdOrder, requestList);
+        BigDecimal total = this.calculateTotal(cart);
+        createdOrder.setTotal(total);
+        createdOrder.setCart(cart);
+
+        emailService.sendMail(foundCustomer, createdOrder);
+        return createdOrder;
+    }
+
+    private List<CartItem> fillCart(Order createdOrder, List<CartDTO> requestList) {
+        List<CartItem> cartItems = new ArrayList<>();
+        for (CartDTO item : requestList) {
+            Product foundProduct = productService.findById(item.getProductId());
+            if (foundProduct == null) {
+                throw new RuntimeException("Given id does not exist");
+            }
+            CartItem createdCartItem = cartItemService.create(foundProduct, item.getQuantity(), createdOrder);
+            cartItems.add(createdCartItem);
         }
+        return cartItems;
+    }
+
+    private BigDecimal calculateTotal(List<CartItem> cartItemList) {
+        return cartItemList
+                .stream()
+                .map(e -> e.getProduct().getUnitPrice().multiply(BigDecimal.valueOf(e.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private void verifyAddress(PurchaseDTO purchaseDTO, Order order) {
         if (purchaseDTO.getAddress() != null) {
             Address address = AddressMapper.mapToAddress(purchaseDTO.getAddress());
             if (address.getId() != null) {
@@ -108,78 +91,6 @@ public class PurchaseService {
             } else {
                 order.setAddress(address);
             }
-
         }
-        Order createdOrder = orderService.save(order);
-        List<CartItem> cartItems = new ArrayList<>();
-        List<CartDTO> requestList = purchaseDTO.getCart();
-        for (CartDTO item : requestList) {
-            Product foundProduct = productService.findById(item.getProductId());
-            if (foundProduct == null) {
-                throw new RuntimeException("Given id does not exist");
-            }
-            CartItem createdCartItem = cartItemService.create(foundProduct, item.getQuantity(), createdOrder);
-            cartItems.add(createdCartItem);
-        }
-        createdOrder.setCart(cartItems);
-        reduceStock(cartItems);
-
-
-        emailService.sendMail(foundCustomer, createdOrder);
-        return createdOrder;
-    }
-
-    //Reduces stock of Product from quantity given
-    private void reduceStock(List<CartItem> cartItemList) {
-        cartItemList.forEach(lineItem -> {
-            Product product = lineItem.getProduct();
-        });
-    }
-
-    public CartItem cancelLineItem(Integer lineItemId) throws NotFoundException {
-        if (lineItemId == null) {
-            throw new IllegalArgumentException("LineItem ID cannot be null!");
-        }
-        CartItem foundCartItem = cartItemService.findById(lineItemId);
-        if (foundCartItem == null) {
-            throw new NotFoundException("LineItem does not exist");
-        }
-        foundCartItem.setRecordStatus(RecordStatus.INACTIVE);
-        return foundCartItem;
-    }
-
-    public Order cancelPurchase(Integer invoiceId) throws NotFoundException {
-        if (invoiceId == null) throw new IllegalArgumentException("Invoice ID cannot be null!");
-        Order foundOrder = orderService.findById(invoiceId);
-        if (foundOrder == null) throw new NotFoundException("Invoice does not exist" + invoiceId);
-        if (!foundOrder.getCart().isEmpty()) {
-            foundOrder.getCart().forEach(lineItem -> {
-                try {
-                    cancelLineItem(lineItem.getId());
-                } catch (NotFoundException e) {
-                    log.error(e.getMessage());
-                }
-            });
-        }
-        foundOrder.setRecordStatus(RecordStatus.INACTIVE);
-        return foundOrder;
-    }
-
-    public CartItem changeQuantity(CartItem cartItem, Integer lineItemId) throws NotFoundException {
-        if (lineItemId == null) {
-            throw new IllegalArgumentException("LineItem cannot be null!");
-        }
-        CartItem foundCartItem = cartItemService.findById(lineItemId);
-        if (foundCartItem == null) {
-            throw new NotFoundException("Line item does not exist");
-        }
-        if (foundCartItem.getRecordStatus() == RecordStatus.INACTIVE) {
-            throw new RuntimeException("This line item was deleted!");
-        }
-        if (cartItem.getQuantity().equals(0)) {
-            return cancelLineItem(lineItemId);
-        }
-        foundCartItem.setQuantity(cartItem.getQuantity());
-        return foundCartItem;
     }
 }
