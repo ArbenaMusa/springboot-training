@@ -29,7 +29,7 @@ public abstract class BaseEntity<T> {
     private LocalDateTime deletedDateTime;
 
     @Column(length = 1000)
-    private String description;
+    private String comment;
 
     @Version
     private Long version;
