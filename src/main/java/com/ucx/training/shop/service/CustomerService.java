@@ -2,7 +2,6 @@ package com.ucx.training.shop.service;
 
 import com.ucx.training.shop.entity.Address;
 import com.ucx.training.shop.entity.Customer;
-import com.ucx.training.shop.entity.Phone;
 import com.ucx.training.shop.entity.Role;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.repository.CustomerRepository;
@@ -14,7 +13,6 @@ import org.springframework.util.Assert;
 import javax.transaction.Transactional;
 import java.util.Base64;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -22,15 +20,13 @@ public class CustomerService extends BaseService<Customer, Integer> {
 
     private CustomerRepository customerRepository;
     private AddressService addressService;
-    private PhoneService phoneService;
     @Autowired
     private RoleService roleService;
 
 
-    public CustomerService(CustomerRepository customerRepository, AddressService addressService, PhoneService phoneService) {
+    public CustomerService(CustomerRepository customerRepository, AddressService addressService) {
         this.customerRepository = customerRepository;
         this.addressService = addressService;
-        this.phoneService = phoneService;
     }
 
     @Override
@@ -86,11 +82,11 @@ public class CustomerService extends BaseService<Customer, Integer> {
 
     private void updateAddresses(Customer foundCustomer, List<Address> addresses) throws NotFoundException {
         Address newAddress = addresses.get(0);
-        if (!foundCustomer.getAddresses().isEmpty()){
+        if (!foundCustomer.getAddresses().isEmpty()) {
             Address currentAddress = foundCustomer.getAddresses().get(0);
             newAddress.setId(null);
             this.addressService.update(newAddress, currentAddress.getId());
-        }else{
+        } else {
             newAddress.setCustomer(foundCustomer);
             addressService.save(newAddress);
         }

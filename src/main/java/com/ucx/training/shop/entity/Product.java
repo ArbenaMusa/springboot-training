@@ -25,7 +25,7 @@ public class Product extends BaseEntity<Integer> {
     private BigDecimal unitPrice;
 
     @Column(length = 1000)
-    private String productDescription;
+    private String description;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(mappedBy = "product")

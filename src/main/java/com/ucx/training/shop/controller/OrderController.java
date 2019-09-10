@@ -24,7 +24,7 @@ import java.util.Map;
 
 @Log4j2
 @RestController
-@RequestMapping("v1/invoices")
+@RequestMapping("v1/orders")
 public class OrderController {
 
     private CartItemService cartItemService;

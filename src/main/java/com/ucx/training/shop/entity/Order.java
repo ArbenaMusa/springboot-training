@@ -19,8 +19,6 @@ import java.util.List;
 @Table(name = "`order`")
 public class Order extends BaseEntity<Integer> {
 
-    private Integer invoiceNumber;
-
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")

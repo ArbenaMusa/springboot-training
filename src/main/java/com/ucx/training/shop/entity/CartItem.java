@@ -24,7 +24,6 @@ public class CartItem extends BaseEntity<Integer> {
     @JoinColumn(name = "product_id")
     private Product product;
     private Integer quantity;
-    private BigDecimal lineItemTotal; //Product quantity * Product unitPrice
 
     @Override
     public String toString() {
