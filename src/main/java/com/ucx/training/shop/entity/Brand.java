@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Data
@@ -12,4 +13,8 @@ import javax.persistence.Entity;
 @Entity
 public class Brand extends BaseEntity<Integer> {
     private String name;
+    @Column(length = 1000)
+    private String brandLink;
+    @Column(length = 1000)
+    private String imageLink;
 }

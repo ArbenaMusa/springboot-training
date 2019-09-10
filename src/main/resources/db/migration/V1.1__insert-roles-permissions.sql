@@ -33,7 +33,7 @@ CREATE table IF NOT EXISTS public.role
     id                integer not null default nextval('public.role_id_seq'::regclass),
     create_date_time  timestamp,
     deleted_date_time timestamp,
-    description       varchar(1000),
+    comment       varchar(1000),
     record_status     varchar(255),
     update_date_time  timestamp,
     version           bigint,
@@ -47,7 +47,7 @@ CREATE table IF NOT EXISTS public."user"
     id                integer not null default nextval('public.user_id_seq'::regclass),
     create_date_time  timestamp,
     deleted_date_time timestamp,
-    description       varchar(1000),
+    comment       varchar(1000),
     record_status     varchar(255),
     update_date_time  timestamp,
     version           bigint,
@@ -65,7 +65,7 @@ CREATE table IF NOT EXISTS public.customer
     id                integer not null default nextval('public.customer_id_seq'::regclass),
     create_date_time  timestamp,
     deleted_date_time timestamp,
-    description       varchar(1000),
+    comment       varchar(1000),
     record_status     varchar(255),
     update_date_time  timestamp,
     version           bigint,
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS public.permission
     id                integer NOT NULL DEFAULT nextval('permission_id_seq'::regclass),
     create_date_time  timestamp without time zone,
     deleted_date_time timestamp without time zone,
-    description       character varying(1000),
+    comment       character varying(1000),
     record_status     character varying(255),
     update_date_time  timestamp without time zone,
     version           bigint,
@@ -407,3 +407,32 @@ INSERT INTO permission_role
 VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 39);
 COMMIT;
 --END INSERT OF CUSTOMERS CRUD PERMISSIONS
+
+--BEGIN INSERT OF ORDERS CRUD PERMISSIONS
+BEGIN;
+INSERT INTO permission
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'POST', 'orders');
+INSERT INTO permission
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'GET', 'orders');
+INSERT INTO permission
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'PUT', 'orders');
+INSERT INTO permission
+VALUES (nextval('permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 'DELETE', 'orders');
+COMMIT;
+
+BEGIN;
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 41);
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 42);
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 43);
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 1, 44);
+COMMIT;
+
+BEGIN;
+INSERT INTO permission_role
+VALUES (nextval('public.role_permission_id_seq'), now(), null, null, 'ACTIVE', null, 0, 2, 42);
+COMMIT;
+--END INSERT OF ORDERS CRUD PERMISSIONS
