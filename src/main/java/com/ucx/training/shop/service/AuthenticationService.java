@@ -1,14 +1,23 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.dto.ContactFormDTO;
 import com.ucx.training.shop.entity.Customer;
+import com.ucx.training.shop.entity.Order;
 import com.ucx.training.shop.entity.Role;
 import com.ucx.training.shop.entity.User;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +25,22 @@ import java.util.Map;
 @Service
 public class AuthenticationService {
 
-    @Autowired
     private UserService userService;
-    @Autowired
     private CustomerService customerService;
+    private EmailService emailService;
     private RoleService roleService;
+    private JavaMailSender javaMailSender;
+
+
+    private final String UCX_EMAIL = "ucxemailtest@gmail.com";
+
+    public AuthenticationService(UserService userService, CustomerService customerService, EmailService emailService, RoleService roleService, JavaMailSender javaMailSender) {
+        this.userService = userService;
+        this.customerService = customerService;
+        this.emailService = emailService;
+        this.roleService = roleService;
+        this.javaMailSender = javaMailSender;
+    }
 
     //LOGIN
     public Map<String, String> login(String email, String password) throws NotFoundException {
@@ -72,7 +92,23 @@ public class AuthenticationService {
         return customerService.save(customer);
     }
 
-    //FORGOT-PASSWORD
+    public void sendMail(ContactFormDTO contactForm) throws MessagingException, IOException {
+        if (contactForm == null) {
+            throw new IllegalArgumentException("Given Contact form is null");
+        }
+        MimeMessage msg = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+        helper.setTo(UCX_EMAIL);
+        helper.setSubject(String.format("Contact us - %s", contactForm.getName()));
+        String message = String.format("<html><body><strong>Contact name:</strong> %s <br><strong>Contact email:</strong> %s <br><strong>Message:</strong> %s</body></html>",
+                contactForm.getName(),
+                contactForm.getEmail(),
+                contactForm.getMessage());
+        helper.setText(message, true);
+        send(msg);
+    }
 
-    //NEW-PASSWORD
+    public void send(MimeMessage msg){
+        javaMailSender.send(msg);
+    }
 }

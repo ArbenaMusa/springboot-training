@@ -1,5 +1,6 @@
 package com.ucx.training.shop.controller;
 
+import com.ucx.training.shop.dto.ContactFormDTO;
 import com.ucx.training.shop.dto.CustomerDTO;
 import com.ucx.training.shop.dto.DTOEntity;
 import com.ucx.training.shop.entity.Customer;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -50,5 +53,20 @@ public class AuthenticationController {
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/contact-us")
+    public ContactFormDTO contactUs(@RequestBody ContactFormDTO contactFormDTO) throws ResponseException {
+        try {
+            authenticationService.sendMail(contactFormDTO);
+            return contactFormDTO;
+        } catch (MessagingException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (IOException e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 }
