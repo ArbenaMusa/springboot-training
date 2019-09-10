@@ -3,6 +3,7 @@ package com.ucx.training.shop.repository;
 import com.ucx.training.shop.entity.Customer;
 import com.ucx.training.shop.entity.Order;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.Tuple;
@@ -19,8 +20,8 @@ public interface OrderRepository extends BaseRepository<Order, Integer> {
             "    orrd.id=CI.order_id where orrd.create_date_time BETWEEN ?1 AND ?2 " +
             "   and CI.record_status like 'ACTIVE' and orrd.record_status like 'ACTIVE' " +
             " ),0) as TotalProducts from \"order\" ORD " +
-            " where ORD.create_date_time BETWEEN ?1 AND ?2" +
+            " where ORD.create_date_time BETWEEN :startDate AND :endDate" +
             " and ORD.record_status like 'ACTIVE' " ,nativeQuery = true)
-    Tuple getQuartalStats(Date startDate, Date endDate);
+    Tuple getQuartalStats(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
 }

@@ -32,6 +32,9 @@ public class OrderService extends BaseService<Order, Integer> {
     @Autowired
     private OrderRepository orderRepository;
 
+    private final Date YEAR_START_DATE = Date.from(Quartal.FIRST_QUARTAL.getStartDate().atZone(ZoneId.systemDefault()).toInstant());
+    private final Date YEAR_END_DATE = Date.from(Quartal.FOURTH_QUARTAL.getStartDate().atZone(ZoneId.systemDefault()).toInstant());
+
     public Order update(List<CartItem> cartItemList, Customer customer, Order order) {
         if (cartItemList == null || cartItemList.isEmpty()) {
             throw new IllegalArgumentException("Cannot print Invoice, list is missing");
@@ -147,7 +150,6 @@ public class OrderService extends BaseService<Order, Integer> {
         return list;
     }
 
-
     public Map<String, Object> getQuartalStats() {
         Map<String, Object> response = new HashMap<>();
         //this is where we loop for every Quartal
@@ -157,21 +159,23 @@ public class OrderService extends BaseService<Order, Integer> {
                     Date.from(quartal.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
                     Date.from(quartal.getEndDate().atZone(ZoneId.systemDefault()).toInstant())
             );
-            Map<String, Object> map = EntityUtil.toMap(quartalStats);
+            Map<String, Object> tupleToMap = EntityUtil.toMap(quartalStats);
             //the whole quartal data is put in an EnumMap response
-            response.put(quartal.name(), map);
+            response.put(quartal.name(), tupleToMap);
         }
         // We obtain top sold products for the whole year
         // Data is obtained as a list of tuples therefore we convert tuples to maps
         // and store them in a list i.e. <topSoldProducts> variable
-        List<Tuple> top10SoldProducts = productRepository.getTopSoldProducts(10,
-                Date.from(Quartal.FIRST_QUARTAL.getStartDate().atZone(ZoneId.systemDefault()).toInstant()),
-                Date.from(Quartal.FOURTH_QUARTAL.getEndDate().atZone(ZoneId.systemDefault()).toInstant()));
-        List<Map<String, Object>> topSoldProducts = EntityUtil.ListToMap(top10SoldProducts);
+        List<Map<String, Object>> topSoldProducts = getTopSoldProducts(10, YEAR_START_DATE, YEAR_END_DATE);
         //The top products sold data is appended to the response
         response.put("topSoldItems", topSoldProducts);
-        //response is returned
         return response;
+    }
+
+    private List<Map<String, Object>> getTopSoldProducts(Integer productsNumber, Date startDate, Date endDate) {
+        List<Tuple> topSoldProducts = productRepository.getTopSoldProducts(productsNumber, startDate, endDate);
+        List<Map<String, Object>> listToMap = EntityUtil.ListToMap(topSoldProducts);
+        return listToMap;
     }
 
 
