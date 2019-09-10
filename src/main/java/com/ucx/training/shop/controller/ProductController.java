@@ -6,6 +6,7 @@ import com.ucx.training.shop.dto.ProductDTO;
 import com.ucx.training.shop.entity.Product;
 import com.ucx.training.shop.exception.NotFoundException;
 import com.ucx.training.shop.exception.ResponseException;
+import com.ucx.training.shop.service.OrderService;
 import com.ucx.training.shop.service.ProductService;
 import com.ucx.training.shop.type.RecordStatus;
 import com.ucx.training.shop.util.FileUploadUtil;
@@ -39,10 +40,12 @@ public class ProductController {
     private ProductService productService;
     private ModelMapper modelMapper;
     private ObjectMapper objectMapper = new ObjectMapper();
+    private OrderService orderService;
 
-    public ProductController(ProductService productService, ModelMapper modelMapper) {
+    public ProductController(ProductService productService, ModelMapper modelMapper, OrderService orderService) {
         this.productService = productService;
         this.modelMapper = modelMapper;
+        this.orderService = orderService;
     }
 
     @PostMapping
@@ -200,5 +203,10 @@ public class ProductController {
         }catch (Exception e){
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/topsoldproducts")
+    public List<Map<String, Object>> getTopSoldProducts(@RequestParam("numberOfProducts") Integer productsNumber) {
+        return orderService.getTopSoldProducts(productsNumber, OrderService.YEAR_START_DATE, OrderService.YEAR_END_DATE);
     }
 }

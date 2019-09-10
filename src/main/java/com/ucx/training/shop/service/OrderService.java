@@ -32,8 +32,8 @@ public class OrderService extends BaseService<Order, Integer> {
     @Autowired
     private OrderRepository orderRepository;
 
-    private final Date YEAR_START_DATE = Date.from(Quartal.FIRST_QUARTAL.getStartDate().atZone(ZoneId.systemDefault()).toInstant());
-    private final Date YEAR_END_DATE = Date.from(Quartal.FOURTH_QUARTAL.getStartDate().atZone(ZoneId.systemDefault()).toInstant());
+    public static final Date YEAR_START_DATE = Date.from(Quartal.FIRST_QUARTAL.getStartDate().atZone(ZoneId.systemDefault()).toInstant());
+    public static final Date YEAR_END_DATE = Date.from(Quartal.FOURTH_QUARTAL.getStartDate().atZone(ZoneId.systemDefault()).toInstant());
 
     public Order update(List<CartItem> cartItemList, Customer customer, Order order) {
         if (cartItemList == null || cartItemList.isEmpty()) {
