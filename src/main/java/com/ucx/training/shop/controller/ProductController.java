@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -141,26 +142,41 @@ public class ProductController {
     }
 
     @GetMapping("/filter")
-    public List<DTOEntity> findAllFilters(@RequestParam(required = false, value = "platformId") Integer platformId, @RequestParam(required = false, value = "brandId") Integer brandId, @RequestParam(required = false, value = "priceOrder") String priceDirection, @RequestParam(required = false, value = "min") BigDecimal min, @RequestParam(required = false, value = "max") BigDecimal max) throws ResponseException {
-        List<Product> foundProducts = null;
+    public Map<String, Object> findAllFilters(@PageableDefault Pageable pageable,
+                                          @RequestParam(required = false, value = "platformId") Integer platformId,
+                                          @RequestParam(required = false, value = "brandId") List<Integer> brandId,
+                                          @RequestParam(required = false, value = "min") BigDecimal min,
+                                          @RequestParam(required = false, value = "max") BigDecimal max,
+                                          @RequestParam(required = false, value = "productName") String productName) throws ResponseException {
+        Page<Product> foundProducts = null;
 
         try{
-            if(platformId != null && brandId != null){
-                foundProducts = productService.findAllByPlatformAndBrand(min, max, platformId, brandId, priceDirection);
+            if(productName == null){
+                if(platformId != null){
+                    if(brandId != null)
+                        foundProducts = productService.findAllByPlatformAndBrand(pageable, min, max, platformId, brandId);
+                    else foundProducts = productService.findAllByPlatform(pageable, min, max, platformId);
+                }
+                else{
+                    if(brandId != null)
+                        foundProducts = productService.findAllByBrand(pageable, min, max, brandId);
+                    else foundProducts = productService.findAllProductsPrice(pageable, min, max);
+                }
             }
-            else if(platformId != null){
-                foundProducts = productService.findAllByPlatform(min, max, platformId, priceDirection);
+            else{
+                if(platformId != null){
+                    if(brandId != null)
+                        foundProducts = productService.findAllByPlatformAndBrandAndNameContaining(pageable, min, max, platformId, brandId, productName);
+                    else foundProducts = productService.findAllByPlatformAndNameContaining(pageable, min, max, platformId, productName);
+                }
+                else{
+                    if(brandId != null)
+                        foundProducts = productService.findAllByBrandAndNameContaining(pageable, min, max, brandId, productName);
+                    else foundProducts = productService.findAllProductsPriceAndNameContaining(pageable, min, max, productName);
+                }
             }
-            else if(brandId != null){
-                foundProducts = productService.findAllByBrand(min, max, brandId, priceDirection);
-            }
-            else if(platformId == null && brandId == null && priceDirection != null){
-                foundProducts = productService.findAllSorted(priceDirection, "unitPrice");
-            }
-            else {
-                foundProducts = productService.findAllProductsPrice(min, max, priceDirection);
-            }
-            return DTOMapper.converToDTOList(foundProducts, ProductDTO.class);
+
+            return PaginationUtil.getPage(foundProducts, ProductDTO.class);
         } catch (Exception e) {
             throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

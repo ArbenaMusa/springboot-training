@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.Tuple;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,15 +22,14 @@ public interface ProductRepository extends BaseRepository<Product,Integer> {
     Page<Product> findAllActive(Pageable pageable);
     Product findByName(String name);
     List<Product> findAllByUnitPrice(BigDecimal unitPrice);
-    List<Product> findAllProductByUnitPriceBetween(BigDecimal lowest, BigDecimal highest);
-    List<Product> findAllProductByUnitPriceBetween(BigDecimal lowest, BigDecimal highest, Sort sort);
-    List<Product> findAllProductByUnitPriceBetweenAndBrand(BigDecimal lowest, BigDecimal highest, Brand brand);
-    List<Product> findAllProductByUnitPriceBetweenAndBrand(BigDecimal lowest, BigDecimal highest, Brand brand, Sort sort);
-    List<Product> findAllProductByUnitPriceBetweenAndPlatform(BigDecimal lowest, BigDecimal highest, Platform platform);
-    List<Product> findAllProductByUnitPriceBetweenAndPlatform(BigDecimal lowest, BigDecimal highest, Platform platform, Sort sort);
-    List<Product> findAllProductByUnitPriceBetweenAndBrandAndPlatform(BigDecimal lowest, BigDecimal highest, Brand brand, Platform platform);
-    List<Product> findAllProductByUnitPriceBetweenAndBrandAndPlatform(BigDecimal lowest, BigDecimal highest, Brand brand, Platform platform, Sort sort);
-
+    Page<Product> findAllProductByUnitPriceBetween(Pageable pageable, BigDecimal lowest, BigDecimal highest);
+    Page<Product> findAllProductByUnitPriceBetweenAndBrandIsIn(Pageable pageable, BigDecimal lowest, BigDecimal highest, List<Brand> brand);
+    Page<Product> findAllProductByUnitPriceBetweenAndPlatform(Pageable pageable, BigDecimal lowest, BigDecimal highest, Platform platform);
+    Page<Product> findAllProductByUnitPriceBetweenAndBrandIsInAndPlatform(Pageable pageable, BigDecimal lowest, BigDecimal highest, List<Brand> brand, Platform platform);
+    Page<Product> findAllProductByUnitPriceBetweenAndNameContaining(Pageable pageable, BigDecimal lowest, BigDecimal highest, String name);
+    Page<Product> findAllProductByUnitPriceBetweenAndBrandIsInAndNameContaining(Pageable pageable, BigDecimal lowest, BigDecimal highest, List<Brand> brand, String name);
+    Page<Product> findAllProductByUnitPriceBetweenAndPlatformAndNameContaining(Pageable pageable, BigDecimal lowest, BigDecimal highest, Platform platform, String name);
+    Page<Product> findAllProductByUnitPriceBetweenAndBrandIsInAndPlatformAndNameContaining(Pageable pageable, BigDecimal lowest, BigDecimal highest, List<Brand> brand, Platform platform, String name);
     @Query(value = "SELECT MIN(unit_price) FROM product", nativeQuery = true)
     Number getLowestPrice();
     @Query(value = "SELECT MAX(unit_price) FROM product", nativeQuery = true)
