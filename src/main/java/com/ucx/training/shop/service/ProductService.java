@@ -1,5 +1,6 @@
 package com.ucx.training.shop.service;
 
+import com.ucx.training.shop.dto.BrandDTO;
 import com.ucx.training.shop.entity.Brand;
 import com.ucx.training.shop.entity.Platform;
 import com.ucx.training.shop.entity.Product;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -103,47 +105,68 @@ public class ProductService extends BaseService<Product, Integer> {
         return productRepository.findAllActive(pageable);
     }
 
-    public List<Product> findAllByBrand(BigDecimal min, BigDecimal max, Integer brandId, String priceDirection) {
-        Brand foundBrand = brandService.findById(brandId);
-        List<Product> foundProducts = null;
-        if (priceDirection == null) {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max, foundBrand);
-        } else {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrand(min, max, foundBrand, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
+    public Page<Product> findAllByBrand(Pageable pageable, BigDecimal min, BigDecimal max, List<Integer> brandId) {
+        List<Brand> foundBrand  = new ArrayList();
+        Page<Product> foundProducts = null;
+        for (Integer id: brandId) {
+            foundBrand.add(brandService.findById(id));
         }
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsIn(pageable, min, max, foundBrand);
+        return foundProducts;
+    }
+    public Page<Product> findAllByBrandAndNameContaining(Pageable pageable, BigDecimal min, BigDecimal max, List<Integer> brandId, String name) {
+        List<Brand> foundBrand  = new ArrayList();
+        Page<Product> foundProducts = null;
+        for (Integer id: brandId) {
+            foundBrand.add(brandService.findById(id));
+        }
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsInAndNameContaining(pageable, min, max, foundBrand, name);
         return foundProducts;
     }
 
-    public List<Product> findAllByPlatform(BigDecimal min, BigDecimal max, Integer platformId, String priceDirection) {
+    public Page<Product> findAllByPlatform(Pageable pageable, BigDecimal min, BigDecimal max, Integer platformId) {
         Platform foundPlatform = platformService.findById(platformId);
-        List<Product> foundProducts = null;
-        if (priceDirection == null) {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(min, max, foundPlatform);
-        } else {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(min, max, foundPlatform, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
-        }
+        Page<Product> foundProducts = null;
+            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatform(pageable, min, max, foundPlatform);
         return foundProducts;
     }
-
-    public List<Product> findAllByPlatformAndBrand(BigDecimal min, BigDecimal max, Integer platformId, Integer brandId, String priceDirection) {
+    public Page<Product> findAllByPlatformAndNameContaining(Pageable pageable, BigDecimal min, BigDecimal max, Integer platformId, String name) {
         Platform foundPlatform = platformService.findById(platformId);
-        Brand foundBrand = brandService.findById(brandId);
-        List<Product> foundProducts = null;
-        if (priceDirection == null) {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandAndPlatform(min, max, foundBrand, foundPlatform);
-        } else {
-            foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandAndPlatform(min, max, foundBrand, foundPlatform, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
-        }
+        Page<Product> foundProducts = null;
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatformAndNameContaining(pageable, min, max, foundPlatform, name);
         return foundProducts;
     }
 
-    public List<Product> findAllProductsPrice(BigDecimal lowest, BigDecimal highest, String priceDirection) {
-        List<Product> foundProducts = null;
-        if (priceDirection == null) {
-            foundProducts = productRepository.findAllProductByUnitPriceBetween(lowest, highest);
-        } else {
-            foundProducts = productRepository.findAllProductByUnitPriceBetween(lowest, highest, Sort.by(Sort.Direction.valueOf(priceDirection), "unitPrice"));
+    public Page<Product> findAllByPlatformAndBrand(Pageable pageable, BigDecimal min, BigDecimal max, Integer platformId, List<Integer> brandId) {
+        Platform foundPlatform = platformService.findById(platformId);
+        List<Brand> foundBrand  = new ArrayList();
+        Page<Product> foundProducts = null;
+        for (Integer id: brandId) {
+            foundBrand.add(brandService.findById(id));
         }
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsInAndPlatform(pageable, min, max, foundBrand, foundPlatform);
+        return foundProducts;
+    }
+    public Page<Product> findAllByPlatformAndBrandAndNameContaining(Pageable pageable, BigDecimal min, BigDecimal max, Integer platformId, List<Integer> brandId, String name) {
+        Platform foundPlatform = platformService.findById(platformId);
+        List<Brand> foundBrand  = new ArrayList();
+        Page<Product> foundProducts = null;
+        for (Integer id: brandId) {
+            foundBrand.add(brandService.findById(id));
+        }
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsInAndPlatformAndNameContaining(pageable, min, max, foundBrand, foundPlatform, name);
+        return foundProducts;
+    }
+
+    public Page<Product> findAllProductsPrice(Pageable pageable, BigDecimal lowest, BigDecimal highest) {
+        Page<Product> foundProducts = null;
+            foundProducts = productRepository.findAllProductByUnitPriceBetween(pageable, lowest, highest);
+        return foundProducts;
+    }
+
+    public Page<Product> findAllProductsPriceAndNameContaining(Pageable pageable, BigDecimal lowest, BigDecimal highest, String name) {
+        Page<Product> foundProducts = null;
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndNameContaining(pageable, lowest, highest, name);
         return foundProducts;
     }
 
