@@ -1,6 +1,5 @@
 package com.ucx.training.shop.service;
 
-import com.ucx.training.shop.dto.BrandDTO;
 import com.ucx.training.shop.entity.Brand;
 import com.ucx.training.shop.entity.Platform;
 import com.ucx.training.shop.entity.Product;
@@ -9,7 +8,6 @@ import com.ucx.training.shop.repository.ProductRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -120,7 +118,7 @@ public class ProductService extends BaseService<Product, Integer> {
         for (Integer id: brandId) {
             foundBrand.add(brandService.findById(id));
         }
-        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsInAndNameContaining(pageable, min, max, foundBrand, name);
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsInAndNameContainingIgnoreCase(pageable, min, max, foundBrand, name);
         return foundProducts;
     }
 
@@ -133,7 +131,7 @@ public class ProductService extends BaseService<Product, Integer> {
     public Page<Product> findAllByPlatformAndNameContaining(Pageable pageable, BigDecimal min, BigDecimal max, Integer platformId, String name) {
         Platform foundPlatform = platformService.findById(platformId);
         Page<Product> foundProducts = null;
-        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatformAndNameContaining(pageable, min, max, foundPlatform, name);
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndPlatformAndNameContainingIgnoreCase(pageable, min, max, foundPlatform, name);
         return foundProducts;
     }
 
@@ -154,7 +152,7 @@ public class ProductService extends BaseService<Product, Integer> {
         for (Integer id: brandId) {
             foundBrand.add(brandService.findById(id));
         }
-        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsInAndPlatformAndNameContaining(pageable, min, max, foundBrand, foundPlatform, name);
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndBrandIsInAndPlatformAndNameContainingIgnoreCase(pageable, min, max, foundBrand, foundPlatform, name);
         return foundProducts;
     }
 
@@ -166,7 +164,7 @@ public class ProductService extends BaseService<Product, Integer> {
 
     public Page<Product> findAllProductsPriceAndNameContaining(Pageable pageable, BigDecimal lowest, BigDecimal highest, String name) {
         Page<Product> foundProducts = null;
-        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndNameContaining(pageable, lowest, highest, name);
+        foundProducts = productRepository.findAllProductByUnitPriceBetweenAndNameContainingIgnoreCase(pageable, lowest, highest, name);
         return foundProducts;
     }
 
