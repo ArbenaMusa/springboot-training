@@ -60,22 +60,7 @@ public class JwtFilter extends GenericFilter {
                 return;
         }*/
 
-         List<String> allMethodsAllowed = Arrays.asList(AUTH_ENDPOINT, STRIPE_ENDPOINT);
-         List<String> getOptionsAllowed = Arrays.asList(PRODUCTS_ENDPOINT, PLATFORMS_ENDPOINT, BRANDS_ENDPOINT);
-
-        for (String endpoint : allMethodsAllowed) {
-            if (requestURI.startsWith(endpoint)) {
-                filterChain.doFilter(servletRequest, servletResponse);
-                return;
-            }
-        }
-
-        for (String endpoint : getOptionsAllowed) {
-            if (requestURI.startsWith(endpoint) && Arrays.asList("GET", "OPTIONS").contains(httpMethod)) {
-                filterChain.doFilter(servletRequest, servletResponse);
-                return;
-            }
-        }
+        if (isAllowedEndpoint(servletRequest, servletResponse, filterChain, requestURI, httpMethod)) return;
 
         /*if (requestURI.startsWith(AUTH_ENDPOINT)) {
             filterChain.doFilter(servletRequest, servletResponse);
@@ -133,6 +118,26 @@ public class JwtFilter extends GenericFilter {
         } else {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "You do not have authorization to access the requested route");
         }
+    }
+
+    private boolean isAllowedEndpoint(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain, String requestURI, String httpMethod) throws IOException, ServletException {
+        List<String> allMethodsAllowed = Arrays.asList(AUTH_ENDPOINT, STRIPE_ENDPOINT);
+        List<String> getOptionsAllowed = Arrays.asList(PRODUCTS_ENDPOINT, PLATFORMS_ENDPOINT, BRANDS_ENDPOINT);
+
+        for (String endpoint : allMethodsAllowed) {
+            if (requestURI.startsWith(endpoint)) {
+                filterChain.doFilter(servletRequest, servletResponse);
+                return true;
+            }
+        }
+
+        for (String endpoint : getOptionsAllowed) {
+            if (requestURI.startsWith(endpoint) && Arrays.asList("GET", "OPTIONS").contains(httpMethod)) {
+                filterChain.doFilter(servletRequest, servletResponse);
+                return true;
+            }
+        }
+        return false;
     }
 
     private String extractModule(String requestURI) {
