@@ -72,6 +72,7 @@ public class JwtFilter extends GenericFilter {
 
         String token = header.substring(ACCESS_TOKEN_INDEX);
         //TODO: Check if token has expired.
+        //TODO: Throw specific HttpStatus.
         Claims claims = JwtUtil.parse(token);
 
         Integer roleId = (Integer) claims.get("roleId");
