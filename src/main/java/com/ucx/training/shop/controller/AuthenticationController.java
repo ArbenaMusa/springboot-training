@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -56,16 +57,19 @@ public class AuthenticationController {
     }
 
     @PostMapping("/contact-us")
-    public ContactFormDTO contactUs(@RequestBody ContactFormDTO contactFormDTO) throws ResponseException {
+    public Map<String, String> contactUs(@RequestBody ContactFormDTO contactFormDTO) throws ResponseException {
+        Map<String, String> response = new HashMap<>();
+        response.put("SUCCESS", "Email was successfully sent");
+        response.put("ERROR", "Something went wrong, please try again");
         try {
             authenticationService.sendMail(contactFormDTO);
-            return contactFormDTO;
+            return Map.of("Message", response.get("SUCCESS"));
         } catch (MessagingException e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new ResponseException(response.get("ERROR"), HttpStatus.BAD_REQUEST);
         } catch (IOException e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new ResponseException(response.get("ERROR"), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new ResponseException(response.get("ERROR"), HttpStatus.BAD_REQUEST);
         }
 
     }
