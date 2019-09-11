@@ -27,11 +27,11 @@ public class UserService extends BaseService<User, Integer> {
 
     public User findByEmail(String email) throws NotFoundException {
         if (email == null) {
-            throw new IllegalArgumentException("Name must not be null!");
+            throw new IllegalArgumentException("Email must not be null!");
         }
         User foundUser = userRepository.findByEmail(email);
         if (foundUser == null) {
-            throw new NotFoundException("User not found.");
+            throw new NotFoundException("Invalid email, please check again");
         }
         return foundUser;
     }

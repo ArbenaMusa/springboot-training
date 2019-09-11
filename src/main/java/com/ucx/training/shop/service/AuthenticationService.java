@@ -53,17 +53,17 @@ public class AuthenticationService {
         Customer foundCustomer = customerService.findByEmail(email);
 
         if (foundUser == null) {
-            throw new RuntimeException("This user does not exist");
+            throw new RuntimeException("Invalid email, please check again");
         }
 
         String encodedPassword = Base64.getEncoder().encodeToString(password.getBytes());
 
         if (!encodedPassword.equals(foundUser.getPassword())) {
-            throw new RuntimeException("The password is incorrect!");
+            throw new RuntimeException("Incorrect password, please check again");
         }
 
         if (foundUser.getRecordStatus() == RecordStatus.INACTIVE) {
-            throw new RuntimeException("This user is deactivated");
+            throw new RuntimeException("This user has been deactivated");
         }
 
         Map<String, String> resultUser = new HashMap<>();

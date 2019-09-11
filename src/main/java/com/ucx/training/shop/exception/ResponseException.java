@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Data
 @Log4j2
-public class ResponseException extends Exception {
+public class ResponseException extends RuntimeException {
 
     private HttpStatus httpStatus;
 

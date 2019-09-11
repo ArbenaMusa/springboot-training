@@ -40,7 +40,7 @@ public class AuthenticationController {
             return authenticationService.login(email, password);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ResponseException(e.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new ResponseException(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
