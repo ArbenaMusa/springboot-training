@@ -23,7 +23,7 @@ public class StripePayment implements PaymentInterface {
      * Stripe Secret Key is used to communicate with Stripe API.
      * This is the TEST Stripe Secret Key and it's a must to initialize.
      */
-    private static final String TEST_STRIPE_SECRET_KEY = "sk_test_F80HwLcBteuczUKFSiC2KEKw00TvPxtOTe";
+    private static final String TEST_STRIPE_SECRET_KEY = "sk_test_OwyVljqeNz3mLAVP4d80yabu00uUiAzszb";
     Map<String,String> token_id = new HashMap<>();
 
     public StripePayment(){
