@@ -11,7 +11,7 @@ import java.nio.file.Files;
 
 @RestController
 public class ImageController {
-    @Value("${file.upload.client}")
+//    @Value("${file.upload.client}")
     private String uploadDirectory;
 
     @GetMapping(value = "/assets/img/{image}", produces = "image/*")
