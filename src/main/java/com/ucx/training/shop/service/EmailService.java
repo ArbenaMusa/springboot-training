@@ -55,7 +55,7 @@ public class EmailService {
             DateTimeFormatter customFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'at' hh:mma");
             message.append(String.format("Purchase date: %s", order.getCreateDateTime().format(customFormatter)));
             message.append(SEPARATOR);
-            message.append(String.format("Total: %.2f €", order.getTotal()));
+            message.append(String.format("Total: $%.2f", order.getTotal()));
             writer.write(message.toString());
         } catch (IOException e) {
             throw e;
@@ -72,7 +72,7 @@ public class EmailService {
         final Product CART_PRODUCT = cartItem.getProduct();
         final Integer PRODUCT_QUANTITY = cartItem.getQuantity();
         final BigDecimal UNIT_PRICE = CART_PRODUCT.getUnitPrice();
-        return String.format("%nProduct name: %s %nProduct price: %.2f € x %d %nProduct total: %.2f€ %nLicense Codes: %s%n",
+        return String.format("%nProduct name: %s %nProduct price: $%.2f x %d %nProduct total: $%.2f %nLicense Codes: %s%n",
                 CART_PRODUCT.getName(),
                 UNIT_PRICE,
                 PRODUCT_QUANTITY,
