@@ -24,7 +24,7 @@ public class Product extends BaseEntity<Integer> {
     private String name;
     private BigDecimal unitPrice;
 
-    @Column(length = 1000)
+    @Column(length = 2000)
     private String description;
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
